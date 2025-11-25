@@ -12,8 +12,7 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      {/* 3. Sửa lỗi chính tả handleCLick -> handleClick */}
-      {/* Thêm cursor-pointer để người dùng biết bấm vào được */}
+
       <h1 
         className="text-[100px] font-bold cursor-pointer hover:opacity-80 transition-opacity text-center leading-tight" 
         onClick={handleClick}
