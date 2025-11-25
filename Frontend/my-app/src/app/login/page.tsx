@@ -31,7 +31,7 @@ export default function LoginPage() {
       console.log("Login thành công:", data);
       const accessToken = data.accessToken;
       
-      const userRes = await fetch('/api/proxy/user-info', {
+      const userRes = await fetch('/api/proxy/login', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${accessToken}`,
@@ -42,7 +42,7 @@ export default function LoginPage() {
       
 
       // Chuyển trang sau khi login thành công
-      router.push('/dashboard'); 
+      router.push('/home'); 
 
     } catch (error) {
       console.error("Lỗi mạng hoặc hệ thống:", error);
@@ -106,7 +106,7 @@ export default function LoginPage() {
             </Link>
           </p>
           {error && <p className="text-red-500 text-[12px] mb-3 text-start">{error}</p>}
-          <button className="w-full bg-blue-600 hover:bg-blue-700 text-white p-2 rounded mb-4 transition-colors">
+          <button className="w-full bg-blue-600 hover:bg-blue-700 text-white p-2 rounded mb-4 transition-colors cursor-pointer">
             Đăng nhập
           </button>
           
