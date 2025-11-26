@@ -54,7 +54,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   // 2. KHI ĐĂNG NHẬP: Lưu user vào LocalStorage
   const login = (userData: User) => {
     setUser(userData);
-    // Lưu object user vào localStorage (phải chuyển thành string)
     localStorage.setItem("user", JSON.stringify(userData));
   };
 

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import ChangePasswordModal from "../common/ChangePasswordModal";
 import { useUser } from "@/src/contexts/UserContext";
-import { changeUserInfo } from "@/src/services/authService";
+import { changeUserInfo, getUserData, login } from "@/src/services/authService";
 
 interface AccountFormProps {
   email: string;
@@ -45,7 +45,7 @@ const RadioInput = ({ value, label, currentGender, onChange }: { value: string; 
 );
 
 export default function AccountForm({ email, displayName, userGender, userDob, onSubmit }: AccountFormProps) {
-  const { user } = useUser();
+  const { user,login } = useUser();
   
   // Form Data State
   const [name, setName] = useState(displayName);
@@ -69,40 +69,48 @@ export default function AccountForm({ email, displayName, userGender, userDob, o
   }, [displayName, userGender, userDob]);
 
   const handleSubmit = async (e: React.FormEvent) => {
-      e.preventDefault();
-      setStatus(null); // Reset previous status
-      setLoading(true);
-  
-      if (!user || !user.accessToken) {
-        setStatus({ type: 'error', message: "Session expired, please log in again." });
-        setLoading(false);
-        return;
-      }
+  e.preventDefault();
+  setStatus(null);
+  setLoading(true);
 
-      try {
-        const dobDate = new Date(dob);
-        const response = await changeUserInfo(name, gender, user.accessToken, dobDate);
-  
-        if (!response.success) {
-          throw new Error(response.message || "Update failed");
-        }
+  if (!user || !user.accessToken) {
+    setStatus({ type: 'error', message: "Session expired, please log in again." });
+    setLoading(false);
+    return;
+  }
 
-        // --- SUCCESS ---
-        setStatus({ type: 'success', message: "Profile updated successfully!" });
-        
-        // Auto-hide success message after 3 seconds
-        setTimeout(() => setStatus(null), 3000);
+  try {
+    const dobDate = new Date(dob);
+    const response = await changeUserInfo(name, gender, user.accessToken, dobDate);
 
-        if (onSubmit) onSubmit();
+    if (!response.success) {
+      throw new Error(response.message || "Update failed");
+    }
 
-      } catch (err) {
-        // --- ERROR ---
-        const msg = err instanceof Error ? err.message : "An unexpected error occurred.";
-        setStatus({ type: 'error', message: msg });
-      } finally {
-        setLoading(false);
-      }
+    // --- SUCCESS ---
+    setStatus({ type: 'success', message: "Profile updated successfully!" });
+
+    // --- CẬP NHẬT USER CONTEXT ---
+    const updatedUser = {
+      ...user,
+      displayName: name,
+      gender: gender,
+      // Nếu muốn update dob hay avatar, thêm vào đây
     };
+    login(updatedUser); // cập nhật context + localStorage
+
+    // Auto-hide success message
+    setTimeout(() => setStatus(null), 3000);
+
+    if (onSubmit) onSubmit();
+
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "An unexpected error occurred.";
+    setStatus({ type: 'error', message: msg });
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <>

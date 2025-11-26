@@ -56,3 +56,14 @@ export async function changeUserInfo(name:string,gender:string,token:string,dob:
   const data= await res.json();
   return data;
 }
+
+export async function getUserData(token:string){
+  const res = await fetch('/api/auth/profile', {
+    method: 'GET',
+    headers:{
+      'Authorization': `Bearer ${token}`
+    },
+  });
+  const data= await res.json();
+  return data;
+}
