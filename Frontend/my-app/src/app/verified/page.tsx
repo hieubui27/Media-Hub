@@ -41,7 +41,7 @@ function VerifiedPage() {
 
             const data = await res.json();
             console.log("Verify thành công:", data);
-            router.push('/home'); 
+            router.push('/login'); 
 
         } catch (error) {
             console.error("Lỗi:", error);

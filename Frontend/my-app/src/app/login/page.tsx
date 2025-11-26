@@ -5,10 +5,12 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useUser } from "@/src/contexts/UserContext";
 import { login as loginApi, getUserInfo } from "@/src/services/authService";
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
 export default function LoginPage() {
   const router = useRouter();
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const { login } = useUser();
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -19,9 +21,6 @@ export default function LoginPage() {
 
     try {
       const data = await loginApi(email, password);
-      
-      // Assuming structure based on your snippet
-      // It's good practice to check if data.data exists
       const accessToken = data.data?.accessToken;
       
       if (!accessToken) {
@@ -36,13 +35,12 @@ export default function LoginPage() {
         displayName: data.data.user.name || "User",
         avatar: data.data.user.avatar || "/images/avatar.png",
         gender: data.data.user.userGender || "other",
-      }); // You might need to pass accessToken here if your context requires it
+      });
 
       if(data.success){
         router.push('/dashboard/account');
       }
     } catch (error) {
-      // Fixed: Avoid using 'any'
       if (error instanceof Error) {
         setError(error.message);
       } else {
@@ -86,20 +84,33 @@ export default function LoginPage() {
             />
           </div>
 
-          <div className="mb-2">
+          <div className="mb-2 relative w-full">
             <input
-              name="password"
-              type="password"
-              placeholder="Password"
-              className="w-full pl-4 pr-4 p-2 text-[13px] bg-gray-700 text-white rounded transition-colors duration-[50000s]"
-              required
-            />
+        name="password"
+        type={showPassword ? "text" : "password"}
+        placeholder="Password"
+        className="w-full pl-4 pr-10 p-2 text-[13px] bg-gray-700 text-white rounded"
+        required
+      />
+
+      {/* Nút toggle */}
+      <button
+        type="button"
+        onClick={() => setShowPassword(!showPassword)}
+        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 hover:text-white"
+      >
+        {showPassword ? (
+          <AiFillEyeInvisible size={18} />
+        ) : (
+          <AiFillEye size={18} />
+        )}
+      </button>
           </div>
           
           <p className="mb-4 text-[11px] text-gray-400 text-start">
             Forgot password?{" "}
             <Link 
-              href="/reset-password" 
+              href="/reset" 
               className="text-gray-400 hover:text-blue-400 hover:underline font-semibold transition-colors"
             >
               Reset now

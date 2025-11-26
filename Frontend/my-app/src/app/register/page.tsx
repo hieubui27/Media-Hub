@@ -3,12 +3,16 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+
 
 export default function RegisterPage() {
   const router = useRouter();
   const [error, setError] = useState("");
-
   const [isOptimisticSuccess, setIsOptimisticSuccess] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
 
   const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -118,13 +122,69 @@ export default function RegisterPage() {
                     </div>
 
                     <div className="mb-3">
-                        <label className="text-gray-400 text-[11px] ml-1">Password</label>
-                        <input name="password" type="password" placeholder="••••••••" className={inputClass} required minLength={6} />
+                      <label className="text-gray-400 text-[11px] ml-1">Password</label>
+
+                      <div className="relative">
+                        <input
+                          name="password"
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Password"
+                          className={`
+                            w-full pl-4 pr-10 p-2 rounded 
+                            h-10
+                            bg-gray-700 
+                            text-white text-[13px]
+                            border border-gray-600
+                            hover:border-gray-500
+                            focus:outline-none focus:ring-1 focus:ring-blue-500
+                            transition-colors duration-[50000s]
+                          `}
+                          required
+                        />
+
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                        >
+                          {showPassword ? <AiFillEyeInvisible size={18} /> : <AiFillEye size={18} />}
+                        </button>
+                      </div>
                     </div>
 
                     <div className="mb-4">
-                        <label className="text-gray-400 text-[11px] ml-1">Confirm Password</label>
-                        <input name="confirm_password" type="password" placeholder="••••••••" className={inputClass} required />
+                      <label className="text-gray-400 text-[11px] ml-1">Confirm Password</label>
+
+                      <div className="relative">
+                        <input
+                          name="confirm_password"
+                          type={showConfirmPassword ? "text" : "password"}
+                          placeholder="Confirm Password"
+                          className={`
+                            w-full pl-4 pr-10 p-2 rounded 
+                            h-10
+                            bg-gray-700 
+                            text-white text-[13px]
+                            border border-gray-600
+                            hover:border-gray-500
+                            focus:outline-none focus:ring-1 focus:ring-blue-500
+                            transition-colors duration-[50000s]
+                          `}
+                          required
+                        />
+
+                        <button
+                          type="button"
+                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                        >
+                          {showConfirmPassword ? (
+                            <AiFillEyeInvisible size={18} />
+                          ) : (
+                            <AiFillEye size={18} />
+                          )}
+                        </button>
+                      </div>
                     </div>
 
                     {error && <p className="text-red-500 text-[12px] mb-3 text-start bg-red-500/10 p-2 rounded border border-red-500/20">{error}</p>}

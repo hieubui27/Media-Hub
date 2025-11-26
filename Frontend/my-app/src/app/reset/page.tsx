@@ -1,25 +1,21 @@
 "use client"
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+
 
 function ResetPasswordPage() {
     const router = useRouter();
-    
-    // Form data states
-    const [step, setStep] = useState<1 | 2>(1); // 1: Enter Email, 2: Enter OTP & New Pass
-    
-    // Step 1 data
+    const [step, setStep] = useState<1 | 2>(1);
     const [email, setEmail] = useState("");
-    
-    // Step 2 data
     const [otp, setOtp] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-
-    // UI states
     const [error, setError] = useState("");
     const [successMsg, setSuccessMsg] = useState("");
     const [loading, setLoading] = useState(false);
+    const [showNewPass, setShowNewPass] = useState(false);
+    const [showConfirmPass, setShowConfirmPass] = useState(false);
 
     // --- STEP 1: REQUEST OTP ---
     const handleSendOtp = async (e: React.FormEvent) => {
@@ -70,8 +66,8 @@ function ResetPasswordPage() {
             const res = await fetch('/api/proxy/auth/password-reset/confirm', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({  
-                    otp, 
+                body: JSON.stringify({
+                    otp,
                     newPassword,
                     confirmPassword
                 }),
@@ -84,7 +80,7 @@ function ResetPasswordPage() {
 
             // Success -> Alert and redirect
             alert("Password reset successful! Please log in again.");
-            router.push('/login'); 
+            router.push('/login');
 
         } catch (err) {
             // Using type assertion for Error
@@ -97,7 +93,7 @@ function ResetPasswordPage() {
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-900 py-10">
             <div className="bg-gray-800 rounded-xl shadow-lg p-8 w-[400px] flex flex-col gap-6 text-white">
-                
+
                 <h2 className="text-2xl font-bold text-center">
                     {step === 1 ? "Forgot Password" : "Reset Password"}
                 </h2>
@@ -121,8 +117,8 @@ function ResetPasswordPage() {
                             <label htmlFor="email" className="text-sm font-medium text-gray-300 block mb-2">
                                 Enter registered Email
                             </label>
-                            <input 
-                                type="email" 
+                            <input
+                                type="email"
                                 id="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
@@ -131,8 +127,8 @@ function ResetPasswordPage() {
                                 required
                             />
                         </div>
-                        <button 
-                            type="submit" 
+                        <button
+                            type="submit"
                             disabled={loading}
                             className="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center disabled:opacity-50 transition-colors"
                         >
@@ -142,16 +138,16 @@ function ResetPasswordPage() {
                 )}
 
                 {/* --- FORM STEP 2: ENTER OTP & NEW PASSWORD --- */}
-                {step === 2 && (
+                {step === 1 && (
                     <form onSubmit={handleResetPassword} className="flex flex-col gap-4">
-                        
+
                         {/* Email readonly */}
                         <div>
                             <label className="text-xs text-gray-400 block mb-1">Email</label>
-                            <input 
-                                type="text" 
-                                value={email} 
-                                disabled 
+                            <input
+                                type="text"
+                                value={email}
+                                disabled
                                 className="bg-gray-700/50 border border-gray-600 text-gray-400 text-sm rounded-lg block w-full p-2 cursor-not-allowed"
                             />
                         </div>
@@ -161,8 +157,8 @@ function ResetPasswordPage() {
                             <label htmlFor="otp" className="text-sm font-medium text-gray-300 block mb-2">
                                 OTP Code
                             </label>
-                            <input 
-                                type="text" 
+                            <input
+                                type="text"
                                 id="otp"
                                 value={otp}
                                 onChange={(e) => setOtp(e.target.value)}
@@ -178,15 +174,27 @@ function ResetPasswordPage() {
                             <label htmlFor="newpass" className="text-sm font-medium text-gray-300 block mb-2">
                                 New Password
                             </label>
-                            <input 
-                                type="password" 
-                                id="newpass"
-                                value={newPassword}
-                                onChange={(e) => setNewPassword(e.target.value)}
-                                placeholder="••••••••"
-                                className="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                required
-                            />
+
+                            <div className="relative">
+                                <input
+                                    type={showNewPass ? "text" : "password"}
+                                    id="newpass"
+                                    value={newPassword}
+                                    onChange={(e) => setNewPassword(e.target.value)}
+                                    placeholder="••••••••"
+                                    className="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pr-10"
+                                    required
+                                />
+
+                                {/* Icon toggle */}
+                                <button
+                                    type="button"
+                                    onClick={() => setShowNewPass(!showNewPass)}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                                >
+                                    {showNewPass ? <AiFillEyeInvisible size={18} /> : <AiFillEye size={18} />}
+                                </button>
+                            </div>
                         </div>
 
                         {/* Confirm Password Input */}
@@ -194,30 +202,45 @@ function ResetPasswordPage() {
                             <label htmlFor="confirmpass" className="text-sm font-medium text-gray-300 block mb-2">
                                 Confirm Password
                             </label>
-                            <input 
-                                type="password" 
-                                id="confirmpass"
-                                value={confirmPassword}
-                                onChange={(e) => setConfirmPassword(e.target.value)}
-                                placeholder="Re-enter new password"
-                                className={`bg-gray-700 border text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ${
-                                    confirmPassword && newPassword !== confirmPassword 
-                                    ? "border-red-500 focus:border-red-500" 
-                                    : "border-gray-600"
-                                }`}
-                                required
-                            />
+
+                            <div className="relative">
+                                <input
+                                    type={showConfirmPass ? "text" : "password"}
+                                    id="confirmpass"
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    placeholder="Re-enter new password"
+                                    className={`
+                                            bg-gray-700 text-white text-sm rounded-lg block w-full p-2.5 pr-10
+                                            border
+                                            ${confirmPassword && newPassword !== confirmPassword
+                                            ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                                            : "border-gray-600 focus:ring-blue-500 focus:border-blue-500"
+                                        }
+      `}
+                                    required
+                                />
+
+                                {/* Icon toggle */}
+                                <button
+                                    type="button"
+                                    onClick={() => setShowConfirmPass(!showConfirmPass)}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                                >
+                                    {showConfirmPass ? <AiFillEyeInvisible size={18} /> : <AiFillEye size={18} />}
+                                </button>
+                            </div>
                         </div>
 
-                        <button 
-                            type="submit" 
+                        <button
+                            type="submit"
                             disabled={loading}
                             className="w-full text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center disabled:opacity-50 transition-colors mt-2"
                         >
                             {loading ? "Processing..." : "Reset Password"}
                         </button>
 
-                        <button 
+                        <button
                             type="button"
                             onClick={() => { setStep(1); setError(""); }}
                             className="text-sm text-gray-400 hover:text-white underline text-center mt-2"
