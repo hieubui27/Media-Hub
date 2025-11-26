@@ -16,7 +16,7 @@ export default function LoginPage() {
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
-    const email = (form.elements.namedItem('username') as HTMLInputElement).value; // Safer way to get value
+    const email = (form.elements.namedItem('username') as HTMLInputElement).value;
     const password = (form.elements.namedItem('password') as HTMLInputElement).value;
 
     try {
@@ -35,6 +35,7 @@ export default function LoginPage() {
         displayName: data.data.user.name || "User",
         avatar: data.data.user.avatar || "/images/avatar.png",
         gender: data.data.user.userGender || "other",
+        accessToken: accessToken,
       });
 
       if(data.success){

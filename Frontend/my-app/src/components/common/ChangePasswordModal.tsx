@@ -1,12 +1,14 @@
+import { useUser } from "@/src/contexts/UserContext";
+import { changePassword } from "@/src/services/authService";
 import { useState } from "react";
 
 interface ChangePasswordModalProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (oldPassword: string, newPassword: string) => Promise<void>;
 }
 
-export default function ChangePasswordModal({ open, onClose, onSubmit }: ChangePasswordModalProps) {
+export default function ChangePasswordModal({ open, onClose }: ChangePasswordModalProps) {
+  const { user, isLoading } = useUser();
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -15,9 +17,18 @@ export default function ChangePasswordModal({ open, onClose, onSubmit }: ChangeP
 
   if (!open) return null;
 
+  // prevent rendering until user is loaded
+  if (isLoading) return null;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    // check session
+    if (!user || !user.accessToken) {
+      setError("Session expired, please log in again.");
+      return;
+    }
 
     if (!oldPassword || !newPassword || !confirmPassword) {
       setError("Please fill in all fields");
@@ -31,14 +42,19 @@ export default function ChangePasswordModal({ open, onClose, onSubmit }: ChangeP
 
     setLoading(true);
     try {
-      await onSubmit(oldPassword, newPassword);
-      // Reset form on success if needed, or rely on parent to close/refresh
-      setOldPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
+      const response = await changePassword(
+        oldPassword,
+        newPassword,
+        confirmPassword,
+        user.accessToken
+      );
+
+      if (!response.success) {
+        throw new Error(response.message || "Failed to change password");
+      }
+
       onClose();
     } catch (err) {
-      // Fixed: Avoid using 'any'
       if (err instanceof Error) {
         setError(err.message);
       } else {
@@ -64,6 +80,7 @@ export default function ChangePasswordModal({ open, onClose, onSubmit }: ChangeP
               required
             />
           </div>
+
           <div className="mb-4">
             <label className="block text-gray-300 mb-1">New Password</label>
             <input
@@ -74,6 +91,7 @@ export default function ChangePasswordModal({ open, onClose, onSubmit }: ChangeP
               required
             />
           </div>
+
           <div className="mb-4">
             <label className="block text-gray-300 mb-1">Confirm New Password</label>
             <input
@@ -84,9 +102,13 @@ export default function ChangePasswordModal({ open, onClose, onSubmit }: ChangeP
               required
             />
           </div>
-          
-          {error && <p className="text-red-500 text-sm mb-4 bg-red-500/10 p-2 rounded border border-red-500/20">{error}</p>}
-          
+
+          {error && (
+            <p className="text-red-500 text-sm mb-4 bg-red-500/10 p-2 rounded border border-red-500/20">
+              {error}
+            </p>
+          )}
+
           <div className="flex justify-end gap-2 mt-6">
             <button
               type="button"

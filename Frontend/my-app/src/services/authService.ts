@@ -1,3 +1,7 @@
+import { useUser } from "../contexts/UserContext";
+
+
+
 export async function login(email: string, password: string) {
   const res = await fetch('/api/proxy/login', {
     method: 'POST',
@@ -16,5 +20,39 @@ export async function getUserInfo(token: string) {
     headers: { 'Authorization': `Bearer ${token}` },
   });
   const data = await res.json();
+  return data;
+}
+
+export async function changePassword(oldPassword: string, newPassword: string,confirmPassword: string, token: string) {
+  const res = await fetch('/api/proxy/auth/change-password', {
+    method: 'PATCH',
+    headers:{
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      "oldPassword": oldPassword,
+      "newPassword": newPassword,
+      "confirmPassword": confirmPassword
+}),
+  });
+const data= await res.json();
+return data;
+}
+
+export async function changeUserInfo(name:string,gender:string,token:string,dob:Date) {
+  const res = await fetch('/api/auth/profile', {
+    method: 'PATCH',
+    headers:{
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      "name": name,
+      "userGender": gender,
+      "userDob": dob|| null
+}),
+  });
+  const data= await res.json();
   return data;
 }

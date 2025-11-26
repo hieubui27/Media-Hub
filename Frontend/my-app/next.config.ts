@@ -20,8 +20,8 @@ const nextConfig: NextConfig = {
         destination: 'https://dummyjson.com/auth/me', // Next.js forwards it here
       },
       {
-        source: '/api/proxy/', // You call this path on localhost
-        destination: 'https://ea82c9976156.ngrok-free.app/api/auth/', // Next.js forwards it here
+        source: '/api/proxy/auth/change-password', // You call this path on localhost
+        destination: 'https://ea82c9976156.ngrok-free.app/api/auth/change-password', // Next.js forwards it here
       },
       {
         source: '/api/proxy/auth/password-reset/request', // You call this path on localhost
@@ -34,6 +34,10 @@ const nextConfig: NextConfig = {
       {
         source: '/api/proxy/auth/password-reset/confirm', // You call this path on localhost
         destination: 'https://ea82c9976156.ngrok-free.app/api/auth/password-reset/confirm', // Next.js forwards it here
+      },
+      {
+        source: '/api/auth/profile', // You call this path on localhost
+        destination: 'https://ea82c9976156.ngrok-free.app/api/auth/profile', // Next.js forwards it here
       },
     ];
   },

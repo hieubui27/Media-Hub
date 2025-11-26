@@ -31,18 +31,15 @@ function VerifiedPage() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ 
-                    otp: otpValue 
+                    "otp": otpValue 
                 }),
             });
 
-            if (!res.ok) {
-                throw new Error("Xác thực thất bại");
-            }
-
             const data = await res.json();
             console.log("Verify thành công:", data);
-            router.push('/login'); 
-
+            if(data.success){
+                router.push('/login'); 
+            }
         } catch (error) {
             console.error("Lỗi:", error);
             setError("Mã OTP không chính xác hoặc lỗi hệ thống");

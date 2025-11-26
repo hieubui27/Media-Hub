@@ -9,6 +9,7 @@ interface User {
   displayName: string;
   avatar: string;
   gender: string;
+  accessToken: string;
 }
 
 // Define the shape of the context
