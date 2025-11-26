@@ -25,7 +25,7 @@ export default function LoginPage() {
       const accessToken = data.data?.accessToken;
       
       if (!accessToken) {
-         throw new Error("Invalid response from server");
+         throw new Error("Email or password is incorrect");
       }
 
       console.log("Access Token:", accessToken);
