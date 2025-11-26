@@ -33,7 +33,7 @@ export default function LoginPage() {
       login({
         email: data.data.user.email,
         displayName: data.data.user.name || "User",
-        avatar: data.data.user.avatar,
+        avatar: data.data.user.avatar || "/images/avatar.png",
         gender: data.data.user.userGender || "other",
         accessToken: accessToken,
       });
