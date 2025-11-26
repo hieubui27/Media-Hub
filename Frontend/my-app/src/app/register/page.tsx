@@ -7,10 +7,7 @@ import Link from "next/link";
 export default function RegisterPage() {
   const router = useRouter();
   const [error, setError] = useState("");
-  
-  // State quản lý trạng thái lạc quan
-  // false: hiện form
-  // true: hiện giao diện "Giả vờ thành công"
+
   const [isOptimisticSuccess, setIsOptimisticSuccess] = useState(false);
 
   const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -18,7 +15,6 @@ export default function RegisterPage() {
     setError("");
 
     const form = e.currentTarget;
-    // Lấy dữ liệu form
     const formData = {
         name: (form.elements.namedItem('name') as HTMLInputElement).value,
         email: (form.elements.namedItem('email') as HTMLInputElement).value,
@@ -27,20 +23,15 @@ export default function RegisterPage() {
         gender: (form.elements.namedItem('gender') as HTMLSelectElement).value || null,
         userDob: (form.elements.namedItem('dob') as HTMLInputElement).value || null,
     };
-
-    // 1. Validate Client (Bắt buộc phải check kỹ ở đây trước khi lạc quan)
+    
     if (formData.password !== formData.confirmPassword) {
-      setError("Mật khẩu xác nhận không khớp!");
+      setError("Confirm password does not match!");
       return;
     }
 
-    // --- BẮT ĐẦU OPTIMISTIC UI ---
-    
-    // 2. GIẢ VỜ THÀNH CÔNG NGAY LẬP TỨC (Người dùng thấy cái này ngay, ko phải chờ 5s)
     setIsOptimisticSuccess(true); 
 
     try {
-      // 3. Gọi API ngầm bên dưới (Lúc này người dùng đang nhìn thấy màn hình waiting đẹp đẽ)
       const res = await fetch('/api/proxy/register/request', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -50,19 +41,22 @@ export default function RegisterPage() {
       const data = await res.json();
 
       if (data.success === true) {
-        // 4. Nếu thành công thật -> Chuyển trang
-        console.log("Register thành công thật:", data);
+        console.log("Registration successful:", data);
         router.push('/verified'); 
       } else {
-        // 5. Rủi ro: Nếu API báo lỗi (VD: Email trùng) -> Phải quay xe
-        throw new Error(data.message || "Đăng ký thất bại");
+        throw new Error(data.message || "Registration failed");
       }
 
-    } catch (error: any) {
-      console.error("Lỗi:", error);
-      // Hoàn tác Optimistic UI: Quay lại form và báo lỗi
+    } catch (error) {
+      console.error("Error:", error);
       setIsOptimisticSuccess(false);
-      setError(error.message || "Lỗi kết nối đến server");
+      
+      // Fixed: Type checking for error
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("Connection to server failed");
+      }
     }
   };
 
@@ -70,33 +64,24 @@ export default function RegisterPage() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-900 py-10">
-      
-      {/* Container chính */}
       <div className="bg-gray-800 rounded-xl shadow-lg w-[1200px] h-auto flex overflow-hidden relative min-h-[600px]">
-        
-        {/* Phần ảnh bên trái (Giữ nguyên) */}
-        <div className="hidden md:block bg-[url(/images/Gemini_Generated_Image_n59kzzn59kzzn59k.png)] w-1/2 bg-cover bg-center bg-no-repeat"></div>
 
-        {/* Phần nội dung bên phải */}
+        <div className="hidden md:block bg-[url(/images/Gemini_Generated_Image_n59kzzn59kzzn59k.png)] w-1/2 bg-cover bg-center bg-no-repeat"></div>
         <div className="w-1/2 flex flex-col justify-center p-8 pl-6 relative">
-            
-            {/* --- LOGIC HIỂN THỊ UI --- */}
             {isOptimisticSuccess ? (
-                // GIAO DIỆN OPTIMISTIC (Hiện ngay khi bấm nút)
                 <div className="flex flex-col items-center justify-center text-center animate-pulse">
                     <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-                    <h2 className="text-2xl font-bold text-white mb-2">Đang thiết lập hồ sơ...</h2>
+                    <h2 className="text-2xl font-bold text-white mb-2">Setting up your profile...</h2>
                     <p className="text-gray-400 text-sm">
-                        Hệ thống đang gửi mã OTP đến 
-                        <span className="text-blue-400 font-bold ml-1">email của bạn</span>.
+                        The system is sending an OTP code to 
+                        <span className="text-blue-400 font-bold ml-1">your email</span>.
                     </p>
-                    <p className="text-gray-500 text-xs mt-4">Vui lòng không tắt trình duyệt.</p>
+                    <p className="text-gray-500 text-xs mt-4">Please do not close the browser.</p>
                 </div>
             ) : (
-                // FORM ĐĂNG KÝ CŨ (Chỉ hiện khi chưa bấm hoặc bị lỗi)
                 <form onSubmit={handleRegister} className="w-full">
                     <h1 className="text-[22px] text-white font-bold text-start mb-2">
-                        Đăng ký tài khoản
+                        Create an Account
                     </h1>
                     
                     <p className="mb-6 text-[11px] text-gray-400 text-start">
@@ -106,7 +91,6 @@ export default function RegisterPage() {
                         </Link>
                     </p>
 
-                    {/* Các ô input giữ nguyên như cũ */}
                     <div className="mb-3 w-full">
                         <label className="text-gray-400 text-[11px] ml-1">Full Name</label>
                         <input name="name" placeholder="Nguyen Van A" className={inputClass} required />
@@ -146,7 +130,7 @@ export default function RegisterPage() {
                     {error && <p className="text-red-500 text-[12px] mb-3 text-start bg-red-500/10 p-2 rounded border border-red-500/20">{error}</p>}
                     
                     <button className="w-full bg-blue-600 hover:bg-blue-700 text-white p-2 rounded mb-4 transition-colors font-medium">
-                        Đăng ký
+                        Register
                     </button>
                 </form>
             )}
