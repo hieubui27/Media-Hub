@@ -138,7 +138,7 @@ function ResetPasswordPage() {
                 )}
 
                 {/* --- FORM STEP 2: ENTER OTP & NEW PASSWORD --- */}
-                {step === 1 && (
+                {step === 2 && (
                     <form onSubmit={handleResetPassword} className="flex flex-col gap-4">
 
                         {/* Email readonly */}
