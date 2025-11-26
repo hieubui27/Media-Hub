@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useUser } from "@/src/contexts/UserContext";
-import { login as loginApi, getUserInfo } from "@/src/services/authService";
+import { login as loginApi} from "@/src/services/authService";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
 export default function LoginPage() {

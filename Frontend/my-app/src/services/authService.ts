@@ -1,5 +1,3 @@
-import { useUser } from "../contexts/UserContext";
-
 
 
 export async function login(email: string, password: string) {

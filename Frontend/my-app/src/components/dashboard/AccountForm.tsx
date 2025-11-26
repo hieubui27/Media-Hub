@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import ChangePasswordModal from "../common/ChangePasswordModal";
 import { useUser } from "@/src/contexts/UserContext";
-import { changeUserInfo, getUserData, login } from "@/src/services/authService";
+import { changeUserInfo} from "@/src/services/authService";
 
 interface AccountFormProps {
   email: string;

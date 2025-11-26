@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import Image from "next/image";
 import { useUser } from "@/src/contexts/UserContext";
 import UserCard from "./UserCard";
 
