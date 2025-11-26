@@ -47,7 +47,7 @@ export async function changeUserInfo(name:string,gender:string,token:string,dob:
     },
     body: JSON.stringify({
       "name": name,
-      "userGender": gender,
+      "gender": gender,
       "userDob": dob|| null
 }),
   });
