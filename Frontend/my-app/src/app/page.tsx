@@ -17,7 +17,7 @@ export default function Home() {
         className="text-[100px] font-bold cursor-pointer hover:opacity-80 transition-opacity text-center leading-tight" 
         onClick={handleClick}
       >
-          DANG NHAP VAO NGAY CHO BOOOOO
+          Login/Register Now!
       </h1>
     </div>
   );
