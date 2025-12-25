@@ -1,3 +1,4 @@
+import Footer from "@/src/components/Footer/footer";
 import HeaderNav from "@/src/components/Menu/HeaderNav";
 import { UserProvider } from "@/src/contexts/UserContext";
 
@@ -25,6 +26,7 @@ export default function RootLayout({
             </main>
 
             {/* Footer */}
+            <Footer />
             
           </div>
         </UserProvider>
