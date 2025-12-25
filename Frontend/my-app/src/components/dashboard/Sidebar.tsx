@@ -11,17 +11,14 @@ const Sidebar = () => {
   const { user, logout, isLoading } = useUser();
 
   const navItems = [
-    { href: "/dashboard/favorites", label: "Yêu thích", icon: HeartIcon },
-    { href: "/dashboard/playlist", label: "Danh sách", icon: PlusIcon },
-    { href: "/dashboard/history", label: "Xem tiếp", icon: RewindIcon },
-    { href: "/dashboard/notifications", label: "Thông báo", icon: BellIcon },
-    { href: "/dashboard/account", label: "Tài khoản", icon: UserIcon },
+    { href: "/dashboard/history", label: "History", icon: RewindIcon },
+    { href: "/dashboard/account", label: "Account", icon: UserIcon },
   ];
 
   return (
     <aside className="bg-[#1f232b] text-white w-72 min-h-screen p-6 flex flex-col justify-between rounded-2xl">
       <div>
-        <h1 className="text-2xl font-bold mb-8">Quản lý tài khoản</h1>
+        <h1 className="text-2xl font-bold mb-8">Account management</h1>
         <nav>
           <ul>
             {navItems.map((item) => (
@@ -63,7 +60,7 @@ const Sidebar = () => {
           className="flex items-center justify-center py-2 px-4 w-full rounded-lg hover:bg-red-600 transition-colors text-left bg-gray-700"
         >
           <LogoutIcon className="w-5 h-5 mr-3" />
-          <span>Thoát</span>
+          <span>Log out</span>
         </button>
       </div>
     </aside>

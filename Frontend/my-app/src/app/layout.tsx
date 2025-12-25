@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
+import HeaderNav from "../components/Menu/HeaderNav";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -28,7 +30,23 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <UserProvider>{children}</UserProvider>
+        <UserProvider>
+          {/* Sử dụng flexbox để Footer luôn nằm dưới đáy 
+            nếu nội dung trang quá ngắn 
+          */}
+          <div className="flex flex-col min-h-screen">
+            
+
+
+            {/* Main content - flex-grow sẽ đẩy footer xuống */}
+            <main className="flex-grow">
+              {children}
+            </main>
+
+            {/* Footer */}
+            
+          </div>
+        </UserProvider>
       </body>
     </html>
   );

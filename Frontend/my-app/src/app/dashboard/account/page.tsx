@@ -63,10 +63,9 @@ const AccountPage = () => {
   return (
     <div className="grid grid-cols-3 gap-8">
       <div className="col-span-2">
-        <h2 className="text-3xl font-bold mb-2">Tài khoản</h2>
-        <p className="text-gray-400 mb-8">Cập nhật thông tin tài khoản</p>
-        
-        {/* The key prop forces the form to re-render if the email changes */}
+        <h2 className="text-3xl font-bold mb-2">Account</h2>
+        <p className="text-gray-400 mb-8">Update account information</p>
+
         <AccountForm 
           key={profile.email} 
           email={profile.email} 
@@ -80,10 +79,10 @@ const AccountPage = () => {
           alt="User Avatar"
           width={150}
           height={150}
-          className="rounded-full mb-4 object-cover" // Added object-cover for better image fitting
+          className="rounded-full mb-4 object-cover"
         />
         <button className="bg-[#353a45] px-4 py-2 rounded-lg text-sm hover:bg-[#4a505c]">
-          Ảnh có sẵn
+          Available Photos
         </button>
       </div>
     </div>

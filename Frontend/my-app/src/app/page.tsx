@@ -7,7 +7,7 @@ export default function Home() {
 
   // 2. Sửa cú pháp khai báo hàm
   const handleClick = () => {
-    router.push('/login');
+    router.push('/main/home');
   };
 
   return (
@@ -17,7 +17,7 @@ export default function Home() {
         className="text-[100px] font-bold cursor-pointer hover:opacity-80 transition-opacity text-center leading-tight" 
         onClick={handleClick}
       >
-          Login/Register Now!
+        Tracking now
       </h1>
     </div>
   );

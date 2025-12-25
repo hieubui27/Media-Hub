@@ -5,7 +5,7 @@ import { useState } from "react";
 function VerifiedPage() {
     const router = useRouter();
     const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false); // Thêm state loading để UX tốt hơn
+    const [loading, setLoading] = useState(false);
 
     const handleVerified = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -14,12 +14,11 @@ function VerifiedPage() {
 
         const form = e.currentTarget;
         
-        // 1. Lấy giá trị từ ô input có name là "otp"
         const otpInput = form.elements.namedItem('otp') as HTMLInputElement;
         const otpValue = otpInput.value;
 
         if (!otpValue) {
-            setError("Vui lòng nhập mã OTP");
+            setError("Please enter OTP code");
             setLoading(false);
             return;
         }
@@ -42,7 +41,7 @@ function VerifiedPage() {
             }
         } catch (error) {
             console.error("Lỗi:", error);
-            setError("Mã OTP không chính xác hoặc lỗi hệ thống");
+            setError("Incorrect OTP code or system error");
         } finally {
             setLoading(false);
         }
@@ -54,11 +53,11 @@ function VerifiedPage() {
                 onSubmit={handleVerified}
                 className="bg-gray-800 rounded-xl shadow-lg p-8 w-[400px] flex flex-col gap-6 text-white"
             >
-                <h2 className="text-2xl font-bold text-center">Xác thực tài khoản</h2>
+                <h2 className="text-2xl font-bold text-center">Verify account</h2>
                 
                 <div className="flex flex-col gap-2">
                     <label htmlFor="otp" className="text-sm font-medium text-gray-300">
-                        Nhập mã OTP
+                        Enter OTP code
                     </label>
                     <input 
                         type="text" 
@@ -82,7 +81,7 @@ function VerifiedPage() {
                     disabled={loading}
                     className="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                    {loading ? "Đang xác thực..." : "Xác nhận"}
+                    {loading ? "Verifying..." : "Confirm"}
                 </button>
             </form>
         </div>
