@@ -69,7 +69,7 @@ export default function LoginPage() {
           <p className="mb-4 text-[11px] text-gray-400 text-start">
             Don&apos;t have an account?{" "}
             <Link 
-              href="/register" 
+              href="/auth/register" 
               className="text-blue-500 hover:text-blue-400 hover:underline font-semibold"
             >
               Register Now
@@ -111,7 +111,7 @@ export default function LoginPage() {
           <p className="mb-4 text-[11px] text-gray-400 text-start">
             Forgot password?{" "}
             <Link 
-              href="/reset" 
+              href="/auth/reset" 
               className="text-gray-400 hover:text-blue-400 hover:underline font-semibold transition-colors"
             >
               Reset now

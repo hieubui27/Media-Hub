@@ -46,7 +46,7 @@ export default function RegisterPage() {
 
       if (data.success === true) {
         console.log("Registration successful:", data);
-        router.push('/verified'); 
+        router.push('/auth/verified'); 
       } else {
         throw new Error(data.message || "Registration failed");
       }
@@ -90,7 +90,7 @@ export default function RegisterPage() {
                     
                     <p className="mb-6 text-[11px] text-gray-400 text-start">
                         Already have an account?{" "}
-                        <Link href="/login" className="text-blue-500 hover:text-blue-400 hover:underline font-semibold">
+                        <Link href="/auth/login" className="text-blue-500 hover:text-blue-400 hover:underline font-semibold">
                         Login Now
                         </Link>
                     </p>
