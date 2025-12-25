@@ -143,7 +143,7 @@ function HeaderNav() {
             </div>
 
             <div className="account bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-full font-bold transition-all transform hover:scale-105 shadow-lg">
-                <Link href="/login">Account</Link>
+                <Link href="/auth/login">Account</Link>
             </div>
         </div>
     );
