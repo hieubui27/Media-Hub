@@ -2,6 +2,7 @@
 import React, { useRef } from 'react';
 import { Carousel } from 'antd';
 import { PlayCircleFilled, HeartOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { CarouselRef } from 'antd/es/carousel';
 
 const movies = [
   {
@@ -67,7 +68,7 @@ const movies = [
 ];
 
 function CarouselTop() {
-  const carouselRef = useRef(null);
+  const carouselRef = useRef<CarouselRef>(null);
 
   return (
     <div className="relative w-full bg-black overflow-hidden">
