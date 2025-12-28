@@ -3,15 +3,20 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { fetchFilterOptions } from "@/src/services/getGenres";
 
-// Định nghĩa bản map chuẩn bên ngoài component
 const MEDIA_MAP: Record<string, { slug: string; label: string }> = {
   "movie": { slug: "movie", label: "Phim lẻ" },
-  "tv series": { slug: "series", label: "Phim bộ" }, // API "TV Series" -> URL "series"
-  "video game": { slug: "game", label: "Video Game" }, // API "Video Game" -> URL "game"
+  "tv series": { slug: "series", label: "Phim bộ" },
+  "video game": { slug: "game", label: "Video Game" },
   "book": { slug: "book", label: "Sách/Truyện" },
   "music": { slug: "music", label: "Âm nhạc" },
   "tất cả": { slug: "all", label: "Tất cả" }
 };
+
+interface FilterOptions {
+  genres: string[];
+  countries: string[];
+  types: string[];
+}
 
 export default function MediaFilter({ 
   currentType, 
@@ -25,18 +30,37 @@ export default function MediaFilter({
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
 
-  const [options, setOptions] = useState({
-    genres: [] as string[],
-    countries: [] as string[],
-    types: [] as string[]
+  const [options, setOptions] = useState<FilterOptions>({
+    genres: [],
+    countries: [],
+    types: []
   });
 
+  // State filters khởi tạo trực tiếp từ props
   const [filters, setFilters] = useState({
     type: currentType,
     genre: currentGenre || "Tất cả",
     country: currentCountry || "Tất cả",
     year: "Tất cả",
   });
+
+  // Giải pháp cho lỗi ESLint: Đồng bộ state khi props thay đổi mà không dùng useEffect trực tiếp
+  // (Pattern: Adjusting state when props change)
+  const [prevProps, setPrevProps] = useState({ currentType, currentGenre, currentCountry });
+
+  if (
+    currentType !== prevProps.currentType || 
+    currentGenre !== prevProps.currentGenre || 
+    currentCountry !== prevProps.currentCountry
+  ) {
+    setPrevProps({ currentType, currentGenre, currentCountry });
+    setFilters({
+      type: currentType,
+      genre: currentGenre || "Tất cả",
+      country: currentCountry || "Tất cả",
+      year: "Tất cả"
+    });
+  }
 
   useEffect(() => {
     const loadOptions = async () => {
@@ -46,31 +70,16 @@ export default function MediaFilter({
     loadOptions();
   }, []);
 
-  // Cập nhật filters khi props thay đổi từ URL
-  useEffect(() => {
-    setFilters(prev => ({
-      ...prev,
-      type: currentType,
-      genre: currentGenre || "Tất cả",
-      country: currentCountry || "Tất cả"
-    }));
-  }, [currentType, currentGenre, currentCountry]);
-
-  // Trong file MediaFilter.tsx
   const handleApplyFilter = () => {
     const params = new URLSearchParams();
-    
-    // Lấy slug chuẩn từ MEDIA_MAP
     const lowerType = filters.type.toLowerCase();
     const typeSlug = MEDIA_MAP[lowerType]?.slug || lowerType;
 
-    // Chỉ thêm vào URL nếu khác giá trị mặc định "tất cả"
     if (typeSlug !== "all") params.set("type", typeSlug);
     if (filters.genre !== "Tất cả") params.set("genre", filters.genre);
     if (filters.country !== "Tất cả") params.set("country", filters.country);
     
     setIsOpen(false);
-    // Điều hướng kèm theo query string: /main/media/search?type=series&genre=Hành động...
     router.push(`/main/media/search?${params.toString()}`);
   };
 
@@ -87,9 +96,8 @@ export default function MediaFilter({
             <FilterRow 
               label="Phân loại" 
               options={["Tất cả", ...options.types]} 
-              // Ưu tiên currentType từ URL để nút luôn "sáng" đúng
-              currentValue={filters.type || currentType} 
-              onChange={(val) => setFilters({...filters, type: val})}
+              currentValue={filters.type} 
+              onChange={(val: string) => setFilters({...filters, type: val})}
               isTypeMapping={true} 
             />
             
@@ -97,14 +105,14 @@ export default function MediaFilter({
               label="Quốc gia" 
               options={["Tất cả", ...options.countries]} 
               currentValue={filters.country}
-              onChange={(val) => setFilters({...filters, country: val})}
+              onChange={(val: string) => setFilters({...filters, country: val})}
             />
 
             <FilterRow 
               label="Thể loại" 
               options={["Tất cả", ...options.genres]} 
               currentValue={filters.genre}
-              onChange={(val) => setFilters({...filters, genre: val})}
+              onChange={(val: string) => setFilters({...filters, genre: val})}
             />
           </div>
 
@@ -122,7 +130,16 @@ export default function MediaFilter({
   );
 }
 
-function FilterRow({ label, options, currentValue, onChange, isTypeMapping = false }: any) {
+// Định nghĩa Interface để hết lỗi TypeScript "Implicit Any"
+interface FilterRowProps {
+  label: string;
+  options: string[];
+  currentValue: string;
+  onChange: (val: string) => void;
+  isTypeMapping?: boolean;
+}
+
+function FilterRow({ label, options, currentValue, onChange, isTypeMapping = false }: FilterRowProps) {
   return (
     <div className="flex items-start">
       <div className="w-24 text-zinc-500 text-xs font-bold pt-1.5 uppercase tracking-wider">{label}:</div>
@@ -131,8 +148,6 @@ function FilterRow({ label, options, currentValue, onChange, isTypeMapping = fal
           const lowerOpt = opt.toLowerCase();
           const config = MEDIA_MAP[lowerOpt] || { slug: lowerOpt, label: opt };
 
-          // Logic so sánh: 
-          // Nếu currentValue là slug "series", nó sẽ khớp với opt "TV Series" vì có chung config.slug
           const isActive = 
             currentValue?.toLowerCase() === lowerOpt || 
             currentValue?.toLowerCase() === config.slug;
@@ -140,6 +155,7 @@ function FilterRow({ label, options, currentValue, onChange, isTypeMapping = fal
           return (
             <button
               key={opt}
+              type="button"
               onClick={() => onChange(isTypeMapping ? config.slug : opt)}
               className={`px-3 py-1 rounded-md text-xs font-medium transition-all ${
                 isActive 
@@ -155,4 +171,3 @@ function FilterRow({ label, options, currentValue, onChange, isTypeMapping = fal
     </div>
   );
 }
-// Giữ nguyên FilterRow của bạn, chỉ cần thêm so sánh toLowerCase() để nút sáng chuẩn
