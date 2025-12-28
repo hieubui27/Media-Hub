@@ -25,7 +25,7 @@ const MEDIA_TYPES = Object.keys(GENRES_MAP);
 
 export default function UploadPage() {
   // Lấy thêm authLoading từ UserContext để xử lý reload trang
-  const { user, loading: authLoading } = useUser();
+  const { user, isLoading: authLoading } = useUser();
   const router = useRouter();
 
   // State quản lý dữ liệu

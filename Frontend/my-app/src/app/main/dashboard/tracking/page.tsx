@@ -22,7 +22,7 @@ const STATUS_OPTIONS: { value: TrackingStatus; label: string; color: string }[] 
 ];
 
 export default function TrackingPage() {
-  const { user } = useUser();
+  const { user, isLoading: authLoading } = useUser();
   const router = useRouter();
   const [trackingList, setTrackingList] = useState<TrackingItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -38,12 +38,20 @@ export default function TrackingPage() {
   });
 
   useEffect(() => {
-    if (!user) {
+    // Logic bảo vệ trang: Đợi load xong mới check user
+    if (!authLoading && !user) {
       router.push("/auth/login");
-      return;
+    } else if (user) {
+      loadTracking();
     }
-    loadTracking();
-  }, [user]);
+  }, [user, authLoading, router]);
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
+        <div className="text-white">Đang tải thông tin...</div>
+      </div>
+    );
+  }
 
   const loadTracking = async () => {
     if (!user?.accessToken) return;
