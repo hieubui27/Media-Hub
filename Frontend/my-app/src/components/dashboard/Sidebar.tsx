@@ -11,8 +11,10 @@ const Sidebar = () => {
   const { user, logout, isLoading } = useUser();
 
   const navItems = [
-    { href: "/dashboard/history", label: "History", icon: RewindIcon },
-    { href: "/dashboard/account", label: "Account", icon: UserIcon },
+    { href: "/main/dashboard/tracking", label: "Tracking", icon: PlayIcon },
+    { href: "/main/dashboard/upload", label: "Upload", icon: PlusIcon },
+    { href: "/main/dashboard/history", label: "History", icon: RewindIcon },
+    { href: "/main/dashboard/account", label: "Account", icon: UserIcon },
   ];
 
   return (
@@ -96,6 +98,22 @@ const PlusIcon = (props: React.SVGProps<SVGSVGElement>) => (
       strokeLinejoin="round"
       strokeWidth={2}
       d="M12 4v16m8-8H4"
+    />
+  </Icon>
+);
+const PlayIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <Icon {...props}>
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+    />
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
     />
   </Icon>
 );

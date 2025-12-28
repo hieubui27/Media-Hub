@@ -39,7 +39,7 @@ export default function LoginPage() {
       });
 
       if(data.success){
-        router.push('/dashboard/account');
+        router.push('/main/dashboard/account');
       }
     } catch (error) {
       if (error instanceof Error) {

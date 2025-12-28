@@ -1,14 +1,18 @@
 import type { NextConfig } from "next";
 
-const AUTH_API_BASE = 'https://6b91f783daa5.ngrok-free.app/api/auth';
-const MEDIA_API_BASE = 'https://8ca7e9db4161.ngrok-free.app/api';
+const AUTH_API_BASE = 'https://cfc7492a6e01.ngrok-free.app/api/auth';
+const MEDIA_API_BASE = 'https://cfc7492a6e01.ngrok-free.app/api';
 
 const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
         source: '/api/remote/:path*', // Đường dẫn ảo trên localhost
-        destination: 'https://8ca7e9db4161.ngrok-free.app/api/:path*', // Đường dẫn thật ngrok
+        destination: 'https://cfc7492a6e01.ngrok-free.app/api/:path*', // Đường dẫn thật ngrok
+      },
+      {
+        source: '/api-proxy/:path*',
+        destination: 'https://cfc7492a6e01.ngrok-free.app/api/:path*',
       },
       // 1. Media Proxy (Handles query params automatically)
       {
@@ -41,6 +45,10 @@ const nextConfig: NextConfig = {
         source: '/api/auth/profile',
         destination: `${AUTH_API_BASE}/profile`,
       },
+      {
+        source: '/api/medias/latest',
+        destination: `https://cfc7492a6e01.ngrok-free.app/api/medias?page=1&limit=50`,
+      },
     ];
   },
   images: {
@@ -51,6 +59,8 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'salt.tikicdn.com' },
       { protocol: 'https', hostname: 'vi.wikipedia.org' },
       { protocol: 'https', hostname: 'covers.openlibrary.org' },
+      { protocol: 'https', hostname: 'placehold.co' },
+      { protocol: 'https', hostname: 'encrypted-tbn0.gstatic.com' },
     ],
   },
 };

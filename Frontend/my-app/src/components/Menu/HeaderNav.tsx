@@ -2,18 +2,31 @@
 import { Spin, Empty } from "antd";
 import Link from 'next/link';
 import { useState, useEffect, useRef, ChangeEvent } from "react";
-import { searchMedia, MediaItem } from "@/src/services/searchService"; 
+import { searchMedia, MediaItem } from "@/src/services/searchService";
+import { useUser } from "@/src/contexts/UserContext";
+
+const navItems = [
+    { label: "Home", slug: "home", isGeneral: true }, // Home thường có route riêng
+    { label: "Movie", slug: "movie" },
+    { label: "Series", slug: "series" },
+    { label: "Book", slug: "book" },
+    { label: "Game", slug: "game" },
+    {label: "Music",slug:"music" }
+];
 
 function HeaderNav() {
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [results, setResults] = useState<MediaItem[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [showDropdown, setShowDropdown] = useState<boolean>(false);
-    
+    const [showUserMenu, setShowUserMenu] = useState<boolean>(false);
+
     // 1. Thêm State để theo dõi trạng thái cuộn
     const [isScrolled, setIsScrolled] = useState<boolean>(false);
-    
+
     const searchRef = useRef<HTMLDivElement>(null);
+    const userMenuRef = useRef<HTMLDivElement>(null);
+    const { user, logout } = useUser();
 
     // 2. Xử lý sự kiện scroll
     useEffect(() => {
@@ -27,7 +40,7 @@ function HeaderNav() {
         };
 
         window.addEventListener("scroll", handleScroll);
-        
+
         // Cleanup listener khi component unmount
         return () => {
             window.removeEventListener("scroll", handleScroll);
@@ -64,6 +77,9 @@ function HeaderNav() {
             if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
                 setShowDropdown(false);
             }
+            if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+                setShowUserMenu(false);
+            }
         };
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -74,7 +90,7 @@ function HeaderNav() {
         <div className={`
             w-full h-20 flex items-center justify-between px-10 fixed top-0 z-[100] text-white
             transition-all duration-300 ease-in-out
-            ${isScrolled 
+            ${isScrolled
                 ? "bg-[#141414]/95 shadow-lg backdrop-blur-md py-4" // Màu khi cuộn xuống
                 : "bg-transparent py-6" // Màu khi ở trên cùng
             }
@@ -107,14 +123,14 @@ function HeaderNav() {
                 {showDropdown && (
                     <div className="absolute top-[50px] left-0 w-full bg-[#1f1f1f] rounded-lg shadow-2xl z-[100] border border-white/10 max-h-[400px] overflow-y-auto backdrop-blur-xl">
                         {loading ? (
-                            <div className="p-10 text-center"><Spin tip="Searching..." /></div>
+                            <div className="p-10 text-center"><Spin /></div>
                         ) : (
                             <div className="py-2">
                                 {results.length > 0 ? (
                                     results.map((item) => (
-                                        <Link 
-                                            key={item.MediaItemId} 
-                                            href={`/detail/${item.MediaItemId}`}
+                                        <Link
+                                            key={item.MediaItemId}
+                                            href={`/main/media/detail/${item.MediaItemId}`}
                                             className="block px-4 py-3 hover:bg-white/10 border-b border-white/5 last:border-none transition-colors"
                                             onClick={() => setShowDropdown(false)}
                                         >
@@ -135,16 +151,71 @@ function HeaderNav() {
             </div>
 
             <div className="nav-links flex space-x-8 font-medium">
-                <Link href="/main/home" className="hover:text-purple-400 transition-colors">Home</Link>
-                <Link href="/main/movie" className="hover:text-purple-400 transition-colors">Movie</Link>
-                <Link href="/main/series" className="hover:text-purple-400 transition-colors">Series</Link>
-                <Link href="/main/book" className="hover:text-purple-400 transition-colors">Book</Link>
-                <Link href="/main/game" className="hover:text-purple-400 transition-colors">Game</Link>
+                {navItems.map((item) => (
+                    <Link
+                        key={item.slug}
+                        // Nếu là home thì về /main/home, còn lại về /main/media/[slug]
+                        href={item.isGeneral ? `/main/${item.slug}` : `/main/media/${item.slug}`}
+                        className="hover:text-purple-400 transition-colors capitalize"
+                    >
+                        {item.label}
+                    </Link>
+                ))}
             </div>
 
-            <div className="account bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-full font-bold transition-all transform hover:scale-105 shadow-lg">
-                <Link href="/auth/login">Account</Link>
-            </div>
+            {/* User Account Section */}
+            {user ? (
+                <div className="relative" ref={userMenuRef}>
+                    <button
+                        onClick={() => setShowUserMenu(!showUserMenu)}
+                        className="flex items-center gap-3 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-full font-bold transition-all transform hover:scale-105 shadow-lg"
+                    >
+                        <img
+                            src={user.avatar || `https://ui-avatars.com/api/?name=${user.displayName}&background=8b5cf6&color=fff`}
+                            alt={user.displayName}
+                            className="w-8 h-8 rounded-full object-cover border-2 border-white/20"
+                        />
+                        <span className="hidden md:block">{user.displayName}</span>
+                    </button>
+
+                    {/* Dropdown Menu */}
+                    {showUserMenu && (
+                        <div className="absolute right-0 mt-2 w-48 bg-[#1f1f1f] rounded-lg shadow-2xl z-[100] border border-white/10 backdrop-blur-xl overflow-hidden">
+                            <div className="px-4 py-3 border-b border-white/10">
+                                <p className="text-sm font-semibold text-white">{user.displayName}</p>
+                                <p className="text-xs text-zinc-400 truncate">{user.email}</p>
+                            </div>
+                            <Link
+                                href="/main/dashboard"
+                                className="block px-4 py-2 text-sm text-white hover:bg-white/10 transition-colors"
+                                onClick={() => setShowUserMenu(false)}
+                            >
+                                Dashboard
+                            </Link>
+                            <Link
+                                href="/main/dashboard/account"
+                                className="block px-4 py-2 text-sm text-white hover:bg-white/10 transition-colors"
+                                onClick={() => setShowUserMenu(false)}
+                            >
+                                Tài khoản
+                            </Link>
+                            <button
+                                onClick={() => {
+                                    logout();
+                                    setShowUserMenu(false);
+                                }}
+                                className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-white/10 transition-colors"
+                            >
+                                Đăng xuất
+                            </button>
+                        </div>
+                    )}
+                </div>
+            ) : (
+                <div className="account bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-full font-bold transition-all transform hover:scale-105 shadow-lg">
+                    <Link href="/auth/login">Account</Link>
+                </div>
+            )}
         </div>
     );
 }
