@@ -1,6 +1,6 @@
 // Service cho Tracking API
 
-export type TrackingStatus = "PLANNING" | "WATCHING" | "PAUSED" | "COMPLETED" | "DROPPED";
+export type TrackingStatus = "PLAN_TO_WATCH" | "WATCHING"| "COMPLETED";
 
 export interface MediaInfo {
   MediaItemId: number;

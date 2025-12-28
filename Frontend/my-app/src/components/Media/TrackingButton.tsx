@@ -63,7 +63,7 @@ export default function TrackingButton({ mediaId }: TrackingButtonProps) {
     <button
       onClick={handleTracking}
       disabled={isCreating}
-      className={`flex items-center gap-3 bg-yellow-500 hover:bg-yellow-400 text-black px-6 py-3 rounded-full font-black transition-all shadow-[0_0_20px_rgba(234,179,8,0.3)] hover:scale-105 ${
+      className={`flex items-center gap-3 bg-purple-500 hover:bg-purple-400 text-white px-6 py-3 rounded-full font-black transition-all shadow-[0_0_20px_rgba(191, 0, 255, 0.3)] hover:scale-105 ${
         isCreating ? "opacity-50 cursor-not-allowed" : ""
       }`}
     >

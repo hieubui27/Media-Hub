@@ -30,13 +30,17 @@ export default function LoginPage() {
       console.log("Access Token:", accessToken);
       console.log("Login Response Data:", data.data);
 
+      //
       login({
+        id: data.data.user.id, // Lấy ID từ API (ví dụ: 6)
         email: data.data.user.email,
         displayName: data.data.user.name || "User",
         avatar: data.data.user.avatar || "/images/avatar.png",
         gender: data.data.user.userGender || "other",
         accessToken: accessToken,
       });
+
+      console.log("User ID:", data.data.user.id);
 
       if(data.success){
         router.push('/main/dashboard/account');

@@ -4,14 +4,15 @@ import Link from 'next/link';
 import { useState, useEffect, useRef, ChangeEvent } from "react";
 import { searchMedia, MediaItem } from "@/src/services/searchService";
 import { useUser } from "@/src/contexts/UserContext";
+import { Menu, X, Search, Smartphone, User, ChevronDown, LayoutDashboard, LogOut, Settings } from "lucide-react"; 
 
 const navItems = [
-    { label: "Home", slug: "home", isGeneral: true }, // Home thường có route riêng
-    { label: "Movie", slug: "movie" },
-    { label: "Series", slug: "series" },
-    { label: "Book", slug: "book" },
-    { label: "Game", slug: "game" },
-    {label: "Music",slug:"music" }
+    { label: "Home", slug: "home", isGeneral: true },
+    { label: "Phim Lẻ", slug: "movie" },
+    { label: "Phim Bộ", slug: "series" },
+    { label: "Sách", slug: "book" },
+    { label: "Trò chơi", slug: "game" },
+    { label: "Âm nhạc", slug: "music" }
 ];
 
 function HeaderNav() {
@@ -20,34 +21,25 @@ function HeaderNav() {
     const [loading, setLoading] = useState<boolean>(false);
     const [showDropdown, setShowDropdown] = useState<boolean>(false);
     const [showUserMenu, setShowUserMenu] = useState<boolean>(false);
-
-    // 1. Thêm State để theo dõi trạng thái cuộn
     const [isScrolled, setIsScrolled] = useState<boolean>(false);
+    
+    const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+    const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
 
     const searchRef = useRef<HTMLDivElement>(null);
     const userMenuRef = useRef<HTMLDivElement>(null);
     const { user, logout } = useUser();
 
-    // 2. Xử lý sự kiện scroll
+    // Xử lý scroll đổi màu nền header
     useEffect(() => {
         const handleScroll = () => {
-            // Nếu cuộn xuống quá 50px thì đổi trạng thái
-            if (window.scrollY > 50) {
-                setIsScrolled(true);
-            } else {
-                setIsScrolled(false);
-            }
+            setIsScrolled(window.scrollY > 50);
         };
-
         window.addEventListener("scroll", handleScroll);
-
-        // Cleanup listener khi component unmount
-        return () => {
-            window.removeEventListener("scroll", handleScroll);
-        };
+        return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    // Xử lý tìm kiếm với Debounce (Giữ nguyên)
+    // Xử lý tìm kiếm Debounce
     useEffect(() => {
         const delayDebounceFn = setTimeout(async () => {
             if (searchTerm.trim()) {
@@ -57,7 +49,6 @@ function HeaderNav() {
                     const data = await searchMedia(searchTerm);
                     setResults(data.content || []);
                 } catch (error) {
-                    console.error("Search error:", error);
                     setResults([]);
                 } finally {
                     setLoading(false);
@@ -67,11 +58,10 @@ function HeaderNav() {
                 setShowDropdown(false);
             }
         }, 500);
-
         return () => clearTimeout(delayDebounceFn);
     }, [searchTerm]);
 
-    // Đóng dropdown khi click ra ngoài (Giữ nguyên)
+    // Đóng menu khi click ra ngoài
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
@@ -86,137 +76,171 @@ function HeaderNav() {
     }, []);
 
     return (
-        // 3. Cập nhật className động dựa trên isScrolled
-        <div className={`
-            w-full h-20 flex items-center justify-between px-10 fixed top-0 z-[100] text-white
-            transition-all duration-300 ease-in-out
-            ${isScrolled
-                ? "bg-[#141414]/95 shadow-lg backdrop-blur-md py-4" // Màu khi cuộn xuống
-                : "bg-transparent py-6" // Màu khi ở trên cùng
-            }
-        `}>
-            <div className="logo font-bold text-2xl tracking-tighter text-purple-500">MEDIA HUB</div>
+        <>
+            <nav className={`
+                w-full h-20 flex items-center justify-between px-4 xl:px-10 fixed top-0 z-[100] text-white
+                transition-all duration-300 ease-in-out
+                ${isScrolled || isSearchOpen ? "bg-[#141414] shadow-lg" : "bg-transparent"}
+            `}>
+                {isSearchOpen ? (
+                    /* --- UI TÌM KIẾM TOÀN MÀN HÌNH (MOBILE) --- */
+                    <div className="flex items-center w-full gap-3 animate-in fade-in zoom-in duration-200" ref={searchRef}>
+                        <div className="relative flex-1 flex items-center bg-white/10 rounded-lg border border-white/20 px-3">
+                            <Search size={20} className="text-zinc-400" />
+                            <input
+                                autoFocus
+                                type="text"
+                                placeholder="Tìm kiếm phim, diễn viên..."
+                                className="w-full bg-transparent h-10 px-3 outline-none text-sm text-white"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                        </div>
+                        <button onClick={() => { setIsSearchOpen(false); setSearchTerm(""); }} className="p-2 text-red-500 hover:bg-white/5 rounded-full">
+                            <X size={24} />
+                        </button>
+                    </div>
+                ) : (
+                    <>
+                        {/* Nút Hamburger (Mobile) */}
+                        <button onClick={() => setIsMenuOpen(true)} className="xl:hidden p-2">
+                            <Menu size={28} />
+                        </button>
 
-            <div className="search-bar relative" ref={searchRef}>
-                <div style={{ position: 'relative', width: 400 }}>
-                    <input
-                        type="text"
-                        placeholder="Search movies, books, games..."
-                        value={searchTerm}
-                        onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
-                        onFocus={() => searchTerm && setShowDropdown(true)}
-                        style={{
-                            width: '100%',
-                            height: 40,
-                            padding: '8px 35px 8px 12px',
-                            borderRadius: '20px', // Đổi thành bo tròn cho hiện đại
-                            outline: 'none',
-                            fontSize: '14px',
-                            backgroundColor: isScrolled ? 'rgba(255, 255, 255, .15)' : 'rgba(255, 255, 255, .08)',
-                            color: '#fff',
-                            border: '1px solid rgba(255, 255, 255, 0.1)'
-                        }}
-                    />
-                </div>
+                        <div className="logo font-black text-xl xl:text-2xl tracking-tighter text-purple-500 uppercase">
+                            Media Hub
+                        </div>
 
-                {/* Dropdown kết quả (Sửa màu text dropdown để khớp với UI mới) */}
-                {showDropdown && (
-                    <div className="absolute top-[50px] left-0 w-full bg-[#1f1f1f] rounded-lg shadow-2xl z-[100] border border-white/10 max-h-[400px] overflow-y-auto backdrop-blur-xl">
-                        {loading ? (
-                            <div className="p-10 text-center"><Spin /></div>
-                        ) : (
-                            <div className="py-2">
-                                {results.length > 0 ? (
-                                    results.map((item) => (
-                                        <Link
-                                            key={item.MediaItemId}
-                                            href={`/main/media/detail/${item.MediaItemId}`}
-                                            className="block px-4 py-3 hover:bg-white/10 border-b border-white/5 last:border-none transition-colors"
-                                            onClick={() => setShowDropdown(false)}
+                        {/* --- THANH SEARCH TRÊN DESKTOP --- */}
+                        <div className="search-bar relative hidden xl:block" ref={searchRef}>
+                            <div className="relative w-[300px] 2xl:w-[450px]">
+                                <input
+                                    type="text"
+                                    placeholder="Tìm kiếm phim, truyện, game..."
+                                    className="w-full h-10 px-4 pr-10 rounded-full outline-none text-sm transition-all border border-white/10"
+                                    style={{
+                                        backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                                        color: '#fff'
+                                    }}
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    onFocus={() => searchTerm.trim() && setShowDropdown(true)}
+                                />
+                                <Search className="absolute right-3 top-2.5 text-zinc-400" size={18} />
+                            </div>
+
+                            {/* Dropdown kết quả search (Desktop) */}
+                            {showDropdown && (
+                                <div className="absolute top-12 left-0 w-full bg-[#1f1f1f] rounded-2xl shadow-2xl z-[110] border border-white/10 max-h-[450px] overflow-y-auto animate-in fade-in slide-in-from-top-2 duration-200">
+                                    {loading ? (
+                                        <div className="p-10 text-center"><Spin /></div>
+                                    ) : (
+                                        <div className="py-2">
+                                            {results.length > 0 ? (
+                                                results.map((item) => (
+                                                    <Link
+                                                        key={item.MediaItemId}
+                                                        href={`/main/media/detail/${item.MediaItemId}`}
+                                                        className="block px-4 py-3 hover:bg-white/5 border-b border-white/5 last:border-none transition-colors"
+                                                        onClick={() => setShowDropdown(false)}
+                                                    >
+                                                        <div className="flex items-center gap-2 mb-1">
+                                                            <span className="text-[10px] font-black bg-purple-600 px-2 py-0.5 rounded text-white uppercase">{item.typeName}</span>
+                                                        </div>
+                                                        <div className="font-bold text-gray-100 text-sm">{item.title}</div>
+                                                        <div className="text-zinc-500 text-xs truncate">{item.description}</div>
+                                                    </Link>
+                                                ))
+                                            ) : (
+                                                <div className="p-6 text-center"><Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="Không tìm thấy kết quả" /></div>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Nav Links Desktop */}
+                        <div className="hidden xl:flex space-x-8 font-medium">
+                            {navItems.map((item) => (
+                                <Link key={item.slug} href={item.isGeneral ? `/main/${item.slug}` : `/main/media/${item.slug}`} className="hover:text-purple-400 transition-colors">
+                                    {item.label}
+                                </Link>
+                            ))}
+                        </div>
+
+                        <div className="flex items-center gap-4">
+                            <button onClick={() => setIsSearchOpen(true)} className="xl:hidden p-2">
+                                <Search size={24} />
+                            </button>
+
+                            {/* --- PHẦN ACCOUNT --- */}
+                            <div className="hidden xl:block relative" ref={userMenuRef}>
+                                {user ? (
+                                    <>
+                                        <button 
+                                            onClick={() => setShowUserMenu(!showUserMenu)}
+                                            className="flex items-center gap-3 bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-full font-bold transition-all transform active:scale-95 shadow-lg"
                                         >
-                                            <div className="flex justify-between items-center mb-1">
-                                                <span className="text-[10px] font-black bg-purple-600 px-2 py-0.5 rounded text-white uppercase">{item.typeName}</span>
+                                            <img src={user.avatar} className="w-8 h-8 rounded-full object-cover border border-white/20" alt="" />
+                                            <span>{user.displayName}</span>
+                                            <ChevronDown size={16} className={`transition-transform ${showUserMenu ? 'rotate-180' : ''}`} />
+                                        </button>
+
+                                        {/* Dropdown Menu User */}
+                                        {showUserMenu && (
+                                            <div className="absolute right-0 mt-3 w-60 bg-[#1f1f1f] border border-white/10 rounded-2xl shadow-2xl py-2 z-[110] animate-in fade-in slide-in-from-top-2 duration-200">
+                                                <div className="px-4 py-3 border-b border-white/5 mb-1">
+                                                    <p className="text-xs text-zinc-500 font-bold uppercase tracking-wider">Chào mừng</p>
+                                                    <p className="text-sm font-bold text-white truncate">{user.displayName}</p>
+                                                </div>
+                                                <Link href="/main/dashboard/account" className="flex items-center gap-3 px-4 py-3 text-sm hover:bg-white/5 transition-colors">
+                                                    <User size={16} /> Thông tin cá nhân
+                                                </Link>
+                                                <Link href="/main/dashboard" className="flex items-center gap-3 px-4 py-3 text-sm hover:bg-white/5 transition-colors">
+                                                    <LayoutDashboard size={16} /> Dashboard quản lý
+                                                </Link>
+                                                <button 
+                                                    onClick={() => { logout(); setShowUserMenu(false); }}
+                                                    className="flex items-center gap-3 w-full px-4 py-3 text-sm text-red-500 hover:bg-red-500/10 transition-colors border-t border-white/5 mt-1"
+                                                >
+                                                    <LogOut size={16} /> Đăng xuất tài khoản
+                                                </button>
                                             </div>
-                                            <div className="font-semibold text-gray-100">{item.title}</div>
-                                            <div className="text-gray-400 text-xs truncate">{item.description}</div>
-                                        </Link>
-                                    ))
+                                        )}
+                                    </>
                                 ) : (
-                                    <div className="p-6 text-center"><Empty image={Empty.PRESENTED_IMAGE_SIMPLE} /></div>
+                                    <Link href="/auth/login" className="bg-purple-600 hover:bg-purple-700 px-6 py-2 rounded-full font-bold transition-all shadow-lg block">
+                                        Account
+                                    </Link>
                                 )}
                             </div>
-                        )}
-                    </div>
-                )}
-            </div>
-
-            <div className="nav-links flex space-x-8 font-medium">
-                {navItems.map((item) => (
-                    <Link
-                        key={item.slug}
-                        // Nếu là home thì về /main/home, còn lại về /main/media/[slug]
-                        href={item.isGeneral ? `/main/${item.slug}` : `/main/media/${item.slug}`}
-                        className="hover:text-purple-400 transition-colors capitalize"
-                    >
-                        {item.label}
-                    </Link>
-                ))}
-            </div>
-
-            {/* User Account Section */}
-            {user ? (
-                <div className="relative" ref={userMenuRef}>
-                    <button
-                        onClick={() => setShowUserMenu(!showUserMenu)}
-                        className="flex items-center gap-3 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-full font-bold transition-all transform hover:scale-105 shadow-lg"
-                    >
-                        <img
-                            src={user.avatar || `https://ui-avatars.com/api/?name=${user.displayName}&background=8b5cf6&color=fff`}
-                            alt={user.displayName}
-                            className="w-8 h-8 rounded-full object-cover border-2 border-white/20"
-                        />
-                        <span className="hidden md:block">{user.displayName}</span>
-                    </button>
-
-                    {/* Dropdown Menu */}
-                    {showUserMenu && (
-                        <div className="absolute right-0 mt-2 w-48 bg-[#1f1f1f] rounded-lg shadow-2xl z-[100] border border-white/10 backdrop-blur-xl overflow-hidden">
-                            <div className="px-4 py-3 border-b border-white/10">
-                                <p className="text-sm font-semibold text-white">{user.displayName}</p>
-                                <p className="text-xs text-zinc-400 truncate">{user.email}</p>
-                            </div>
-                            <Link
-                                href="/main/dashboard"
-                                className="block px-4 py-2 text-sm text-white hover:bg-white/10 transition-colors"
-                                onClick={() => setShowUserMenu(false)}
-                            >
-                                Dashboard
-                            </Link>
-                            <Link
-                                href="/main/dashboard/account"
-                                className="block px-4 py-2 text-sm text-white hover:bg-white/10 transition-colors"
-                                onClick={() => setShowUserMenu(false)}
-                            >
-                                Tài khoản
-                            </Link>
-                            <button
-                                onClick={() => {
-                                    logout();
-                                    setShowUserMenu(false);
-                                }}
-                                className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-white/10 transition-colors"
-                            >
-                                Đăng xuất
-                            </button>
                         </div>
-                    )}
+                    </>
+                )}
+            </nav>
+
+            {/* Sidebar Mobile */}
+            <div className={`fixed inset-0 bg-black/60 z-[200] xl:hidden transition-opacity ${isMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"}`} onClick={() => setIsMenuOpen(false)} />
+            <div className={`fixed top-0 left-0 w-[85%] max-w-[320px] h-full bg-[#1a233a] z-[201] xl:hidden flex flex-col transition-transform duration-300 ${isMenuOpen ? "translate-x-0" : "-translate-x-full"}`}>
+                <div className="p-6 flex items-center justify-between border-b border-white/5">
+                    <button onClick={() => setIsMenuOpen(false)} className="text-zinc-400"><X size={28} /></button>
+                    <div className="logo font-black text-xl text-purple-500 uppercase">Media Hub</div>
                 </div>
-            ) : (
-                <div className="account bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-full font-bold transition-all transform hover:scale-105 shadow-lg">
-                    <Link href="/auth/login">Account</Link>
+                <div className="flex-1 overflow-y-auto p-6 space-y-8">
+                    <Link href={user ? "/main/dashboard/account" : "/auth/login"} className="flex items-center justify-center gap-3 w-full bg-white text-[#1a233a] py-3 rounded-full font-bold">
+                        <User size={18} /> {user ? user.displayName : "Thành viên"}
+                    </Link>
+                    <div className="grid grid-cols-2 gap-y-6 gap-x-4">
+                        {navItems.map((item) => (
+                            <Link key={item.slug} href={item.isGeneral ? `/main/${item.slug}` : `/main/media/${item.slug}`} className="text-white font-bold text-sm" onClick={() => setIsMenuOpen(false)}>
+                                {item.label}
+                            </Link>
+                        ))}
+                    </div>
                 </div>
-            )}
-        </div>
+            </div>
+        </>
     );
 }
 

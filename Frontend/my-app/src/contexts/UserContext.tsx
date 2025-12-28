@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 
 // Define the shape of a user
 interface User {
+  id: number; // Thêm trường id từ ảnh image_ede53e.png
   email: string;
   displayName: string;
   avatar: string;
@@ -70,7 +71,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem("user");
     sessionStorage.removeItem("user");
     
-    router.push("/login"); // Thường logout xong sẽ đẩy về trang login
+    router.push("/auth/login"); // Thường logout xong sẽ đẩy về trang login
   };
 
   return (

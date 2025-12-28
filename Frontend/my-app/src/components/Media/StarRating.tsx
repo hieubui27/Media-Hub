@@ -80,7 +80,7 @@ export default function StarRating({
             <span
               className={
                 star <= (hoveredStar || rating)
-                  ? "text-yellow-500"
+                  ? "text-purple-500"
                   : "text-zinc-600"
               }
             >
@@ -90,7 +90,7 @@ export default function StarRating({
         ))}
       </div>
       {rating > 0 && (
-        <span className="text-sm text-yellow-500 font-bold ml-2">
+        <span className="text-sm text-purple-500 font-bold ml-2">
           {rating}/5
         </span>
       )}

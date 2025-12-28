@@ -46,15 +46,34 @@ export async function getReviewsByMediaId(id: string): Promise<ReviewData[]> {
 }
 
 // Hàm lấy rating (giả định endpoint của bạn)
+interface RatingItem {
+  ratingValue: number;
+  userId: number;
+  userName: string;
+  // các trường khác nếu cần
+}
+
 export async function getMediaRating(id: string): Promise<number> {
-  const res = await fetch(`/api/remote/medias/${id}/ratings`, { cache: 'no-store',
+  const res = await fetch(`/api/remote/medias/${id}/ratings`, { 
+    cache: 'no-store',
     headers: {
-            "Content-Type": "application/json",
-            "ngrok-skip-browser-warning": "true", // Header quan trọng để bỏ qua trang div của ngrok
-          },
-   });
-  const data = await res.json();
-  return data.averageRating || 0;
+      "Content-Type": "application/json",
+      "ngrok-skip-browser-warning": "true",
+    },
+  });
+  
+  const data: RatingItem[] = await res.json(); // Ép kiểu mảng
+  
+  if (Array.isArray(data) && data.length > 0) {
+    // Tính tổng giá trị rating
+    const sum = data.reduce((acc: number, item: RatingItem) => acc + (item.ratingValue || 0), 0);
+    
+    // Tính trung bình cộng: $\text{Average} = \frac{\sum \text{ratingValue}}{n}$
+    const average = sum / data.length;
+    return Number(average.toFixed(1)); 
+  }
+  
+  return 0;
 }
 
 // Hàm tạo/cập nhật rating với bearer token
@@ -72,7 +91,7 @@ export async function createRating(
         "ngrok-skip-browser-warning": "true",
       },
       body: JSON.stringify({
-        ratingValue: ratingValue.toString()
+        ratingValue: ratingValue
       }),
       cache: 'no-store'
     });
@@ -170,4 +189,37 @@ export async function fetchMediaItems(
     console.error("Fetch error:", error);
     return null;
   }
+}
+
+
+export async function createReview(mediaId: string, content: string, token: string) {
+  const res = await fetch(`/api/remote/medias/${mediaId}/reviews`, {
+    method: "POST",
+    headers: { 
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}` 
+    },
+    body: JSON.stringify({ content }),
+  });
+  return res.json();
+}
+
+export async function updateReview(mediaId: string, reviewId: number, content: string, token: string) {
+  const res = await fetch(`/api/remote/medias/${mediaId}/reviews/${reviewId}`, {
+    method: "PUT",
+    headers: { 
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}` 
+    },
+    body: JSON.stringify({ content }),
+  });
+  return res.json();
+}
+
+export async function deleteReview(mediaId: string, reviewId: number, token: string) {
+  const res = await fetch(`/api/remote/medias/${mediaId}/reviews/${reviewId}`, {
+    method: "DELETE",
+    headers: { "Authorization": `Bearer ${token}` },
+  });
+  return res.ok;
 }

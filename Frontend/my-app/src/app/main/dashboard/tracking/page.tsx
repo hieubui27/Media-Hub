@@ -14,11 +14,9 @@ import {
 import Link from "next/link";
 
 const STATUS_OPTIONS: { value: TrackingStatus; label: string; color: string }[] = [
-  { value: "PLANNING", label: "Bắt đầu xem", color: "bg-blue-500" },
+  { value: "PLAN_TO_WATCH", label: "Bắt đầu xem", color: "bg-blue-500" },
   { value: "WATCHING", label: "Đang xem", color: "bg-yellow-500" },
-  { value: "PAUSED", label: "Tạm dừng", color: "bg-orange-500" },
   { value: "COMPLETED", label: "Đã hoàn thành", color: "bg-green-500" },
-  { value: "DROPPED", label: "Bỏ dở", color: "bg-red-500" },
 ];
 
 export default function TrackingPage() {
