@@ -74,7 +74,7 @@ export default function ChangePasswordModal({ open, onClose }: ChangePasswordMod
             <label className="block text-gray-300 mb-1">Old Password</label>
             <input
               type="password"
-              className="w-full px-3 py-2 rounded bg-[#1f232b] border border-[#353a45] text-white focus:outline-none focus:border-blue-500"
+              className="w-full px-3 py-2 rounded bg-[#1f232b] border border-[#353a45] text-white focus:outline-none focus:border-violet-500"
               value={oldPassword}
               onChange={e => setOldPassword(e.target.value)}
               required
@@ -85,7 +85,7 @@ export default function ChangePasswordModal({ open, onClose }: ChangePasswordMod
             <label className="block text-gray-300 mb-1">New Password</label>
             <input
               type="password"
-              className="w-full px-3 py-2 rounded bg-[#1f232b] border border-[#353a45] text-white focus:outline-none focus:border-blue-500"
+              className="w-full px-3 py-2 rounded bg-[#1f232b] border border-[#353a45] text-white focus:outline-none focus:border-violet-500"
               value={newPassword}
               onChange={e => setNewPassword(e.target.value)}
               required
@@ -96,7 +96,7 @@ export default function ChangePasswordModal({ open, onClose }: ChangePasswordMod
             <label className="block text-gray-300 mb-1">Confirm New Password</label>
             <input
               type="password"
-              className="w-full px-3 py-2 rounded bg-[#1f232b] border border-[#353a45] text-white focus:outline-none focus:border-blue-500"
+              className="w-full px-3 py-2 rounded bg-[#1f232b] border border-[#353a45] text-white focus:outline-none focus:border-violet-500"
               value={confirmPassword}
               onChange={e => setConfirmPassword(e.target.value)}
               required
@@ -120,7 +120,7 @@ export default function ChangePasswordModal({ open, onClose }: ChangePasswordMod
             </button>
             <button
               type="submit"
-              className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 font-semibold transition-colors disabled:opacity-50"
+              className="px-4 py-2 rounded bg-violet-600 text-white hover:bg-violet-700 font-semibold transition-colors disabled:opacity-50"
               disabled={loading}
             >
               {loading ? "Changing..." : "Confirm"}

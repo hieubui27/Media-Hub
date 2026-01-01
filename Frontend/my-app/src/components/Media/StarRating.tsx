@@ -24,12 +24,12 @@ export default function StarRating({
 
   const handleStarClick = async (starValue: number) => {
     if (!user) {
-      // Chưa đăng nhập, chuyển hướng đến trang login
+      // Not logged in, redirect to login page
       router.push("/auth/login");
       return;
     }
 
-    // Kiểm tra accessToken
+    // Check accessToken
     if (!user.accessToken) {
       console.error("No access token available");
       router.push("/auth/login");
@@ -39,7 +39,7 @@ export default function StarRating({
     setIsSubmitting(true);
     
     try {
-      // Gọi API để lưu rating
+      // Call API to save rating
       const result = await createRating(mediaId, starValue, user.accessToken);
       
       if (result.success) {
@@ -50,11 +50,11 @@ export default function StarRating({
         console.log("Rating saved successfully:", starValue);
       } else {
         console.error("Failed to save rating:", result.message);
-        alert(result.message || "Không thể lưu đánh giá. Vui lòng thử lại.");
+        alert(result.message || "Unable to save rating. Please try again.");
       }
     } catch (error) {
       console.error("Error saving rating:", error);
-      alert("Có lỗi xảy ra khi lưu đánh giá. Vui lòng thử lại.");
+      alert("An error occurred while saving rating. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -62,7 +62,7 @@ export default function StarRating({
 
   return (
     <div className="flex items-center gap-2">
-      <span className="text-sm font-bold text-zinc-400 mr-2">Đánh giá:</span>
+      <span className="text-sm font-bold text-zinc-400 mr-2">Rate:</span>
       <div className="flex gap-1">
         {[1, 2, 3, 4, 5].map((star) => (
           <button
@@ -75,12 +75,12 @@ export default function StarRating({
             className={`text-2xl transition-all hover:scale-125 focus:outline-none ${
               isSubmitting ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
             }`}
-            aria-label={`Đánh giá ${star} sao`}
+            aria-label={`Rate ${star} stars`}
           >
             <span
               className={
                 star <= (hoveredStar || rating)
-                  ? "text-purple-500"
+                  ? "text-violet-500"
                   : "text-zinc-600"
               }
             >
@@ -90,14 +90,13 @@ export default function StarRating({
         ))}
       </div>
       {rating > 0 && (
-        <span className="text-sm text-purple-500 font-bold ml-2">
+        <span className="text-sm text-violet-500 font-bold ml-2">
           {rating}/5
         </span>
       )}
       {isSubmitting && (
-        <span className="text-xs text-zinc-500 ml-2">Đang lưu...</span>
+        <span className="text-xs text-zinc-500 ml-2">Saving...</span>
       )}
     </div>
   );
 }
-

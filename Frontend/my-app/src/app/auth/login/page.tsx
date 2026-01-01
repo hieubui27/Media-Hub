@@ -74,7 +74,7 @@ export default function LoginPage() {
             Don&apos;t have an account?{" "}
             <Link 
               href="/auth/register" 
-              className="text-blue-500 hover:text-blue-400 hover:underline font-semibold"
+              className="text-violet-500 hover:text-violet-400 hover:underline font-semibold"
             >
               Register Now
             </Link>
@@ -116,7 +116,7 @@ export default function LoginPage() {
             Forgot password?{" "}
             <Link 
               href="/auth/reset" 
-              className="text-gray-400 hover:text-blue-400 hover:underline font-semibold transition-colors"
+              className="text-gray-400 hover:text-violet-400 hover:underline font-semibold transition-colors"
             >
               Reset now
             </Link>
@@ -124,7 +124,7 @@ export default function LoginPage() {
 
           {error && <p className="text-red-500 text-[12px] mb-3 text-start">{error}</p>}
           
-          <button className="w-full bg-blue-600 hover:bg-blue-700 text-white p-2 rounded mb-4 transition-colors cursor-pointer">
+          <button className="w-full bg-violet-600 hover:bg-violet-700 text-white p-2 rounded mb-4 transition-colors cursor-pointer">
             Login
           </button>
           

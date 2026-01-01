@@ -18,7 +18,7 @@ const MediaCard: React.FC<MediaCardProps> = ({ media }) => {
       case 'TV Series':
         return (
           <div className="flex flex-col gap-1">
-            <div className="bg-purple-600/90 backdrop-blur-sm px-2 py-0.5 rounded-md text-[10px] font-bold text-white shadow-lg">
+            <div className="bg-violet-600/90 backdrop-blur-sm px-2 py-0.5 rounded-md text-[10px] font-bold text-white shadow-lg">
               {media.totalEpisodes || 0} TẬP
             </div>
             {/* Hiển thị số mùa nếu có */}
@@ -59,7 +59,7 @@ const MediaCard: React.FC<MediaCardProps> = ({ media }) => {
         </div>
 
         {/* Badge góc phải: Content Rating (PG, M, E...) */}
-        <div className="absolute right-2 top-2 z-10 bg-black/60 backdrop-blur-md px-1.5 py-0.5 rounded text-[10px] font-bold text-yellow-400 border border-yellow-400/20">
+        <div className="absolute right-2 top-2 z-10 bg-black/60 backdrop-blur-md px-1.5 py-0.5 rounded text-[10px] font-bold text-violet-400 border border-violet-400/20">
           {media.contentRating || 'NR'}
         </div>
 
@@ -74,7 +74,7 @@ const MediaCard: React.FC<MediaCardProps> = ({ media }) => {
         
         {/* Overlay Hover hiệu ứng Play */}
         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-             <div className="w-12 h-12 rounded-full bg-purple-600 flex items-center justify-center scale-75 group-hover:scale-100 transition-transform duration-300 shadow-xl">
+             <div className="w-12 h-12 rounded-full bg-violet-600 flex items-center justify-center scale-75 group-hover:scale-100 transition-transform duration-300 shadow-xl">
                 <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M8 5v14l11-7z"/>
                 </svg>
@@ -84,7 +84,7 @@ const MediaCard: React.FC<MediaCardProps> = ({ media }) => {
 
       {/* Thông tin văn bản */}
       <div className="flex flex-col gap-1 px-1">
-        <h4 className="line-clamp-1 text-sm font-bold text-white group-hover:text-purple-400 transition-colors">
+        <h4 className="line-clamp-1 text-sm font-bold text-white group-hover:text-violet-400 transition-colors">
           <Link href={detailUrl} title={media.title}>
             {media.title}
           </Link>

@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useUser } from "@/src/contexts/UserContext"; // Lấy thông tin user đăng nhập
+import { useUser } from "@/src/contexts/UserContext"; // Get logged in user information
 import { 
   getReviewsByMediaId, 
   getMediaRating, 
@@ -54,22 +54,22 @@ export default function Review({ mediaId }: { mediaId: string }) {
   };
 
   const handleDelete = async (id: number) => {
-    if (user?.accessToken && confirm("Xóa review này?")) {
+    if (user?.accessToken && confirm("Delete this review?")) {
       await deleteReview(mediaId, id, user.accessToken);
       loadData();
     }
   };
 
-  if (loading) return <div className="w-[70%] animate-pulse bg-white/5 rounded-[40px] h-[400px]" />;
+  if (loading) return <div className="w-full lg:w-[70%] animate-pulse bg-white/5 rounded-[30px] lg:rounded-[40px] h-[300px] lg:h-[400px]" />;
 
   return (
-    <div className="w-[70%] bg-gradient-to-b from-[#2d3436] to-transparent text-white p-8 rounded-[40px] shadow-2xl">
-      <div className="border-b border-white/10 pb-6 mb-8 flex justify-between items-end">
+    <div className="w-full lg:w-[70%] bg-gradient-to-b from-[#2d3436] to-transparent text-white p-4 lg:p-8 rounded-[30px] lg:rounded-[40px] shadow-2xl h-fit">
+      <div className="border-b border-white/10 pb-4 lg:pb-6 mb-6 lg:mb-8 flex justify-between items-end">
         <div>
-          <h2 className="text-3xl font-bold uppercase mb-4 tracking-tighter">Cộng đồng Reviews</h2>
-          <div className="flex items-center gap-4">
-            <span className="text-6xl font-black text-purple-400">{rating.toFixed(1)}</span>
-            <div className="text-2xl text-purple-500">{"★".repeat(Math.floor(rating))}</div>
+          <h2 className="text-xl lg:text-3xl font-bold uppercase mb-2 lg:mb-4 tracking-tighter">Community Reviews</h2>
+          <div className="flex items-center gap-3 lg:gap-4">
+            <span className="text-4xl lg:text-6xl font-black text-violet-400">{rating.toFixed(1)}</span>
+            <div className="text-xl lg:text-2xl text-violet-500">{"★".repeat(Math.floor(rating))}</div>
           </div>
         </div>
       </div>
@@ -78,20 +78,20 @@ export default function Review({ mediaId }: { mediaId: string }) {
       {user ? (
         <div className="mb-10 bg-white/5 p-6 rounded-3xl border border-white/10">
           <div className="flex items-center gap-3 mb-4">
-            <img src={user.avatar} className="w-8 h-8 rounded-full border border-purple-500" alt="" />
-            <span className="font-bold text-sm">{editingId ? "Đang chỉnh sửa review..." : "Viết cảm nhận của bạn"}</span>
+            <img src={user.avatar} className="w-8 h-8 rounded-full border border-violet-500" alt="" />
+            <span className="font-bold text-sm">{editingId ? "Editing review..." : "Write your review"}</span>
             {editingId && <button onClick={() => {setEditingId(null); setContent("");}}><X size={16}/></button>}
           </div>
           <div className="relative">
             <textarea 
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              className="w-full bg-black/20 border border-white/10 rounded-2xl p-4 pr-14 outline-none focus:border-purple-500 transition-all resize-none h-24 text-sm"
-              placeholder="Phim này thế nào nhỉ?..."
+              className="w-full bg-black/20 border border-white/10 rounded-2xl p-4 pr-14 outline-none focus:border-violet-500 transition-all resize-none h-24 text-sm"
+              placeholder="What do you think about this?..."
             />
             <button 
               onClick={handleSubmit}
-              className="absolute right-3 bottom-3 p-3 bg-purple-600 hover:bg-purple-500 rounded-xl transition-colors"
+              className="absolute right-3 bottom-3 p-3 bg-violet-600 hover:bg-violet-500 rounded-xl transition-colors"
             >
               <Send size={20} />
             </button>
@@ -99,14 +99,14 @@ export default function Review({ mediaId }: { mediaId: string }) {
         </div>
       ) : (
         <div className="mb-10 text-center py-6 bg-white/5 rounded-3xl border border-dashed border-white/20">
-          Vui lòng <Link href="/auth/login" className="text-purple-400 font-bold underline">đăng nhập</Link> để viết review
+          Please <Link href="/auth/login" className="text-violet-400 font-bold underline">login</Link> to write a review
         </div>
       )}
 
       {/* Review List */}
       <div className="space-y-4">
         {reviews.map((rev) => {
-          // Kiểm tra xem đây có phải review của user hiện tại không (Dựa trên image_e3ecf9.png)
+          // Check if this is the current user's review (Based on image_e3ecf9.png)
           const isOwnReview = user?.id === rev.userId;
           console.log(rev.userId);
           console.log(user?.id);
@@ -119,7 +119,7 @@ export default function Review({ mediaId }: { mediaId: string }) {
               <div className="flex-1">
                 <div className="flex justify-between items-start mb-2">
                   <div>
-                    <span className="font-bold text-yellow-500 block">{rev.userName}</span>
+                    <span className="font-bold text-violet-500 block">{rev.userName}</span>
                     <span className="text-[10px] text-zinc-500">{new Date(rev.createdAt).toLocaleDateString()}</span>
                   </div>
                   

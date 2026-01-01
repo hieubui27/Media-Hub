@@ -1,18 +1,18 @@
 import type { NextConfig } from "next";
 
-const AUTH_API_BASE = 'https://cfc7492a6e01.ngrok-free.app/api/auth';
-const MEDIA_API_BASE = 'https://cfc7492a6e01.ngrok-free.app/api';
+const AUTH_API_BASE = 'https://c352006629c5.ngrok-free.app/api/auth';
+const MEDIA_API_BASE = 'https://c352006629c5.ngrok-free.app/api';
 
 const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
         source: '/api/remote/:path*', // Đường dẫn ảo trên localhost
-        destination: 'https://cfc7492a6e01.ngrok-free.app/api/:path*', // Đường dẫn thật ngrok
+        destination: 'https://c352006629c5.ngrok-free.app/api/:path*', // Đường dẫn thật ngrok
       },
       {
-        source: '/api-proxy/:path*',
-        destination: 'https://cfc7492a6e01.ngrok-free.app/api/:path*',
+        source: '/api-proxy/:path*', // Unified proxy path
+        destination: 'https://c352006629c5.ngrok-free.app/api/:path*',
       },
       // 1. Media Proxy (Handles query params automatically)
       {
@@ -47,7 +47,20 @@ const nextConfig: NextConfig = {
       },
       {
         source: '/api/medias/latest',
-        destination: `https://cfc7492a6e01.ngrok-free.app/api/medias?page=1&limit=50`,
+        destination: `https://c352006629c5.ngrok-free.app/api/medias?page=1&limit=50`,
+      },
+      {
+        source: '/api/medias/upload',
+        destination: `https://c352006629c5.ngrok-free.app/api/medias`,
+      },
+
+      {
+        source: '/api/medias/history',
+        destination: `https://c352006629c5.ngrok-free.app/api/history`,
+      },
+      {
+        source: '/api/:path*',
+        destination: 'https://c352006629c5.ngrok-free.app/api/:path*', // URL backend ngrok của bạn
       },
     ];
   },

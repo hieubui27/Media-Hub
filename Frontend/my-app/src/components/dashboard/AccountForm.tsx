@@ -37,8 +37,8 @@ const StatusAlert = ({ type, message }: { type: 'success' | 'error', message: st
 const RadioInput = ({ value, label, currentGender, onChange }: { value: string; label: string; currentGender: string; onChange: (value: string) => void }) => (
   <label className="flex items-center cursor-pointer select-none group">
     <input type="radio" name="gender" value={value} checked={currentGender === value} onChange={() => onChange(value)} className="hidden" />
-    <span className={`w-5 h-5 rounded-full border-2 flex items-center justify-center mr-2 transition-colors ${currentGender === value ? 'border-blue-600' : 'border-gray-600 group-hover:border-gray-500'}`}>
-      {currentGender === value && <span className="w-2.5 h-2.5 bg-blue-600 rounded-full"></span>}
+    <span className={`w-5 h-5 rounded-full border-2 flex items-center justify-center mr-2 transition-colors ${currentGender === value ? 'border-violet-600' : 'border-gray-600 group-hover:border-gray-500'}`}>
+      {currentGender === value && <span className="w-2.5 h-2.5 bg-violet-600 rounded-full"></span>}
     </span>
     <span className={`${currentGender === value ? 'text-white' : 'text-gray-400 group-hover:text-gray-300'}`}>{label}</span>
   </label>
@@ -139,7 +139,7 @@ export default function AccountForm({ email, displayName, userGender, userDob, o
             id="displayName" 
             value={name} 
             onChange={e => setName(e.target.value)} 
-            className="w-full bg-[#1f232b] border border-[#353a45] rounded-lg px-4 py-3 focus:outline-none focus:border-blue-600 text-white transition-colors" 
+            className="w-full bg-[#1f232b] border border-[#353a45] rounded-lg px-4 py-3 focus:outline-none focus:border-violet-600 text-white transition-colors" 
           />
         </div>
 
@@ -151,7 +151,7 @@ export default function AccountForm({ email, displayName, userGender, userDob, o
             id="dob" 
             value={dob} 
             onChange={e => setDob(e.target.value)} 
-            className="w-full bg-[#1f232b] border border-[#353a45] rounded-lg px-4 py-3 focus:outline-none focus:border-blue-600 text-white scheme-dark transition-colors" 
+            className="w-full bg-[#1f232b] border border-[#353a45] rounded-lg px-4 py-3 focus:outline-none focus:border-violet-600 text-white scheme-dark transition-colors" 
           />
         </div>
 
@@ -170,8 +170,8 @@ export default function AccountForm({ email, displayName, userGender, userDob, o
           type="submit" 
           disabled={loading}
           className={`
-            bg-blue-600 text-white font-bold px-8 py-3 rounded-lg transition-all
-            ${loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700'}
+            bg-violet-600 text-white font-bold px-8 py-3 rounded-lg transition-all
+            ${loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-violet-700'}
           `}
         >
           {loading ? 'Updating...' : 'Update'}
@@ -179,7 +179,7 @@ export default function AccountForm({ email, displayName, userGender, userDob, o
 
         {/* Change Password Link */}
         <p className="text-gray-400 mt-8">
-          To change password, click <button type="button" className="text-blue-600 hover:underline bg-transparent border-none p-0 cursor-pointer" onClick={() => setShowModal(true)}>here</button>
+          To change password, click <button type="button" className="text-violet-600 hover:underline bg-transparent border-none p-0 cursor-pointer" onClick={() => setShowModal(true)}>here</button>
         </p>
       </form>
       

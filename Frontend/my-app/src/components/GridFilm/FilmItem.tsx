@@ -6,7 +6,7 @@ export default function MediaCard({ item }: { item: MediaItemDetail }) {
   return (
     <Link 
       href={`/main/media/detail/${item.MediaItemId}`}
-      className="group block bg-[#1a1a1a] rounded-2xl overflow-hidden hover:ring-2 hover:ring-yellow-500 transition-all duration-300 shadow-lg"
+      className="group block bg-[#1a1a1a] rounded-2xl overflow-hidden hover:ring-2 hover:ring-violet-500 transition-all duration-300 shadow-lg"
     >
       {/* Poster Image */}
       <div className="relative aspect-[2/3] overflow-hidden">
@@ -15,7 +15,7 @@ export default function MediaCard({ item }: { item: MediaItemDetail }) {
           alt={item.title} 
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
         />
-        {/* Hiển thị tag loại Media ở góc (Tùy chọn) */}
+        {/* Display Media type tag in corner (Optional) */}
         <div className="absolute top-2 right-2 px-2 py-1 bg-black/60 backdrop-blur-md rounded text-[10px] font-bold text-white uppercase">
           {item.type}
         </div>
@@ -23,7 +23,7 @@ export default function MediaCard({ item }: { item: MediaItemDetail }) {
 
       {/* Card Info */}
       <div className="p-4">
-        <h3 className="text-white font-bold text-sm truncate group-hover:text-yellow-500 transition-colors">
+        <h3 className="text-white font-bold text-sm truncate group-hover:text-violet-500 transition-colors">
           {item.title}
         </h3>
         
@@ -31,18 +31,18 @@ export default function MediaCard({ item }: { item: MediaItemDetail }) {
           <span>{item.aliasTitle}</span>
           
           <span className="text-zinc-400 font-medium">
-            {/* Logic render thông tin đặc thù dựa trên type */}
+            {/* Logic to render specific information based on type */}
             {item.type === 'movie' && item.duration}
-            {item.type === 'series' && `${item.episodeCount} tập`}
-            {item.type === 'book' && `${item.pageCount} trang`}
+            {item.type === 'series' && `${item.episodeCount} eps`}
+            {item.type === 'book' && `${item.pageCount} pages`}
             {item.type === 'game' && item.platforms?.[0]}
           </span>
         </div>
 
-        {/* Rating (nếu có) */}
+        {/* Rating (if available) */}
         {item.rating > 0 && (
           <div className="mt-2 flex items-center gap-1">
-            <span className="text-yellow-500 text-xs">★</span>
+            <span className="text-violet-500 text-xs">★</span>
             <span className="text-white text-xs font-bold">{item.rating.toFixed(1)}</span>
           </div>
         )}

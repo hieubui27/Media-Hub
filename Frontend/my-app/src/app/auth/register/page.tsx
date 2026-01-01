@@ -64,7 +64,7 @@ export default function RegisterPage() {
     }
   };
 
-  const inputClass = "w-full pl-4 pr-4 p-2 mt-1 bg-gray-700 text-white text-[13px] rounded transition-colors duration-[50000s] focus:outline-none focus:ring-1 focus:ring-blue-500";
+  const inputClass = "w-full pl-4 pr-4 p-2 mt-1 bg-gray-700 text-white text-[13px] rounded transition-colors duration-[50000s] focus:outline-none focus:ring-1 focus:ring-violet-500";
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-900 py-10">
@@ -74,11 +74,11 @@ export default function RegisterPage() {
         <div className="w-1/2 flex flex-col justify-center p-8 pl-6 relative">
             {isOptimisticSuccess ? (
                 <div className="flex flex-col items-center justify-center text-center animate-pulse">
-                    <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+                    <div className="w-16 h-16 border-4 border-violet-500 border-t-transparent rounded-full animate-spin mb-4"></div>
                     <h2 className="text-2xl font-bold text-white mb-2">Setting up your profile...</h2>
                     <p className="text-gray-400 text-sm">
                         The system is sending an OTP code to 
-                        <span className="text-blue-400 font-bold ml-1">your email</span>.
+                        <span className="text-violet-400 font-bold ml-1">your email</span>.
                     </p>
                     <p className="text-gray-500 text-xs mt-4">Please do not close the browser.</p>
                 </div>
@@ -90,7 +90,7 @@ export default function RegisterPage() {
                     
                     <p className="mb-6 text-[11px] text-gray-400 text-start">
                         Already have an account?{" "}
-                        <Link href="/auth/login" className="text-blue-500 hover:text-blue-400 hover:underline font-semibold">
+                        <Link href="/auth/login" className="text-violet-500 hover:text-violet-400 hover:underline font-semibold">
                         Login Now
                         </Link>
                     </p>
@@ -136,7 +136,7 @@ export default function RegisterPage() {
                             text-white text-[13px]
                             border border-gray-600
                             hover:border-gray-500
-                            focus:outline-none focus:ring-1 focus:ring-blue-500
+                            focus:outline-none focus:ring-1 focus:ring-violet-500
                             transition-colors duration-[50000s]
                           `}
                           required
@@ -167,7 +167,7 @@ export default function RegisterPage() {
                             text-white text-[13px]
                             border border-gray-600
                             hover:border-gray-500
-                            focus:outline-none focus:ring-1 focus:ring-blue-500
+                            focus:outline-none focus:ring-1 focus:ring-violet-500
                             transition-colors duration-[50000s]
                           `}
                           required
@@ -189,7 +189,7 @@ export default function RegisterPage() {
 
                     {error && <p className="text-red-500 text-[12px] mb-3 text-start bg-red-500/10 p-2 rounded border border-red-500/20">{error}</p>}
                     
-                    <button className="w-full bg-blue-600 hover:bg-blue-700 text-white p-2 rounded mb-4 transition-colors font-medium">
+                    <button className="w-full bg-violet-600 hover:bg-violet-700 text-white p-2 rounded mb-4 transition-colors font-medium">
                         Register
                     </button>
                 </form>

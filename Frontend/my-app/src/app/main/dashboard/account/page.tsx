@@ -1,9 +1,9 @@
 "use client";
 
 import AccountForm from "@/src/components/dashboard/AccountForm";
+import AvatarManager from "@/src/components/AvatarManager"; // Import mới
 import { useUser } from "@/src/contexts/UserContext";
 import { getUserData } from "@/src/services/authService";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 
 const AccountPage = () => {
@@ -13,7 +13,7 @@ const AccountPage = () => {
   const [profile, setProfile] = useState({
     email: "",
     name: "",
-    avatar: "/images/avatar.png",
+    avatar: "",
     gender: "other",
   });
 
@@ -74,16 +74,7 @@ const AccountPage = () => {
         />
       </div>
       <div className="flex flex-col items-center pt-20">
-        <Image
-          src={profile.avatar}
-          alt="User Avatar"
-          width={150}
-          height={150}
-          className="rounded-full mb-4 object-cover"
-        />
-        <button className="bg-[#353a45] px-4 py-2 rounded-lg text-sm hover:bg-[#4a505c]">
-          Available Photos
-        </button>
+        <AvatarManager /> {/* Thay thế ảnh tĩnh bằng component quản lý avatar */}
       </div>
     </div>
   );

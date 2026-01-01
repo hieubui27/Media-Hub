@@ -24,19 +24,19 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, viewAllLink, data }) => {
   const [nextEl, setNextEl] = useState<HTMLButtonElement | null>(null);
 
   return (
-    <div className="py-4 w-300 overflow-hidden mx-auto">
+    <div className="py-4 w-full overflow-hidden mx-auto">
       {/* Header */}
       <div className="flex items-end justify-between mb-6 px-4 md:px-8">
         <div className="flex flex-col gap-1">
-          <h2 className="text-[18px] font-black uppercase tracking-tight bg-gradient-to-r from-white via-white to-purple-500 bg-clip-text text-transparent">
+          <h2 className="text-base md:text-xl lg:text-2xl font-black uppercase tracking-tight bg-gradient-to-r from-white via-white to-violet-500 bg-clip-text text-transparent">
             {title}
           </h2>
         </div>
         <Link 
           href={viewAllLink}
-          className="text-sm font-bold text-neutral-400 hover:text-purple-400 transition-all flex items-center gap-1 uppercase tracking-widest"
+          className="text-xs md:text-sm font-bold text-neutral-400 hover:text-violet-400 transition-all flex items-center gap-1 uppercase tracking-widest whitespace-nowrap"
         >
-          Xem toàn bộ <ChevronRight size={16} />
+          Xem toàn bộ <ChevronRight size={14} className="md:w-4 md:h-4" />
         </Link>
       </div>
 
@@ -44,16 +44,19 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, viewAllLink, data }) => {
       <div className="relative px-4 md:px-8 group/row">
         <Swiper
           modules={[Navigation]}
-          spaceBetween={16}
-          slidesPerView={2}
+          spaceBetween={12}
+          slidesPerView={2.2}
           navigation={{
             prevEl,
             nextEl,
           }}
           breakpoints={{
-            640: { slidesPerView: 3 },
-            1024: { slidesPerView: 5 },
-            1280: { slidesPerView: 6 },
+            480: { slidesPerView: 2.5, spaceBetween: 14 },
+            640: { slidesPerView: 3.2, spaceBetween: 16 },
+            768: { slidesPerView: 4.2 },
+            1024: { slidesPerView: 5.2 },
+            1280: { slidesPerView: 6.2 },
+            1536: { slidesPerView: 7.2 },
           }}
           className="!overflow-visible"
         >
@@ -74,13 +77,13 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, viewAllLink, data }) => {
         {/* Custom Navigation Buttons */}
         <button
           ref={(node) => setPrevEl(node)}
-          className="absolute -left-2 top-[35%] z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/80 text-white shadow-xl opacity-0 group-hover/row:opacity-100 transition-opacity hover:bg-purple-600 border border-white/10"
+          className="absolute -left-2 top-[35%] z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/80 text-white shadow-xl opacity-0 group-hover/row:opacity-100 transition-opacity hover:bg-violet-600 border border-white/10"
         >
           <ChevronLeft size={24} />
         </button>
         <button
           ref={(node) => setNextEl(node)}
-          className="absolute -right-2 top-[35%] z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/80 text-white shadow-xl opacity-0 group-hover/row:opacity-100 transition-opacity hover:bg-purple-600 border border-white/10"
+          className="absolute -right-2 top-[35%] z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/80 text-white shadow-xl opacity-0 group-hover/row:opacity-100 transition-opacity hover:bg-violet-600 border border-white/10"
         >
           <ChevronRight size={24} />
         </button>

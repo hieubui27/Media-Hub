@@ -65,7 +65,7 @@ function VerifiedPage() {
                         id="otp"
                         placeholder="123456"
                         maxLength={6}
-                        className="bg-gray-700 border border-gray-600 text-white text-center text-xl rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 tracking-widest"
+                        className="bg-gray-700 border border-gray-600 text-white text-center text-xl rounded-lg focus:ring-violet-500 focus:border-violet-500 block w-full p-2.5 tracking-widest"
                         required
                     />
                 </div>
@@ -79,7 +79,7 @@ function VerifiedPage() {
                 <button 
                     type="submit" 
                     disabled={loading}
-                    className="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="w-full text-white bg-violet-600 hover:bg-violet-700 focus:ring-4 focus:outline-none focus:ring-violet-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                     {loading ? "Verifying..." : "Confirm"}
                 </button>

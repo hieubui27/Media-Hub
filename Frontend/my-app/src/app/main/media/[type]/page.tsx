@@ -41,7 +41,7 @@ export default async function TypeMediaPage({ params, searchParams }: Props) {
     <div className="p-10 bg-[#0a0a0a] min-h-screen pt-28">
       <header className="mb-10">
         <h1 className="text-3xl font-bold text-white capitalize">
-          {type === "all" ? "Tất cả" : type} <span className="text-yellow-500">Hub</span>
+          {type === "all" ? "Tất cả" : type} <span className="text-violet-500">Hub</span>
         </h1>
         <p className="text-zinc-500 mt-2">
           Tìm thấy {data.totalElements} kết quả phù hợp.
@@ -67,7 +67,7 @@ export default async function TypeMediaPage({ params, searchParams }: Props) {
         {currentPage < data.totalPages - 1 && (
           <a 
             href={`?page=${currentPage + 1}`}
-            className="px-6 py-2 bg-yellow-500 text-black font-bold rounded-full hover:bg-yellow-600 transition-all"
+            className="px-6 py-2 bg-violet-500 text-black font-bold rounded-full hover:bg-violet-600 transition-all"
           >
             Trang tiếp theo
           </a>

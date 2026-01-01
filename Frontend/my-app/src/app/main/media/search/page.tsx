@@ -33,7 +33,7 @@ export default async function SearchPage({ searchParams }: SearchProps) {
       <div className="max-w-[1400px] mx-auto">
         <header className="mb-10">
           <h1 className="text-3xl font-bold text-white">
-            Kết quả <span className="text-yellow-500">Tìm kiếm</span>
+            Kết quả <span className="text-violet-500">Tìm kiếm</span>
           </h1>
           <p className="text-zinc-500 mt-2">
             Tìm thấy {data?.totalElements || 0} nội dung phù hợp.

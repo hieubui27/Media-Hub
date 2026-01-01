@@ -123,14 +123,14 @@ function ResetPasswordPage() {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 placeholder="example@gmail.com"
-                                className="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                className="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-violet-500 focus:border-violet-500 block w-full p-2.5"
                                 required
                             />
                         </div>
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center disabled:opacity-50 transition-colors"
+                            className="w-full text-white bg-violet-600 hover:bg-violet-700 focus:ring-4 focus:outline-none focus:ring-violet-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center disabled:opacity-50 transition-colors"
                         >
                             {loading ? "Sending..." : "Send OTP"}
                         </button>
@@ -164,7 +164,7 @@ function ResetPasswordPage() {
                                 onChange={(e) => setOtp(e.target.value)}
                                 placeholder="Enter 6-digit OTP"
                                 maxLength={6}
-                                className="bg-gray-700 border border-gray-600 text-white text-center tracking-widest text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                className="bg-gray-700 border border-gray-600 text-white text-center tracking-widest text-lg rounded-lg focus:ring-violet-500 focus:border-violet-500 block w-full p-2.5"
                                 required
                             />
                         </div>
@@ -182,7 +182,7 @@ function ResetPasswordPage() {
                                     value={newPassword}
                                     onChange={(e) => setNewPassword(e.target.value)}
                                     placeholder="••••••••"
-                                    className="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pr-10"
+                                    className="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-violet-500 focus:border-violet-500 block w-full p-2.5 pr-10"
                                     required
                                 />
 
@@ -215,7 +215,7 @@ function ResetPasswordPage() {
                                             border
                                             ${confirmPassword && newPassword !== confirmPassword
                                             ? "border-red-500 focus:ring-red-500 focus:border-red-500"
-                                            : "border-gray-600 focus:ring-blue-500 focus:border-blue-500"
+                                            : "border-gray-600 focus:ring-violet-500 focus:border-violet-500"
                                         }
       `}
                                     required

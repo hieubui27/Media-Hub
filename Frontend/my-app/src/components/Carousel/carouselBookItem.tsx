@@ -34,7 +34,7 @@ const BookCard: React.FC<BookCardProps> = ({ media }) => {
       {/* Container bìa sách - Tỉ lệ 3/4 đứng */}
       <Link 
         href={detailUrl} 
-        className="relative aspect-[3/4] overflow-hidden rounded-md bg-neutral-900 shadow-lg transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-purple-500/30 border border-white/5"
+        className="relative aspect-[3/4] overflow-hidden rounded-md bg-neutral-900 shadow-lg transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-violet-500/30 border border-white/5"
       >
         {/* Hiệu ứng gáy sách tạo độ sâu */}
         <div className="absolute left-0 top-0 z-10 h-full w-2 bg-gradient-to-r from-black/60 to-transparent opacity-80" />
@@ -50,7 +50,7 @@ const BookCard: React.FC<BookCardProps> = ({ media }) => {
         
         {/* Badge hiển thị số trang */}
         {quantityLabel && (
-          <div className="absolute bottom-2 right-2 z-10 bg-purple-600/90 backdrop-blur-md border border-white/10 px-2 py-0.5 rounded text-[9px] font-bold text-white uppercase tracking-tighter shadow-lg">
+          <div className="absolute bottom-2 right-2 z-10 bg-violet-600/90 backdrop-blur-md border border-white/10 px-2 py-0.5 rounded text-[9px] font-bold text-white uppercase tracking-tighter shadow-lg">
             {quantityLabel}
           </div>
         )}
@@ -61,7 +61,7 @@ const BookCard: React.FC<BookCardProps> = ({ media }) => {
 
       {/* Thông tin sách */}
       <div className="flex flex-col gap-0.5 px-1">
-        <h4 className="line-clamp-1 text-[14px] font-bold text-white group-hover:text-purple-400 transition-colors uppercase tracking-tight">
+        <h4 className="line-clamp-1 text-[14px] font-bold text-white group-hover:text-violet-400 transition-colors uppercase tracking-tight">
           <Link href={detailUrl} title={media.title}>
             {media.title}
           </Link>
@@ -72,7 +72,7 @@ const BookCard: React.FC<BookCardProps> = ({ media }) => {
         
         {/* Hiển thị Content Rating thay cho rating nếu API không trả về điểm số */}
         <div className="flex items-center gap-1 mt-0.5">
-          <span className="text-purple-400 text-[10px] font-bold border border-purple-400/30 px-1 rounded">
+          <span className="text-violet-400 text-[10px] font-bold border border-violet-400/30 px-1 rounded">
             {media.contentRating || 'G'}
           </span>
           <span className="text-neutral-500 text-[10px]">•</span>

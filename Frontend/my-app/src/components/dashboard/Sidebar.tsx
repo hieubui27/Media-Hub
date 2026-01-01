@@ -18,22 +18,22 @@ const Sidebar = () => {
   ];
 
   return (
-    <aside className="bg-[#1f232b] text-white w-72 min-h-screen p-6 flex flex-col justify-between rounded-2xl">
+    <aside className="bg-[#1f232b] text-white w-full lg:w-72 p-4 lg:p-6 flex flex-col justify-between rounded-2xl lg:min-h-[calc(100vh-8rem)]">
       <div>
-        <h1 className="text-2xl font-bold mb-8">Account management</h1>
+        <h1 className="text-xl lg:text-2xl font-bold mb-4 lg:mb-8 hidden lg:block">Account management</h1>
         <nav>
-          <ul>
+          <ul className="flex lg:flex-col overflow-x-auto lg:overflow-visible gap-2 lg:gap-0 pb-2 lg:pb-0 scrollbar-hide">
             {navItems.map((item) => (
-              <li key={item.href}>
+              <li key={item.href} className="shrink-0">
                 <Link
                   href={item.href}
-                  className={`flex items-center py-3 px-4 my-1 rounded-lg transition-colors ${
+                  className={`flex items-center py-2 px-3 lg:py-3 lg:px-4 my-1 rounded-lg transition-colors text-sm lg:text-base whitespace-nowrap ${
                     pathname === item.href
-                      ? "bg-blue-600 text-white"
-                      : "hover:bg-blue-600"
+                      ? "bg-violet-600 text-white"
+                      : "bg-[#2a2f3a] lg:bg-transparent hover:bg-violet-600"
                   }`}
                 >
-                  <item.icon className="w-5 h-5 mr-3" />
+                  <item.icon className="w-4 h-4 lg:w-5 lg:h-5 mr-2 lg:mr-3" />
                   <span>{item.label}</span>
                 </Link>
               </li>
@@ -41,7 +41,8 @@ const Sidebar = () => {
           </ul>
         </nav>
       </div>
-      <div>
+      
+      <div className="hidden lg:block">
         {isLoading ? (
           <div className="flex flex-col items-center mb-4">
             <div className="w-24 h-24 rounded-full bg-gray-700 animate-pulse mb-4"></div>
@@ -59,7 +60,7 @@ const Sidebar = () => {
         ) : null}
         <button
           onClick={logout}
-          className="flex items-center justify-center py-2 px-4 w-full rounded-lg hover:bg-red-600 transition-colors text-left bg-gray-700"
+          className="flex items-center justify-center py-2 px-4 w-full rounded-lg hover:bg-red-600 transition-colors text-left bg-gray-700 mt-4"
         >
           <LogoutIcon className="w-5 h-5 mr-3" />
           <span>Log out</span>

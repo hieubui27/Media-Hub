@@ -7,12 +7,12 @@ type MediaGridProps = {
 };
 
 export default function MediaGrid({ items }: MediaGridProps) {
-  // Xử lý trạng thái trống
+  // Handle empty state
   if (!items || items.length === 0) {
     return (
       <div className="text-center text-zinc-500 mt-20 py-10 border border-dashed border-zinc-800 rounded-2xl">
-        <p className="text-lg">Không tìm thấy nội dung phù hợp</p>
-        <p className="text-sm text-zinc-600">Vui lòng thử lại với từ khóa hoặc danh mục khác.</p>
+        <p className="text-lg">No content found</p>
+        <p className="text-sm text-zinc-600">Please try again with different keywords or categories.</p>
       </div>
     );
   }
@@ -26,11 +26,11 @@ export default function MediaGrid({ items }: MediaGridProps) {
         md:grid-cols-4     /* Small Laptop */
         lg:grid-cols-5     /* Desktop */
         xl:grid-cols-6     /* Large Screen */
-        gap-6              /* Tăng gap lên một chút cho thoáng */
+        gap-6              /* Increased gap for better spacing */
       "
     >
       {items.map((item) => (
-        // Truyền props 'item' vào card, card sẽ tự lo việc hiển thị theo type
+        // Pass 'item' props to card, card will handle display based on type
         <MovieCard key={item.MediaItemId} item={item} />
       ))}
     </div>

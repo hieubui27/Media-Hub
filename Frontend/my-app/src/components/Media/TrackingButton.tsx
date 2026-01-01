@@ -17,7 +17,7 @@ export default function TrackingButton({ mediaId }: TrackingButtonProps) {
 
   const handleTracking = async () => {
     if (!user) {
-      // Chưa đăng nhập, chuyển hướng đến trang login
+      // Not logged in, redirect to login page
       router.push("/auth/login");
       return;
     }
@@ -30,11 +30,11 @@ export default function TrackingButton({ mediaId }: TrackingButtonProps) {
 
     setIsCreating(true);
     try {
-      // Đảm bảo mediaId là number
+      // Ensure mediaId is number
       const mediaItemId = Number(mediaId);
       console.log("Creating tracking for mediaId:", mediaItemId);
       
-      // Tạo tracking mới với status mặc định là WATCHING
+      // Create new tracking with default status WATCHING
       const result = await createTracking(
         mediaItemId,
         {
@@ -46,14 +46,14 @@ export default function TrackingButton({ mediaId }: TrackingButtonProps) {
 
       if (result.success) {
         console.log("Tracking created successfully:", result.data);
-        // Chuyển đến trang tracking để xem và chỉnh sửa
+        // Navigate to tracking page to view and edit
         router.push("/main/dashboard/tracking");
       } else {
-        alert(result.message || "Không thể tạo tracking. Có thể bạn đã tracking media này rồi.");
+        alert(result.message || "Unable to create tracking. You may have already tracked this media.");
       }
     } catch (error) {
       console.error("Error creating tracking:", error);
-      alert("Có lỗi xảy ra khi tạo tracking");
+      alert("An error occurred while creating tracking");
     } finally {
       setIsCreating(false);
     }
@@ -63,13 +63,12 @@ export default function TrackingButton({ mediaId }: TrackingButtonProps) {
     <button
       onClick={handleTracking}
       disabled={isCreating}
-      className={`flex items-center gap-3 bg-purple-500 hover:bg-purple-400 text-white px-6 py-3 rounded-full font-black transition-all shadow-[0_0_20px_rgba(191, 0, 255, 0.3)] hover:scale-105 ${
+      className={`flex items-center gap-3 bg-violet-500 hover:bg-violet-400 text-white px-6 py-3 rounded-full font-black transition-all shadow-[0_0_20px_rgba(139,92,246,0.3)] hover:scale-105 ${
         isCreating ? "opacity-50 cursor-not-allowed" : ""
       }`}
     >
       <PlayCircleFilled className="text-xl" />
-      {isCreating ? "Đang tạo..." : "Tracking"}
+      {isCreating ? "Creating..." : "Tracking"}
     </button>
   );
 }
-

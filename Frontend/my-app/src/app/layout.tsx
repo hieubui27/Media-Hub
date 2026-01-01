@@ -1,18 +1,14 @@
 import { UserProvider } from "../contexts/UserContext";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
-import HeaderNav from "../components/Menu/HeaderNav";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const inter = Inter({
+  subsets: ["latin", "vietnamese"], // Hỗ trợ tiếng Việt
+  variable: "--font-inter",         // Biến CSS để sử dụng trong Tailwind
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -26,25 +22,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={inter.variable}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+       className="antialiased font-sans bg-[#0a0a0a] text-white"
       >
         <UserProvider>
-          {/* Sử dụng flexbox để Footer luôn nằm dưới đáy 
-            nếu nội dung trang quá ngắn 
-          */}
           <div className="flex flex-col min-h-screen">
-            
-
-
-            {/* Main content - flex-grow sẽ đẩy footer xuống */}
             <main className="flex-grow">
               {children}
             </main>
-
-            {/* Footer */}
-            
           </div>
         </UserProvider>
       </body>
