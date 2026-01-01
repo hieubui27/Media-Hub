@@ -12,7 +12,6 @@ import { createMediaItem, uploadMediaImage } from "@/src/services/upload";
 import { fetchFilterOptions } from "@/src/services/getGenres";
 import { useRouter } from "next/navigation";
 
-const { Step } = Steps;
 const { Option } = Select;
 
 export default function MediaUpload() {
@@ -55,7 +54,7 @@ export default function MediaUpload() {
         message.success("Đã tạo thông tin Media!");
         setCurrentStep(1);
       }
-    } catch (error: any) {
+    } catch (error) {
       message.error("Lỗi khi tạo thông tin media");
     } finally {
       setLoading(false);
