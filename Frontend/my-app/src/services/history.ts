@@ -47,4 +47,4 @@ export const clearHistory = async () => {
   });
   if (!response.ok) throw new Error("Failed to clear history");
   return response.json();
-};
+};2

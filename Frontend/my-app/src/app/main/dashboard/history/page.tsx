@@ -8,6 +8,7 @@ import { getHistory, removeFromHistory, clearHistory } from "@/src/services/hist
 import { HistoryItem, HistoryResponse } from "@/src/interfaces/history";
 import Image from "next/image";
 import Link from "next/link";
+import { getImageUrl } from "@/src/utils/imageHelper";
 
 const { Text } = Typography;
 
@@ -88,12 +89,12 @@ export default function HistoryPage() {
           {history.map((item) => (
             <div key={item.mediaItemId} className="group relative bg-[#141414] rounded-xl overflow-hidden border border-gray-800 hover:border-violet-500/50 transition-all">
               <div className="relative aspect-[16/9]">
-                <Image 
-                  src={item.urlItem || "/images.png"} 
-                  alt={item.title} 
-                  fill 
-                  className="object-cover group-hover:scale-105 transition-transform duration-300"
-                />
+               <Image 
+  src={`https://8dcbf8a962a3.ngrok-free.app${item.urlItem}`} 
+  alt={item.title} 
+  fill 
+  className="object-cover group-hover:scale-105 transition-transform duration-300"
+/>
                 <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
                   <Popconfirm title="Xóa mục này?" onConfirm={() => handleRemove(item.mediaItemId)}>
                     <Button size="small" danger shape="circle" icon={<DeleteOutlined />} className="shadow-lg" />

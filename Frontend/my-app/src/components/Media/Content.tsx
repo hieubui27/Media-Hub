@@ -13,7 +13,7 @@ export default function Content({ data }: { data: MediaItemDetail }) {
     <div className="w-full lg:w-[30%] bg-gradient-to-b from-[#2d3436] to-transparent text-white p-6 rounded-[30px] lg:rounded-[40px] shadow-2xl border border-white/5 h-fit">
       <div className="relative w-full aspect-[2/3] mb-6 overflow-hidden rounded-2xl lg:rounded-3xl shadow-lg group">
         <Image
-          src={data.urlItem ? `https://cfc7492a6e01.ngrok-free.app${data.urlItem}` : "/images.png"}
+          src={data.urlItem ? `https://8dcbf8a962a3.ngrok-free.app${data.urlItem}` : "/images.png"}
           alt={data.title}
           fill
           className="object-cover transition-transform duration-500 group-hover:scale-105"

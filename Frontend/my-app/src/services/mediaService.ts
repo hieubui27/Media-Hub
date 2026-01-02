@@ -136,7 +136,7 @@ export async function fetchMediaItems(
   if (country && country !== "Tất cả") params.set("country", country);
 
   try {
-    const url = `https://c352006629c5.ngrok-free.app/api/medias?${params.toString()}`;
+    const url = `https://8dcbf8a962a3.ngrok-free.app/api/medias?${params.toString()}`;
     console.log("Fetching media items from:", url);
     
     const res = await fetch(url, {

@@ -28,7 +28,7 @@ export async function fetchMediaItems(
     if (country && country !== "Tất cả") params.set("country", country);
 
     // Thay đổi URL theo endpoint thực tế của bạn
-    const response = await fetch(`https://c352006629c5.ngrok-free.app/api/medias?typeName=${apiType}`, {
+    const response = await fetch(`https://8dcbf8a962a3.ngrok-free.app/api/medias?typeName=${apiType}`, {
       cache: "no-store", // Đảm bảo luôn lấy dữ liệu mới nhất
     });
 
