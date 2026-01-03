@@ -7,6 +7,7 @@ export interface MediaItem {
     director: string;
     contentRating: string;
     genres: string[];
+    urlItem: string;
 }
 
 // Định nghĩa cấu trúc tổng thể của API trả về

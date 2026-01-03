@@ -96,7 +96,7 @@ function HeaderNav() {
                             >
                                 <div className="w-10 h-14 bg-zinc-800 rounded overflow-hidden flex-shrink-0">
                                     <img 
-                                        src={getSafeUrl(item.imagePath || item.urlItem)} 
+                                        src={getSafeUrl(item.urlItem)} 
                                         className="w-full h-full object-cover group-hover:scale-110 transition-transform" 
                                         alt="" 
                                     />
