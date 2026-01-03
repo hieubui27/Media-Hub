@@ -3,7 +3,8 @@ import { HistoryItem, HistoryResponse } from "../interfaces/history";
 
 const getAuthHeaders = (): HeadersInit => {
   if (typeof window === "undefined") return { "Content-Type": "application/json" };
-  const userStr = localStorage.getItem("user");
+  // SỬA: localStorage -> sessionStorage
+  const userStr = sessionStorage.getItem("user");
   const token = userStr ? JSON.parse(userStr).accessToken : "";
   return {
     "Content-Type": "application/json",

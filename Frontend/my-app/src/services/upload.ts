@@ -1,8 +1,8 @@
 const API_BASE_URL = "/api";
-
 const getAuthHeaders = (isMultipart = false): HeadersInit => {
   if (typeof window === "undefined") return {};
-  const userStr = localStorage.getItem("user");
+  // SỬA: localStorage -> sessionStorage
+  const userStr = sessionStorage.getItem("user");
   const token = userStr ? JSON.parse(userStr).accessToken : "";
   const headers: HeadersInit = {
     "Authorization": `Bearer ${token}`,
@@ -13,7 +13,6 @@ const getAuthHeaders = (isMultipart = false): HeadersInit => {
   }
   return headers;
 };
-
 // --- MEDIA ITEM ---
 
 // Bước 1: Tạo thông tin Media

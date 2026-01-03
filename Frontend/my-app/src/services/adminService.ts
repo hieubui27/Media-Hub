@@ -12,8 +12,8 @@ const getAuthHeaders = () => {
     "ngrok-skip-browser-warning": "true",
   };
   if (typeof window !== "undefined") {
-    // Sử dụng localStorage để khớp với UserContext
-    const storedUser = localStorage.getItem("user");
+    // SỬA: localStorage -> sessionStorage
+    const storedUser = sessionStorage.getItem("user");
     if (storedUser) {
       const parsedUser = JSON.parse(storedUser);
       if (parsedUser.accessToken) {
