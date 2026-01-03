@@ -97,18 +97,7 @@ export interface HistoryItem {
 
 // --- API Calls ---
 
-// 1. QUẢN LÝ MEDIA
-export const getAdminMedias = async (params: PaginationParams) => {
-  const query = new URLSearchParams({
-    page: params.page.toString(),
-    limit: params.limit.toString(),
-    ...params,
-  });
-  const res = await fetch(`${API_BASE_URL}/admin/medias?${query.toString()}`, {
-    headers: getAuthHeaders(),
-  });
-  return res.json();
-};
+
 
 export const deleteMedia = async (id: number) => {
   return fetch(`${API_BASE_URL}/medias/${id}`, {
@@ -145,17 +134,7 @@ export const deleteRating = async (id: number) => {
 };
 
 // 3. QUẢN LÝ REVIEW
-export const getAdminReviews = async (params: PaginationParams) => {
-  const query = new URLSearchParams({
-    page: params.page.toString(),
-    limit: params.limit.toString(),
-    ...params,
-  });
-  const res = await fetch(`${API_BASE_URL}/admin/reviews?${query.toString()}`, {
-    headers: getAuthHeaders(),
-  });
-  return res.json();
-};
+
 
 export const deleteReview = async (id: number) => {
   return fetch(`${API_BASE_URL}/reviews/${id}`, {
@@ -165,17 +144,6 @@ export const deleteReview = async (id: number) => {
 };
 
 // 4. QUẢN LÝ TRACKING
-export const getAdminTracking = async (params: PaginationParams) => {
-  const query = new URLSearchParams({
-    page: params.page.toString(),
-    limit: params.limit.toString(),
-    ...params,
-  });
-  const res = await fetch(`${API_BASE_URL}/admin/tracking?${query.toString()}`, {
-    headers: getAuthHeaders(),
-  });
-  return res.json();
-};
 
 export const deleteTracking = async (id: number) => {
   return fetch(`${API_BASE_URL}/tracking/${id}`, {
