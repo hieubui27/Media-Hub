@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation"; // Thêm useSearchParams
 import { fetchFilterOptions } from "@/src/services/getGenres";
 
 const MEDIA_MAP: Record<string, { slug: string; label: string }> = {
@@ -29,6 +29,7 @@ export default function MediaFilter({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams(); // Hook để lấy params hiện tại
 
   const [options, setOptions] = useState<FilterOptions>({
     genres: [],
@@ -36,31 +37,20 @@ export default function MediaFilter({
     types: []
   });
 
-  // Initialize state filters directly from props
   const [filters, setFilters] = useState({
-    type: currentType,
+    type: currentType || "all",
     genre: currentGenre || "All",
     country: currentCountry || "All",
-    year: "All",
   });
 
-  // Solution for ESLint: Sync state when props change without using useEffect directly
-  // (Pattern: Adjusting state when props change)
-  const [prevProps, setPrevProps] = useState({ currentType, currentGenre, currentCountry });
-
-  if (
-    currentType !== prevProps.currentType || 
-    currentGenre !== prevProps.currentGenre || 
-    currentCountry !== prevProps.currentCountry
-  ) {
-    setPrevProps({ currentType, currentGenre, currentCountry });
+  // Sync state when props change
+  useEffect(() => {
     setFilters({
-      type: currentType,
+      type: currentType || "all",
       genre: currentGenre || "All",
       country: currentCountry || "All",
-      year: "All"
     });
-  }
+  }, [currentType, currentGenre, currentCountry]);
 
   useEffect(() => {
     const loadOptions = async () => {
@@ -72,6 +62,14 @@ export default function MediaFilter({
 
   const handleApplyFilter = () => {
     const params = new URLSearchParams();
+
+    // 1. GIỮ LẠI TỪ KHÓA TÌM KIẾM (QUAN TRỌNG)
+    const currentQuery = searchParams.get("query");
+    if (currentQuery) {
+      params.set("query", currentQuery);
+    }
+
+    // 2. Thêm các filter mới
     const lowerType = filters.type.toLowerCase();
     const typeSlug = MEDIA_MAP[lowerType]?.slug || lowerType;
 
@@ -79,22 +77,25 @@ export default function MediaFilter({
     if (filters.genre !== "All") params.set("genre", filters.genre);
     if (filters.country !== "All") params.set("country", filters.country);
     
+    // Reset về trang 1 khi filter thay đổi
+    params.set("page", "1");
+
     setIsOpen(false);
     router.push(`/main/media/search?${params.toString()}`);
   };
 
   return (
     <div className="mb-8">
-      <button onClick={() => setIsOpen(!isOpen)} className="flex items-center text-zinc-400 hover:text-white font-bold text-sm mb-4">
-        <span className={`mr-2 transition-transform ${isOpen ? "rotate-180" : ""}`}>▼</span>
-        Advanced Filters
+      <button onClick={() => setIsOpen(!isOpen)} className="flex items-center text-zinc-400 hover:text-white font-bold text-sm mb-4 transition-colors">
+        <span className={`mr-2 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}>▼</span>
+        Bộ lọc nâng cao
       </button>
 
       {isOpen && (
-        <div className="bg-[#1a1a1a] border border-white/5 rounded-xl p-6 shadow-2xl">
+        <div className="bg-[#1a1a1a] border border-white/10 rounded-xl p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
           <div className="space-y-6">
             <FilterRow 
-              label="Category" 
+              label="Danh mục" 
               options={["All", ...options.types]}
               currentValue={filters.type} 
               onChange={(val: string) => setFilters({...filters, type: val})}
@@ -102,14 +103,14 @@ export default function MediaFilter({
             />
             
             <FilterRow 
-              label="Country" 
+              label="Quốc gia" 
               options={["All", ...options.countries]}
               currentValue={filters.country}
               onChange={(val: string) => setFilters({...filters, country: val})}
             />
 
             <FilterRow 
-              label="Genre" 
+              label="Thể loại" 
               options={["All", ...options.genres]}
               currentValue={filters.genre}
               onChange={(val: string) => setFilters({...filters, genre: val})}
@@ -117,11 +118,11 @@ export default function MediaFilter({
           </div>
 
           <div className="flex mt-8 pt-6 border-t border-white/5 space-x-4">
-            <button onClick={handleApplyFilter} className="bg-violet-500 hover:bg-violet-600 text-black font-bold py-2 px-6 rounded-full text-sm">
-              Apply Filters →
+            <button onClick={handleApplyFilter} className="bg-violet-600 hover:bg-violet-500 text-white font-bold py-2 px-6 rounded-full text-sm transition-all shadow-lg hover:shadow-violet-900/20">
+              Áp dụng
             </button>
-            <button onClick={() => setIsOpen(false)} className="bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-2 px-6 rounded-full text-sm">
-              Close
+            <button onClick={() => setIsOpen(false)} className="bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-2 px-6 rounded-full text-sm transition-all">
+              Đóng
             </button>
           </div>
         </div>
@@ -130,7 +131,7 @@ export default function MediaFilter({
   );
 }
 
-// Define Interface to eliminate TypeScript "Implicit Any" errors
+// Sub-component giữ nguyên logic UI
 interface FilterRowProps {
   label: string;
   options: string[];
@@ -141,26 +142,23 @@ interface FilterRowProps {
 
 function FilterRow({ label, options, currentValue, onChange, isTypeMapping = false }: FilterRowProps) {
   return (
-    <div className="flex items-start">
-      <div className="w-24 text-zinc-500 text-xs font-bold pt-1.5 uppercase tracking-wider">{label}:</div>
+    <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-0">
+      <div className="w-24 text-zinc-500 text-xs font-bold pt-1.5 uppercase tracking-wider shrink-0">{label}:</div>
       <div className="flex flex-wrap gap-2 flex-1">
         {options.map((opt: string) => {
           const lowerOpt = opt.toLowerCase();
           const config = MEDIA_MAP[lowerOpt] || { slug: lowerOpt, label: opt };
-
-          const isActive = 
-            currentValue?.toLowerCase() === lowerOpt || 
-            currentValue?.toLowerCase() === config.slug;
+          const isActive = currentValue?.toLowerCase() === lowerOpt || currentValue?.toLowerCase() === config.slug;
 
           return (
             <button
               key={opt}
               type="button"
               onClick={() => onChange(isTypeMapping ? config.slug : opt)}
-              className={`px-3 py-1 rounded-md text-xs font-medium transition-all ${
+              className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
                 isActive 
-                  ? "bg-violet-500/10 text-violet-500 border border-violet-500/20 shadow-sm" 
-                  : "text-zinc-400 hover:text-white border border-transparent hover:bg-white/5"
+                  ? "bg-violet-600 text-white shadow-md shadow-violet-900/20" 
+                  : "text-zinc-400 bg-zinc-800/50 hover:text-white hover:bg-zinc-700 border border-transparent"
               }`}
             >
               {isTypeMapping ? config.label : opt}

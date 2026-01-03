@@ -17,6 +17,10 @@ const Sidebar = () => {
     { href: "/main/dashboard/account", label: "Account", icon: UserIcon },
   ];
 
+  if (user?.role === 'ADMIN') {
+    navItems.push({ href: "/main/dashboard/admin", label: "Admin Panel", icon: ShieldCheckIcon });
+  }
+
   return (
     <aside className="bg-[#1f232b] text-white w-full lg:w-72 p-4 lg:p-6 flex flex-col justify-between rounded-2xl lg:min-h-[calc(100vh-8rem)]">
       <div>
@@ -155,6 +159,17 @@ const LogoutIcon = (props: React.SVGProps<SVGSVGElement>) => (
       strokeLinejoin="round"
       strokeWidth="2"
       d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+    />
+  </Icon>
+);
+
+const ShieldCheckIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <Icon {...props}>
+    <path 
+      strokeLinecap="round" 
+      strokeLinejoin="round" 
+      strokeWidth={2} 
+      d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" 
     />
   </Icon>
 );

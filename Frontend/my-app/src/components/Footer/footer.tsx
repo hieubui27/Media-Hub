@@ -40,24 +40,12 @@ const Footer = () => {
             <h4 className="text-lg font-bold mb-6">Khám phá</h4>
             <ul className="space-y-4 text-gray-400 text-sm">
               <li><Link href="/main/home" className="hover:text-violet-400 transition-colors">Trang chủ</Link></li>
-              <li><Link href="/main/movie" className="hover:text-violet-400 transition-colors">Phim điện ảnh</Link></li>
-              <li><Link href="/main/series" className="hover:text-violet-400 transition-colors">Phim bộ</Link></li>
-              <li><Link href="/main/book" className="hover:text-violet-400 transition-colors">Sách & Truyện</Link></li>
-              <li><Link href="/main/game" className="hover:text-violet-400 transition-colors">Trò chơi</Link></li>
+              <li><Link href="/main/media/movie" className="hover:text-violet-400 transition-colors">Phim điện ảnh</Link></li>
+              <li><Link href="/main/media/series" className="hover:text-violet-400 transition-colors">Phim bộ</Link></li>
+              <li><Link href="/main/media/book" className="hover:text-violet-400 transition-colors">Sách & Truyện</Link></li>
+              <li><Link href="/main/media/game" className="hover:text-violet-400 transition-colors">Trò chơi</Link></li>
             </ul>
           </div>
-
-          {/* Cột 3: Hỗ trợ & Pháp lý */}
-          <div>
-            <h4 className="text-lg font-bold mb-6">Thông tin</h4>
-            <ul className="space-y-4 text-gray-400 text-sm">
-              <li><Link href="#" className="hover:text-violet-400 transition-colors">Điều khoản sử dụng</Link></li>
-              <li><Link href="#" className="hover:text-violet-400 transition-colors">Chính sách bảo mật</Link></li>
-              <li><Link href="#" className="hover:text-violet-400 transition-colors">Câu hỏi thường gặp</Link></li>
-              <li><Link href="#" className="hover:text-violet-400 transition-colors">Trung tâm hỗ trợ</Link></li>
-            </ul>
-          </div>
-
           {/* Cột 4: Liên hệ */}
           <div>
             <h4 className="text-lg font-bold mb-6">Liên hệ</h4>
@@ -72,7 +60,7 @@ const Footer = () => {
               </li>
               <li className="flex items-center gap-3">
                 <Mail size={18} className="text-violet-500 shrink-0" />
-                <span>contact@mediahub.vn</span>
+                <span>abcdef@gmail.com</span>
               </li>
             </ul>
           </div>

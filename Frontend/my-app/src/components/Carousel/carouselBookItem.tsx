@@ -15,7 +15,16 @@ const BookCard: React.FC<BookCardProps> = ({ media }) => {
   // 2. Xác định loại nội dung dựa trên typeName của API
   const isBook = media.typeName === 'Book';
   
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "YOUR_NGROK_URL_HERE";
+  const PLACEHOLDER_IMAGE = "https://placehold.co/400x600/0a0a0a/ffffff?text=No+Image";
 
+  const getImageUrl = (url: string | undefined | null) => {
+    if (!url) return PLACEHOLDER_IMAGE;
+    if (url.startsWith('http') || url.startsWith('https')) {
+      return url;
+    }
+    return `${BASE_URL}${url}`;
+  };
   const authorName = media.author || "Khuyết danh";
   
   // Hiển thị số trang nếu có
@@ -27,7 +36,6 @@ const BookCard: React.FC<BookCardProps> = ({ media }) => {
   const detailUrl = `/main/media/detail/${media.MediaItemId}`;
   
   // Placeholder nếu urlItem bị null từ API
-  const imageSource = media.urlItem || "https://placehold.co/400x600/0a0a0a/ffffff?text=No+Cover";
 
   return (
     <div className="group flex flex-col gap-3">
@@ -40,7 +48,7 @@ const BookCard: React.FC<BookCardProps> = ({ media }) => {
         <div className="absolute left-0 top-0 z-10 h-full w-2 bg-gradient-to-r from-black/60 to-transparent opacity-80" />
         
         <Image
-          src={imageSource}
+          src={getImageUrl(media.urlItem)}
           alt={media.title}
           fill
           sizes="(max-width: 768px) 33vw, 20vw"

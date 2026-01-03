@@ -25,7 +25,7 @@ export default async function DetailPage({ params }: PageProps) {
       {/* Background Blur sử dụng hàm xử lý ngrok */}
       <div
         className="absolute top-0 left-0 w-full h-[300px] lg:h-[500px] bg-cover bg-center blur-[30px] opacity-30 transition-all duration-700"
-        style={{ backgroundImage: `url(https://8dcbf8a962a3.ngrok-free.app${film.urlItem})` }} // 3. Sử dụng biến đã xử lý
+        style={{ backgroundImage: `url(${backgroundUrl})` }} // 3. Sử dụng biến đã xử lý
       >
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#0a0a0a]"></div>
       </div>

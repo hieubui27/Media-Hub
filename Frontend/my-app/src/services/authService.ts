@@ -65,3 +65,18 @@ export async function getUserData(token:string){
   const data= await res.json();
   return data;
 }
+
+export async function refreshAccessToken(refreshToken: string) {
+  const res = await fetch('/api/proxy/auth/refresh', { // Thay đổi endpoint này theo backend của bạn
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ refreshToken }),
+  });
+  
+  if (!res.ok) {
+    throw new Error('Failed to refresh token');
+  }
+
+  const data = await res.json();
+  return data; // Mong đợi trả về { accessToken: "...", refreshToken: "..." }
+}

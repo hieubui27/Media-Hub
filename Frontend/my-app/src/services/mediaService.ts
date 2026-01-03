@@ -112,81 +112,64 @@ export async function createRating(
 }
 
 // src/services/mediaService.ts
-import { MediaResponse, MediaItem } from "../interfaces/APIResponse"; 
+// src/services/mediaService.ts
+import { MediaItem, MediaResponse } from "../interfaces/APIResponse";
 
 const API_TYPE_MAP: Record<string, string> = {
   "movie": "Movie",
+  "tv series": "TV Series",
   "series": "TV Series",
+  "video game": "Video Game",
   "game": "Video Game",
   "book": "Book",
   "music": "Music"
 };
 
-export async function fetchMediaItems(
-  type: string, 
-  page: number = 1, 
-  genre?: string, 
-  country?: string
+export async function searchMediaItems(
+  keyword: string = "",
+  typeSlug: string = "all",
+  genre: string = "All",
+  country: string = "All",
+  page: number = 1
 ): Promise<MediaResponse | null> {
-  const params = new URLSearchParams({
-  });
-
-  if (type !== "all") params.set("typeName", API_TYPE_MAP[type.toLowerCase()] || type);
-  if (genre && genre !== "Tất cả") params.set("genre", genre);
-  if (country && country !== "Tất cả") params.set("country", country);
-
   try {
-    const url = `https://8dcbf8a962a3.ngrok-free.app/api/medias?${params.toString()}`;
-    console.log("Fetching media items from:", url);
-    
+    const params = new URLSearchParams();
+
+    // 1. Xử lý Pagination
+    params.set("page", (page).toString());
+
+    // 2. Xử lý Từ khóa tìm kiếm
+    if (keyword) {
+        params.set("title", keyword);
+    }
+
+    // 3. Xử lý Type (Loại)
+    const apiType = API_TYPE_MAP[typeSlug.toLowerCase()] || typeSlug;
+    if (apiType && apiType.toLowerCase() !== "all") {
+        params.set("typeName", apiType);
+    }
+
+    // 4. Xử lý Genre & Country
+    if (genre && genre !== "All") params.set("genre", genre);
+    if (country && country !== "All") params.set("country", country);
+
+    // Endpoint gọi API
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/api/medias?${params.toString()}`;
+    console.log("Fetching Search & Filter URL:", url);
+
     const res = await fetch(url, {
-      headers: { 
+      method: "GET",
+      headers: {
         "Content-Type": "application/json",
-        "ngrok-skip-browser-warning": "true"
+        "ngrok-skip-browser-warning": "true",
       },
-      cache: 'no-store'
+      cache: "no-store",
     });
 
-    console.log("Response status:", res.status, res.statusText);
-
-    if (!res.ok) {
-      console.error("API response not OK:", res.status, res.statusText);
-      return null;
-    }
-    
-    const data = await res.json();
-    console.log("API response data:", data);
-    console.log("Content type:", typeof data.content, "Is array:", Array.isArray(data.content));
-    console.log("Content length:", data.content?.length);
-
-    // Kiểm tra và xử lý trường hợp data hoặc data.content không tồn tại
-    if (!data) {
-      console.error("No data returned from API");
-      return null;
-    }
-    
-    // Đảm bảo content là một array
-    if (!data.content || !Array.isArray(data.content)) {
-      console.warn("Content is not an array, returning empty array");
-      return {
-        ...data,
-        content: [],
-        totalElements: data.totalElements || 0
-      };
-    }
-
-    // Sửa lỗi URL ảnh không hợp lệ (như "url_movie_test_1")
-    data.content = data.content.map((item: MediaItem) => ({
-      ...item,
-      urlItem: (item.urlItem && (item.urlItem.startsWith('http') || item.urlItem.startsWith('/'))) 
-                ? item.urlItem 
-                : "/images.png" // Ảnh dự phòng
-    }));
-
-    console.log("Returning data with", data.content.length, "items");
-    return data;
+    if (!res.ok) return null;
+    return await res.json();
   } catch (error) {
-    console.error("Fetch error:", error);
+    console.error("Search API Error:", error);
     return null;
   }
 }
@@ -223,3 +206,5 @@ export async function deleteReview(mediaId: string, reviewId: number, token: str
   });
   return res.ok;
 }
+
+

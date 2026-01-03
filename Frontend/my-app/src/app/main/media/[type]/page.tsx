@@ -1,8 +1,8 @@
 // src/app/main/media/[type]/page.tsx
 import MediaFilter from "@/src/components/GridFilm/FilterFilm";
 import MediaGrid from "@/src/components/GridFilm/MovieGrid";
+import Pagination from "@/src/components/common/Pagination"; 
 import { fetchMediaItems } from "@/src/services/getFIlmByType";
-
 
 interface Props {
   params: Promise<{ type: string }>;
@@ -14,18 +14,21 @@ interface Props {
 }
 
 export default async function TypeMediaPage({ params, searchParams }: Props) {
-  // 1. Giải nén đồng thời cả params và searchParams
   const [resolvedParams, resolvedSearchParams] = await Promise.all([
     params,
     searchParams
   ]);
 
   const type = resolvedParams.type;
-  const currentPage = Number(resolvedSearchParams.page) || 0;
+  
+  // 1. Lấy page từ URL. Nếu không có hoặc <= 0 thì mặc định là 1.
+  const pageFromUrl = Number(resolvedSearchParams.page) || 1;
+  const currentPage = pageFromUrl < 1 ? 1 : pageFromUrl;
+
   const currentGenre = resolvedSearchParams.genre;
   const currentCountry = resolvedSearchParams.country;
 
-  // 2. Gọi API lấy dữ liệu thực tế
+  // 2. Gọi API: Truyền trực tiếp số trang (1, 2, 3...)
   const data = await fetchMediaItems(
     type, 
     currentPage, 
@@ -34,45 +37,34 @@ export default async function TypeMediaPage({ params, searchParams }: Props) {
   );
 
   if (!data) {
-    return <div className="p-10 text-white">Lỗi tải dữ liệu...</div>;
+    return <div className="p-20 text-center text-zinc-500">Đang tải hoặc không có dữ liệu...</div>;
   }
 
+  // Lưu ý: Nếu API trả về data.number đúng là trang hiện tại (1-based) thì dùng luôn.
+  // Nếu API vẫn trả về 0-based trong response body (dù input là 1-based), 
+  // bạn có thể cần dùng `data.number + 1` ở prop currentPage dưới đây.
+  // Ở đây tôi giả định API trả về chuẩn 1-based như bạn yêu cầu.
+
   return (
-    <div className="p-10 bg-[#0a0a0a] min-h-screen pt-28">
-      <header className="mb-10">
-        <h1 className="text-3xl font-bold text-white capitalize">
-          {type === "all" ? "Tất cả" : type} <span className="text-violet-500">Hub</span>
+    <div className="p-4 md:p-10 bg-[#0a0a0a] min-h-screen pt-24 md:pt-28">
+      <header className="mb-8 md:mb-10">
+        <h1 className="text-3xl md:text-4xl font-bold text-white capitalize">
+          {type === "all" ? "Khám Phá" : type} <span className="text-violet-500">Hub</span>
         </h1>
-        <p className="text-zinc-500 mt-2">
-          Tìm thấy {data.totalElements} kết quả phù hợp.
+        <p className="text-zinc-500 mt-2 text-sm">
+          Trang {data.number + 1} / {data.totalPages} • Tổng {data.totalElements} kết quả
         </p>
       </header>
 
-      {/* Bộ lọc đã tích hợp sẵn logic "sáng" theo URL */}
       <MediaFilter currentType={type} />
       
-      {/* Grid hiển thị dữ liệu từ API */}
       <MediaGrid items={data.content} />
 
-      {/* 3. Thêm phân trang (Pagination) cơ bản */}
-      <div className="mt-12 flex justify-center gap-4">
-        {currentPage > 0 && (
-          <a 
-            href={`?page=${currentPage - 1}`}
-            className="px-6 py-2 bg-zinc-800 text-white rounded-full hover:bg-zinc-700 transition-all"
-          >
-            Trang trước
-          </a>
-        )}
-        {currentPage < data.totalPages - 1 && (
-          <a 
-            href={`?page=${currentPage + 1}`}
-            className="px-6 py-2 bg-violet-500 text-black font-bold rounded-full hover:bg-violet-600 transition-all"
-          >
-            Trang tiếp theo
-          </a>
-        )}
-      </div>
+      {/* Phân trang */}
+      <Pagination 
+        currentPage={data.number + 1}  // Giả định API trả về số trang hiện tại (1, 2...)
+        totalPages={data.totalPages} 
+      />
     </div>
   );
 }

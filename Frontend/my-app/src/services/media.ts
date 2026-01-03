@@ -15,8 +15,9 @@ const getAuthHeaders = (): HeadersInit => {
   };
 };
 
-export const getMyUploads = async (page = 0, limit = 10): Promise<MyUploadsResponse> => {
-  const response = await fetch(`${API_BASE_URL}/medias/me?page=${page}&limit=${limit}`, {
+export const getMyUploads = async (page = 1, size = 10): Promise<MyUploadsResponse> => {
+  // SỬA: URL đúng như trong ảnh Postman của bạn
+  const response = await fetch(`${API_BASE_URL}/users/me/media-uploads?page=${page - 1}&size=${size}`, {
     method: "GET",
     headers: getAuthHeaders(),
   });

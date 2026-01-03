@@ -1,40 +1,44 @@
 "use client"
 import React, { useRef, useState, useEffect } from 'react';
 import { Carousel, Spin } from 'antd';
-import { PlayCircleFilled, HeartOutlined, InfoCircleOutlined, HeartFilled } from '@ant-design/icons';
+import { PlayCircleFilled, InfoCircleOutlined } from '@ant-design/icons';
 import { CarouselRef } from 'antd/es/carousel';
 import Link from 'next/link';
 import { APIMediaItem } from '@/src/interfaces/APIMediaItem';
 import { mediaService } from '@/src/services/getTopFilm';
 
-// Import service và interface
-
-
 function CarouselTop() {
   const carouselRef = useRef<CarouselRef>(null);
   const [movies, setMovies] = useState<APIMediaItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [favorites, setFavorites] = useState<number[]>([]);
-
+  
+  // URL Ngrok hoặc API
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "YOUR_NGROK_URL_HERE"; 
   const PLACEHOLDER_IMAGE = "https://placehold.co/1920x1080/0a0a0a/ffffff?text=No+Poster";
+
+  const getImageUrl = (url: string | undefined | null) => {
+    if (!url) return PLACEHOLDER_IMAGE;
+    if (url.startsWith('http') || url.startsWith('https')) {
+      return url;
+    }
+    return `${BASE_URL}${url}`;
+  };
 
   useEffect(() => {
     const loadLatestMovies = async () => {
       setLoading(true);
-      // GỌI SERVICE: Lấy 5 phim mới nhất đã được sort từ FE
-      const res = await mediaService.getLatestMediaFE();
-      setMovies(res);
-      setLoading(false);
+      try {
+        const res = await mediaService.getLatestMediaFE();
+        setMovies(res);
+      } catch (error) {
+        console.error("Failed to load carousel movies:", error);
+      } finally {
+        setLoading(false);
+      }
     };
 
     loadLatestMovies();
   }, []);
-
-  const toggleFavorite = (id: number) => {
-    setFavorites((prev) =>
-      prev.includes(id) ? prev.filter((favId) => favId !== id) : [...prev, id]
-    );
-  };
 
   if (loading) return (
     <div className="h-[400px] md:h-[650px] flex items-center justify-center bg-black">
@@ -48,22 +52,32 @@ function CarouselTop() {
     <div className="relative w-full bg-black overflow-hidden">
       <Carousel autoplay effect="fade" ref={carouselRef} dots={false} speed={800}>
         {movies.map((movie) => {
-          const isFavorited = favorites.includes(movie.MediaItemId);
           const year = new Date(movie.releaseDate).getFullYear();
-          const image = movie.urlItem || PLACEHOLDER_IMAGE;
+          const image = getImageUrl(movie.urlItem);
 
           return (
             <div key={movie.MediaItemId} className="relative h-[500px] md:h-[650px] w-full group outline-none">
-              {/* LỚP 1: NỀN BLUR */}
+              
+              {/* LỚP 1: NỀN (BACKGROUND) */}
               <div className="absolute inset-0 overflow-hidden">
+                {/* THAY ĐỔI Ở ĐÂY:
+                   - blur-0: Không làm mờ ở mobile
+                   - scale-100: Không phóng to ở mobile
+                   - opacity-100: Hiển thị rõ ảnh gốc (có thể chỉnh xuống 0.7 nếu muốn text rõ hơn)
+                   - md:blur-[80px]... : Chỉ áp dụng hiệu ứng mờ/phóng to trên màn hình lớn
+                */}
                 <div
-                  className="absolute inset-0 bg-cover bg-center blur-[80px] scale-125 opacity-60"
+                  className="absolute inset-0 bg-cover bg-center transition-all duration-700
+                             blur-0 scale-100 opacity-100 
+                             md:blur-[80px] md:scale-125 md:opacity-60"
                   style={{ backgroundImage: `url(${image})` }}
                 ></div>
+
+                {/* Lớp phủ gradient để text dễ đọc hơn trên nền ảnh rõ nét */}
                 <div className="absolute inset-0 z-10 
                   shadow-[inset_0_0_120px_rgba(0,0,0,0.9)] 
-                  bg-gradient-to-b from-black/60 via-transparent to-black 
-                  bg-gradient-to-r from-black/80 via-transparent to-black/80">
+                  bg-gradient-to-b from-black/40 via-transparent to-black 
+                  bg-gradient-to-r from-black/60 via-transparent to-black/60">
                 </div>
               </div>
 
@@ -95,7 +109,7 @@ function CarouselTop() {
                         <span className="text-gray-300 hidden md:inline">{movie.genres?.join(" • ")}</span>
                       </div>
 
-                      <p className="text-gray-300 text-sm md:text-lg max-w-2xl line-clamp-2 md:line-clamp-3 mb-6 md:mb-8 leading-relaxed">
+                      <p className="text-gray-300 text-sm md:text-lg max-w-2xl line-clamp-2 md:line-clamp-3 mb-6 md:mb-8 leading-relaxed drop-shadow-md">
                         {movie.description}
                       </p>
 
@@ -106,7 +120,6 @@ function CarouselTop() {
                           </button>
                         </Link>
 
-
                         <Link href={`/main/media/detail/${movie.MediaItemId}`}>
                           <button className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-white/20 hover:bg-white/10 flex items-center justify-center backdrop-blur-md transition-all text-white">
                             <InfoCircleOutlined className="text-lg md:text-xl" />
@@ -116,7 +129,7 @@ function CarouselTop() {
                     </div>
                   </div>
 
-                  {/* Poster Image */}
+                  {/* Poster Image (Chỉ hiện ở Desktop) */}
                   <div className="hidden md:block md:col-span-5 lg:col-span-4">
                     <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-white/10 transform rotate-2 hover:rotate-0 transition-all duration-500">
                        <img 
@@ -131,7 +144,7 @@ function CarouselTop() {
                 </div>
               </div>
 
-              {/* Thumbnail Nav sử dụng urlItem */}
+              {/* Thumbnail Nav */}
               <div className="absolute bottom-4 right-4 md:bottom-8 md:right-12 z-30 flex gap-2 md:gap-3 max-w-[40%] md:max-w-none overflow-x-auto md:overflow-visible pb-2 md:pb-0 scrollbar-hide">
                 {movies.map((m, idx) => (
                   <div
@@ -141,7 +154,11 @@ function CarouselTop() {
                       m.MediaItemId === movie.MediaItemId ? 'border-violet-500 scale-110' : 'border-white/10 opacity-50 hover:opacity-100'
                     }`}
                   >
-                    <img src={m.urlItem || PLACEHOLDER_IMAGE} alt="thumb" className="w-full h-full object-cover" />
+                    <img 
+                      src={getImageUrl(m.urlItem)} 
+                      alt="thumb" 
+                      className="w-full h-full object-cover" 
+                    />
                   </div>
                 ))}
               </div>

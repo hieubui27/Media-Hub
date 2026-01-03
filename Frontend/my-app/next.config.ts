@@ -1,18 +1,19 @@
 import type { NextConfig } from "next";
 
-const AUTH_API_BASE = 'https://8dcbf8a962a3.ngrok-free.app/api/auth';
-const MEDIA_API_BASE = 'https://8dcbf8a962a3.ngrok-free.app/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const AUTH_API_BASE = `${API_URL}/api/auth`;
+const MEDIA_API_BASE = `${API_URL}/api`;
 
 const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
         source: '/api/remote/:path*', // Đường dẫn ảo trên localhost
-        destination: 'https://8dcbf8a962a3.ngrok-free.app/api/:path*', // Đường dẫn thật ngrok
+        destination: `${MEDIA_API_BASE}/:path*`, // Đường dẫn thật ngrok
       },
       {
         source: '/api-proxy/:path*', // Unified proxy path
-        destination: 'https://8dcbf8a962a3.ngrok-free.app/api/:path*',
+        destination: `${MEDIA_API_BASE}/:path*`,
       },
       // 1. Media Proxy (Handles query params automatically)
       {
@@ -47,20 +48,31 @@ const nextConfig: NextConfig = {
       },
       {
         source: '/api/medias/latest',
-        destination: `https://8dcbf8a962a3.ngrok-free.app/api/medias?page=1&limit=50`,
+        destination: `${MEDIA_API_BASE}/medias?page=1&limit=50`,
       },
       {
         source: '/api/medias/upload',
-        destination: `https://8dcbf8a962a3.ngrok-free.app/api/medias`,
+        destination: `${MEDIA_API_BASE}/medias`,
       },
 
       {
         source: '/api/medias/history',
-        destination: `https://8dcbf8a962a3.ngrok-free.app/api/history`,
+        destination: `${MEDIA_API_BASE}/history`,
       },
       {
         source: '/api/:path*',
-        destination: 'https://8dcbf8a962a3.ngrok-free.app/api/:path*', // URL backend ngrok của bạn
+        destination: `${MEDIA_API_BASE}/:path*`, // URL backend ngrok của bạn
+      },
+      {
+        source:'/admin/users/:path*',
+        destination:'https://b9056ef93662.ngrok-free.app/api/admin/users/:path*'
+      },
+      {
+        // Khi gọi /api/proxy/... từ frontend
+        source: "/api/proxy/:path*",
+        // Sẽ được Next.js chuyển tiếp ngầm đến Backend
+        // Đảm bảo bạn đã khai báo NEXT_PUBLIC_API_URL trong file .env
+        destination: `${process.env.NEXT_PUBLIC_API_URL}/api/:path*`,
       },
     ];
   },
@@ -74,6 +86,15 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'covers.openlibrary.org' },
       { protocol: 'https', hostname: 'placehold.co' },
       { protocol: 'https', hostname: 'encrypted-tbn0.gstatic.com' },
+      {
+        protocol: 'https',
+        hostname: '**.ngrok-free.app',
+      },
+      // Thêm dòng này nếu bạn chạy ở localhost
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+      },
     ],
   },
 };

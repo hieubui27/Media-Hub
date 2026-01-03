@@ -3,6 +3,24 @@ import Link from "next/link";
 import { MediaItemDetail } from "@/src/interfaces/mediaItemDetail";
 
 export default function MediaCard({ item }: { item: MediaItemDetail }) {
+  // 1. Khai báo BASE_URL và ảnh Placeholder
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "YOUR_NGROK_URL_HERE";
+  const PLACEHOLDER_IMAGE = "https://placehold.co/400x600/0a0a0a/ffffff?text=No+Image";
+
+  // 2. Hàm xử lý link ảnh
+  const getImageUrl = (url: string | undefined | null) => {
+    if (!url) return PLACEHOLDER_IMAGE;
+    // Nếu link đã là http/https thì giữ nguyên
+    if (url.startsWith('http') || url.startsWith('https')) {
+      return url;
+    }
+    // Nếu là đường dẫn tương đối thì nối thêm BASE_URL
+    return `${BASE_URL}${url}`;
+  };
+
+  // 3. Lấy link ảnh cuối cùng
+  const imageSource = getImageUrl(item.urlItem);
+
   return (
     <Link 
       href={`/main/media/detail/${item.MediaItemId}`}
@@ -11,7 +29,7 @@ export default function MediaCard({ item }: { item: MediaItemDetail }) {
       {/* Poster Image */}
       <div className="relative aspect-[2/3] overflow-hidden">
         <img 
-          src={item.thumbnail || "/placeholder-poster.png"} 
+          src={imageSource} 
           alt={item.title} 
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
         />

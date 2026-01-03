@@ -12,7 +12,7 @@ export const getImageUrl = (thumbnail: string | undefined | null): string => {
 
     // 3. Nếu thumbnail chứa 'uploads', thêm prefix là biến môi trường
     if (thumbnail.includes("uploads")) {
-        const baseUrl ="https://8dcbf8a962a3.ngrok-free.app";
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://8dcbf8a962a3.ngrok-free.app";
         // Tối ưu xử lý dấu gạch chéo để tránh lỗi double slash
         // Loại bỏ dấu / ở cuối baseUrl và dấu / ở đầu thumbnail (nếu có) trước khi nối
         const cleanBaseUrl = baseUrl.replace(/\/+$/, "");

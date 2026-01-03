@@ -9,10 +9,25 @@ interface MediaCardProps {
 }
 
 const MediaCard: React.FC<MediaCardProps> = ({ media }) => {
-  // 1. Kiểm tra an toàn dữ liệu đầu vào để tránh crash trang
+  // 1. KHAI BÁO BIẾN & HÀM XỬ LÝ ẢNH TRƯỚC
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "YOUR_NGROK_URL_HERE";
+  const PLACEHOLDER_IMAGE = "https://placehold.co/400x600/0a0a0a/ffffff?text=No+Image";
+
+  const getImageUrl = (url: string | undefined | null) => {
+    if (!url) return PLACEHOLDER_IMAGE;
+    if (url.startsWith('http') || url.startsWith('https')) {
+      return url;
+    }
+    return `${BASE_URL}${url}`;
+  };
+
+  // 2. Kiểm tra an toàn dữ liệu
   if (!media) return <div className="aspect-[3/4] md:aspect-video bg-neutral-900 animate-pulse rounded-xl" />;
 
-  // 2. Logic hiển thị Badge đặc thù cho TV Series và các loại khác
+  // 3. Sử dụng hàm để lấy link ảnh cuối cùng
+  const imageSource = getImageUrl(media.urlItem);
+
+  // 4. Logic hiển thị Badge
   const renderBadge = () => {
     switch (media.typeName) {
       case 'TV Series':
@@ -21,7 +36,6 @@ const MediaCard: React.FC<MediaCardProps> = ({ media }) => {
             <div className="bg-violet-600/90 backdrop-blur-sm px-2 py-0.5 rounded-md text-[10px] font-bold text-white shadow-lg">
               {media.totalEpisodes || 0} TẬP
             </div>
-            {/* Hiển thị số mùa nếu có */}
             {media.totalSeasons && media.totalSeasons > 1 && (
               <div className="bg-black/40 backdrop-blur-sm px-2 py-0.5 rounded-md text-[9px] font-medium text-gray-200">
                 {media.totalSeasons} MÙA
@@ -34,17 +48,12 @@ const MediaCard: React.FC<MediaCardProps> = ({ media }) => {
     }
   };
 
-  // 3. Xác định subtitle linh hoạt dựa trên loại nội dung
   const getSubtitle = () => {
     if (media.typeName === 'TV Series') return media.creator || media.productionCompany;
     return '';
   };
 
-  // 4. Đường dẫn chi tiết sử dụng MediaItemId
   const detailUrl = `/main/media/detail/${media.MediaItemId}`;
-  
-  // Ảnh placeholder nếu urlItem trả về null từ API
-  const imageSource = media.urlItem || "https://placehold.co/400x600/0a0a0a/ffffff?text=No+Image";
 
   return (
     <div className="group flex flex-col gap-3">
@@ -58,7 +67,7 @@ const MediaCard: React.FC<MediaCardProps> = ({ media }) => {
           {renderBadge()}
         </div>
 
-        {/* Badge góc phải: Content Rating (PG, M, E...) */}
+        {/* Badge góc phải: Content Rating */}
         <div className="absolute right-2 top-2 z-10 bg-black/60 backdrop-blur-md px-1.5 py-0.5 rounded text-[10px] font-bold text-violet-400 border border-violet-400/20">
           {media.contentRating || 'NR'}
         </div>

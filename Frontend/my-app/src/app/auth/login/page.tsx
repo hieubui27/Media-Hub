@@ -37,7 +37,9 @@ export default function LoginPage() {
         displayName: data.data.user.name || "User",
         avatar: data.data.user.avatar || "/images/avatar.png",
         gender: data.data.user.userGender || "other",
+        role: data.data.user.role ,
         accessToken: accessToken,
+        refreshToken: data.data.refreshToken || "",
       });
 
       console.log("User ID:", data.data.user.id);

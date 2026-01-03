@@ -3,14 +3,16 @@
 import React, { useEffect, useState } from "react";
 import { Button, Popconfirm, message, Typography, Tag, Spin } from "antd";
 import { DeleteOutlined, ClearOutlined, ClockCircleOutlined } from "@ant-design/icons";
-// Thêm clearHistory vào import
-import { getHistory, removeFromHistory, clearHistory } from "@/src/services/history"; 
+import { getHistory, removeFromHistory, clearHistory } from "@/src/services/history";
 import { HistoryItem, HistoryResponse } from "@/src/interfaces/history";
 import Image from "next/image";
 import Link from "next/link";
-import { getImageUrl } from "@/src/utils/imageHelper";
 
 const { Text } = Typography;
+
+// Cấu hình hằng số ngay trong file
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://8dcbf8a962a3.ngrok-free.app";
+const DEFAULT_IMAGE = "https://placehold.co/600x400?text=No+Image"; // Hoặc path ảnh local "/images/default.jpg"
 
 export default function HistoryPage() {
   const [history, setHistory] = useState<HistoryItem[]>([]);
@@ -26,7 +28,7 @@ export default function HistoryPage() {
     try {
       setLoading(true);
       const res: HistoryResponse = await getHistory();
-      setHistory(res.content || []); 
+      setHistory(res.content || []);
     } catch (error) {
       message.error("Không thể tải lịch sử xem");
     } finally {
@@ -37,14 +39,13 @@ export default function HistoryPage() {
   const handleRemove = async (mediaItemId: number) => {
     try {
       await removeFromHistory(mediaItemId);
-      setHistory(prev => prev.filter(item => item.mediaItemId !== mediaItemId));
+      setHistory((prev) => prev.filter((item) => item.mediaItemId !== mediaItemId));
       message.success("Đã xóa khỏi lịch sử");
     } catch (error) {
       message.error("Xóa thất bại");
     }
   };
 
-  // BỔ SUNG: Logic xóa toàn bộ lịch sử
   const handleClearAll = async () => {
     try {
       await clearHistory();
@@ -58,11 +59,10 @@ export default function HistoryPage() {
   if (!isMounted) return null;
 
   return (
-    <div className="p-6 min-h-screen bg-[#0a0a0a]"> {/* Đổi sang #0a0a0a cho tiệp màu nền trang */}
+    <div className="p-6 min-h-screen bg-[#0a0a0a]">
       <div className="flex justify-between items-center mb-6 border-b border-gray-800 pb-4">
-        <h1 className="text-2xl font-bold text-white">Lịch sử xem đây</h1>
+        <h1 className="text-2xl font-bold text-white">Lịch sử xem</h1>
         {history.length > 0 && (
-          // Bọc nút Xóa tất cả vào Popconfirm
           <Popconfirm
             title="Xóa toàn bộ lịch sử xem?"
             onConfirm={handleClearAll}
@@ -86,39 +86,48 @@ export default function HistoryPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-          {history.map((item) => (
-            <div key={item.mediaItemId} className="group relative bg-[#141414] rounded-xl overflow-hidden border border-gray-800 hover:border-violet-500/50 transition-all">
-              <div className="relative aspect-[16/9]">
-               <Image 
-  src={`https://8dcbf8a962a3.ngrok-free.app${item.urlItem}`} 
-  alt={item.title} 
-  fill 
-  className="object-cover group-hover:scale-105 transition-transform duration-300"
-/>
-                <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Popconfirm title="Xóa mục này?" onConfirm={() => handleRemove(item.mediaItemId)}>
-                    <Button size="small" danger shape="circle" icon={<DeleteOutlined />} className="shadow-lg" />
-                  </Popconfirm>
+          {history.map((item) => {
+            // Xử lý logic URL ngay tại đây để tránh lỗi null/undefined
+            const fullImageUrl = item.urlItem 
+              ? (item.urlItem.startsWith('http') ? item.urlItem : `${BASE_URL}${item.urlItem}`)
+              : DEFAULT_IMAGE;
+
+            return (
+              <div key={item.mediaItemId} className="group relative bg-[#141414] rounded-xl overflow-hidden border border-gray-800 hover:border-violet-500/50 transition-all">
+                <div className="relative aspect-[16/9] bg-gray-900">
+                  <Image
+                    src={fullImageUrl}
+                    alt={item.title || "Media Hub"}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 20vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                    <Popconfirm title="Xóa mục này?" onConfirm={() => handleRemove(item.mediaItemId)}>
+                      <Button size="small" danger shape="circle" icon={<DeleteOutlined />} className="shadow-lg" />
+                    </Popconfirm>
+                  </div>
+                </div>
+                
+                <div className="p-4">
+                  <Link href={`/main/media/detail/${item.mediaItemId}`}>
+                    <Text strong className="!text-white block truncate text-base hover:text-violet-400 transition-colors">
+                      {item.title}
+                    </Text>
+                  </Link>
+                  <div className="flex justify-between items-center mt-3">
+                    <Tag color="purple" className="!border-none bg-violet-500/20 !text-violet-400 font-medium">
+                      {item.typeName || "Media"}
+                    </Tag>
+                    <Text className="!text-gray-500 text-[11px] flex items-center gap-1">
+                      <ClockCircleOutlined />
+                      {item.createdAt ? new Date(item.createdAt).toLocaleDateString("vi-VN") : ""}
+                    </Text>
+                  </div>
                 </div>
               </div>
-              <div className="p-4">
-                <Link href={`/main/media/detail/${item.mediaItemId}`}>
-                  <Text strong className="!text-white block truncate text-base hover:text-violet-400 transition-colors">
-                    {item.title}
-                  </Text>
-                </Link>
-                <div className="flex justify-between items-center mt-3">
-                  <Tag color="purple" className="!border-none bg-violet-500/20 !text-violet-400 font-medium">
-                    {item.typeName || "Media"}
-                  </Tag>
-                  <Text className="!text-gray-500 text-[11px] flex items-center gap-1">
-                    <ClockCircleOutlined />
-                    {item.createdAt ? new Date(item.createdAt).toLocaleDateString("vi-VN") : ""}
-                  </Text>
-                </div>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

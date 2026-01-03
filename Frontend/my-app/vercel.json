@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api-backend/:path*",
+      "destination": "https://ten-cua-ban.ngrok-free.app/:path*"
+    }
+  ]
+}

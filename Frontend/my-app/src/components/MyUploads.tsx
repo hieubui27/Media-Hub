@@ -8,6 +8,9 @@ import { UploadHistoryItem } from "@/src/interfaces/uploadHistory";
 import Link from "next/link";
 import dayjs from "dayjs";
 
+// Khai báo Base URL trực tiếp
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://8dcbf8a962a3.ngrok-free.app";
+
 export default function MyUploads() {
   const [data, setData] = useState<UploadHistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -20,8 +23,9 @@ export default function MyUploads() {
   const fetchData = async (page: number, pageSize: number) => {
     setLoading(true);
     try {
-      // API page is 0-based
-      const res = await getMyUploads(page - 1, pageSize);
+      // SỬA: Không trừ 1 vì Backend dùng 1-based indexing như bạn đã nêu
+      const res = await getMyUploads(page, pageSize);
+      
       setData(res.content || []);
       setPagination({
         current: page,
@@ -30,7 +34,7 @@ export default function MyUploads() {
       });
     } catch (error) {
       console.error(error);
-      message.error("Failed to load your uploads");
+      message.error("Không thể tải danh sách bài đăng");
     } finally {
       setLoading(false);
     }
@@ -38,7 +42,7 @@ export default function MyUploads() {
 
   useEffect(() => {
     fetchData(pagination.current, pagination.pageSize);
-  }, []); // Initial load
+  }, []);
 
   const handleTableChange = (newPagination: any) => {
     fetchData(newPagination.current, newPagination.pageSize);
@@ -47,55 +51,58 @@ export default function MyUploads() {
   const handleDelete = async (id: number) => {
     try {
       await deleteMediaItem(id);
-      message.success("Media deleted successfully");
-      fetchData(pagination.current, pagination.pageSize); // Reload
+      message.success("Xóa thành công");
+      fetchData(pagination.current, pagination.pageSize);
     } catch (error) {
-      message.error("Failed to delete media");
+      message.error("Xóa thất bại");
     }
   };
 
   const columns = [
     {
       title: "Poster",
-      dataIndex: "urlItem",
-      key: "urlItem",
+      dataIndex: "imagePath", // SỬA: Theo ảnh API trả về 'imagePath'
+      key: "imagePath",
       width: 100,
-      render: (url: string) => (
-        <Avatar 
-          shape="square" 
-          size={64} 
-          src={url || "/images.png"} 
-          className="border border-white/10 object-cover"
-        />
-      ),
+      render: (path: string) => {
+        const posterUrl = path 
+          ? (path.startsWith('http') ? path : `${BASE_URL}${path}`) 
+          : "/images.png";
+        return (
+          <Avatar 
+            shape="square" 
+            size={64} 
+            src={posterUrl} 
+            className="border border-white/10 object-cover"
+          />
+        );
+      },
     },
     {
-      title: "Title",
+      title: "Tiêu đề",
       dataIndex: "title",
       key: "title",
-      render: (text: string, record: UploadHistoryItem) => (
+      render: (text: string, record: any) => (
         <Link 
-          href={`/main/media/detail/${record.MediaItemId}`} 
-          className="text-white hover:text-violet-400 font-bold block mb-1"
+          href={`/main/media/detail/${record.mediaItemId}`} // SỬA: mediaItemId (chữ m thường)
+          className="text-white hover:text-violet-400 font-bold"
         >
           {text}
         </Link>
       ),
     },
     {
-      title: "Type",
-      dataIndex: "typeName",
-      key: "typeName",
-      width: 120,
+      title: "Loại",
+      dataIndex: "mediaType", // SỬA: API trả về 'mediaType', không phải 'typeName'
+      key: "mediaType",
       render: (type: string) => (
-        <Tag color="geekblue" className="font-bold uppercase">{type}</Tag>
+        <Tag color="violet" className="font-bold uppercase">{type}</Tag>
       ),
     },
     {
-      title: "Created At",
+      title: "Ngày đăng",
       dataIndex: "createdAt",
       key: "createdAt",
-      width: 150,
       render: (date: string) => (
         <span className="text-gray-400 text-sm">
           {date ? dayjs(date).format("DD/MM/YYYY") : "-"}
@@ -103,88 +110,39 @@ export default function MyUploads() {
       ),
     },
     {
-      title: "Action",
+      title: "Thao tác",
       key: "action",
-      width: 150,
-      render: (_: any, record: UploadHistoryItem) => (
+      render: (_: any, record: any) => (
         <Space size="middle">
-          {/* View Button */}
-          <Link href={`/main/media/detail/${record.MediaItemId}`}>
-            <Button 
-              type="text" 
-              icon={<EyeOutlined />} 
-              className="text-gray-400 hover:!text-violet-400" 
-            />
+          <Link href={`/main/media/detail/${record.mediaItemId}`}>
+            <Button type="text" icon={<EyeOutlined />} className="text-gray-400" />
           </Link>
-
-          {/* Edit Button (Placeholder functionality) */}
-          <Button 
-            type="text" 
-            icon={<EditOutlined />} 
-            className="text-blue-500 hover:!text-blue-400"
-            onClick={() => message.info("Edit feature coming soon!")}
-          />
-
-          {/* Delete Button */}
           <Popconfirm
-            title="Delete this media?"
-            description="Are you sure to delete this item? This action cannot be undone."
-            onConfirm={() => handleDelete(record.MediaItemId)}
-            okText="Yes"
-            cancelText="No"
-            okButtonProps={{ danger: true }}
+            title="Xóa bài đăng?"
+            onConfirm={() => handleDelete(record.mediaItemId)}
           >
-            <Button 
-              type="text" 
-              danger 
-              icon={<DeleteOutlined />} 
-              className="hover:bg-red-500/10"
-            />
+            <Button type="text" danger icon={<DeleteOutlined />} />
           </Popconfirm>
         </Space>
       ),
     },
   ];
 
-  return (
-    <ConfigProvider
-      theme={{
-        algorithm: theme.darkAlgorithm,
-        token: {
-          colorBgContainer: "#1f1f1f",
-          colorBorderSecondary: "#303030",
-          colorPrimary: "#8b5cf6", // violet-500
-        },
-      }}
-    >
-      <div className="mt-12 bg-[#1f1f1f] border border-white/5 rounded-2xl p-6 shadow-2xl">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-white">Lịch sử đăng bài</h2>
-          <Button onClick={() => fetchData(1, pagination.pageSize)}>Refresh</Button>
-        </div>
 
+  return (
+    <ConfigProvider theme={{ algorithm: theme.darkAlgorithm }}>
+      <div className="mt-12 bg-[#1f1f1f] rounded-2xl p-6">
+        <h2 className="text-2xl font-bold text-white mb-6">Lịch sử đăng bài</h2>
         <Table
           columns={columns}
           dataSource={data}
-          rowKey="MediaItemId"
+          rowKey="mediaItemId" // SỬA: mediaItemId (chữ m thường)
           pagination={{
             ...pagination,
             position: ["bottomCenter"],
-            showSizeChanger: true,
-            pageSizeOptions: ["5", "10", "20"],
           }}
           loading={loading}
           onChange={handleTableChange}
-          locale={{
-            emptyText: (
-              <Empty
-                image={Empty.PRESENTED_IMAGE_SIMPLE}
-                description={<span className="text-gray-400">Bạn chưa đăng bài nào</span>}
-              />
-            ),
-          }}
-          className="custom-table"
-          scroll={{ x: 800 }} // Horizontal scroll on mobile
         />
       </div>
     </ConfigProvider>

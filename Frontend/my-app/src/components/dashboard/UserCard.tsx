@@ -10,7 +10,7 @@ export default function UserCard({ avatar, displayName, email }: UserCardProps) 
   return (
     <div className="flex flex-col items-center mb-6 p-4 bg-[#353a45] rounded-lg">
       <Image
-        src={avatar}
+        src={`${process.env.NEXT_PUBLIC_API_URL || "https://8dcbf8a962a3.ngrok-free.app"}${avatar}`}
         alt="User Avatar"
         width={80}
         height={80}
