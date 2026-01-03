@@ -84,7 +84,7 @@ function HeaderNav() {
                 <div className="py-2">
                     {results.map((item, index) => {
                         // FIX LỖI KEY: Ưu tiên mediaItemId (m thường) từ Postman
-                        const finalId = item.mediaItemId || item.MediaItemId;
+                        const finalId = item.MediaItemId;
                         const finalKey = finalId || `search-key-${index}`;
 
                         return (
