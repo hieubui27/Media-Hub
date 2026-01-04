@@ -14,6 +14,7 @@ import {
   demoteUser,
   UserItem,
 } from "@/src/services/adminService";
+import { ColumnsType } from "antd/es/table";
 
 export default function UserManager() {
   const [data, setData] = useState<UserItem[]>([]);
@@ -72,7 +73,7 @@ export default function UserManager() {
     }
   };
 
-  const columns = [
+  const columns: ColumnsType<UserItem> =  [
     /* ===== USER INFO (DESKTOP) ===== */
     {
       title: "User",

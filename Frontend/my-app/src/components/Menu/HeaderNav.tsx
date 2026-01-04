@@ -31,7 +31,7 @@ function HeaderNav() {
     const searchRef = useRef<HTMLDivElement>(null);
     const userMenuRef = useRef<HTMLDivElement>(null);
 
-    // Xử lý ảnh an toàn (Avatar & Thumbnail)
+    // Handle safe images (Avatar & Thumbnail)
     const getSafeUrl = (path?: string) => {
         if (!path) return "/images/default-thumbnail.jpg";
         return path.startsWith("http") ? path : `${BASE_URL}${path}`;
@@ -64,7 +64,7 @@ function HeaderNav() {
         return () => clearTimeout(delayDebounceFn);
     }, [searchTerm]);
 
-    // Đóng dropdown khi click ra ngoài
+    // Close dropdown when clicking outside
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (searchRef.current && !searchRef.current.contains(event.target as Node)) setShowDropdown(false);
@@ -74,7 +74,7 @@ function HeaderNav() {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    // --- COMPONENT CON: KẾT QUẢ TÌM KIẾM ---
+    // --- SUB-COMPONENT: SEARCH RESULTS ---
     const SearchResultsList = ({ isMobile = false }) => (
         <div className={`bg-[#1f1f1f] border border-white/10 shadow-2xl overflow-y-auto z-[120] 
             ${isMobile ? 'w-full mt-4 rounded-xl max-h-[60vh]' : 'absolute top-12 left-0 w-full rounded-2xl max-h-[400px]'}`}>
@@ -83,7 +83,7 @@ function HeaderNav() {
             ) : results.length > 0 ? (
                 <div className="py-2">
                     {results.map((item, index) => {
-                        // FIX LỖI KEY: Ưu tiên mediaItemId (m thường) từ Postman
+                        // FIX KEY ERROR: Prioritize mediaItemId from Postman
                         const finalId = item.MediaItemId;
                         const finalKey = finalId || `search-key-${index}`;
 
@@ -113,7 +113,7 @@ function HeaderNav() {
                     })}
                 </div>
             ) : (
-                <div className="p-6 text-center"><Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={<span className="text-zinc-500">Không tìm thấy kết quả</span>} /></div>
+                <div className="p-6 text-center"><Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={<span className="text-zinc-500">No results found</span>} /></div>
             )}
         </div>
     );
@@ -130,20 +130,20 @@ function HeaderNav() {
                             <input
                                 autoFocus
                                 type="text"
-                                placeholder="Tìm kiếm phim, sách, game..."
+                                placeholder="Search for movies, books, games..."
                                 className="w-full bg-transparent h-10 px-3 outline-none text-sm text-white"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
                         </div>
-                        <button onClick={() => { setIsSearchOpen(false); setSearchTerm(""); }} className="text-zinc-400 font-medium text-sm">Hủy</button>
+                        <button onClick={() => { setIsSearchOpen(false); setSearchTerm(""); }} className="text-zinc-400 font-medium text-sm">Cancel</button>
                         {searchTerm && <div className="fixed top-16 left-0 w-full px-4 h-screen bg-black/60 backdrop-blur-sm"><SearchResultsList isMobile /></div>}
                     </div>
                 ) : (
                     <>
                         <div className="flex items-center gap-3">
                             <button onClick={() => setIsMenuOpen(true)} className="xl:hidden p-2 -ml-2 text-white"><Menu size={26} /></button>
-                            {/* --- THAY ĐỔI Ở ĐÂY: Dùng Link cho Logo --- */}
+                            {/* --- CHANGE HERE: Use Link for Logo --- */}
                             <Link href="/main/home" className="logo font-black text-lg xl:text-2xl tracking-tighter text-violet-500 uppercase cursor-pointer hover:text-violet-400 transition-colors">
                                 MEDIA HUB
                             </Link>
@@ -162,7 +162,7 @@ function HeaderNav() {
                                 <div className="relative w-64 2xl:w-80 group">
                                     <input
                                         type="text"
-                                        placeholder="Tìm kiếm nhanh..."
+                                        placeholder="Quick search..."
                                         className="w-full h-9 px-4 pr-10 rounded-full bg-white/5 border border-white/10 outline-none text-sm focus:bg-white/10 focus:border-violet-500/50 transition-all text-white"
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
@@ -185,14 +185,14 @@ function HeaderNav() {
                                         </button>
                                         {showUserMenu && (
                                             <div className="absolute right-0 mt-3 w-52 bg-[#1f1f1f] border border-white/10 rounded-xl shadow-2xl py-2 animate-in fade-in zoom-in-95 duration-150">
-                                                <Link href="/main/dashboard/account" className="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-300 hover:bg-white/5 hover:text-white transition-colors"><User size={16} /> Thông tin cá nhân</Link>
-                                                <Link href="/main/dashboard" className="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-300 hover:bg-white/5 hover:text-white transition-colors"><LayoutDashboard size={16} /> Quản lý nội dung</Link>
-                                                <button onClick={() => logout()} className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-red-400 hover:bg-red-400/10 transition-colors border-t border-white/5 mt-1"><LogOut size={16} /> Đăng xuất</button>
+                                                <Link href="/main/dashboard/account" className="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-300 hover:bg-white/5 hover:text-white transition-colors"><User size={16} /> Profile Information</Link>
+                                                <Link href="/main/dashboard" className="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-300 hover:bg-white/5 hover:text-white transition-colors"><LayoutDashboard size={16} /> Content Management</Link>
+                                                <button onClick={() => logout()} className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-red-400 hover:bg-red-400/10 transition-colors border-t border-white/5 mt-1"><LogOut size={16} /> Log Out</button>
                                             </div>
                                         )}
                                     </div>
                                 ) : (
-                                    <Link href="/auth/login" className="bg-violet-600 hover:bg-violet-700 text-white px-6 py-1.5 rounded-full text-sm font-bold transition-all shadow-lg shadow-violet-500/20">Đăng nhập</Link>
+                                    <Link href="/auth/login" className="bg-violet-600 hover:bg-violet-700 text-white px-6 py-1.5 rounded-full text-sm font-bold transition-all shadow-lg shadow-violet-500/20">Log In</Link>
                                 )}
                             </div>
                         </div>
@@ -200,11 +200,11 @@ function HeaderNav() {
                 )}
             </nav>
 
-            {/* --- SIDEBAR MOBILE --- */}
+            {/* --- MOBILE SIDEBAR --- */}
             <div className={`fixed inset-0 bg-black/80 backdrop-blur-sm z-[200] xl:hidden transition-all duration-300 ${isMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"}`} onClick={() => setIsMenuOpen(false)} />
             <aside className={`fixed top-0 left-0 w-[300px] h-full bg-[#0f0f0f] z-[201] xl:hidden flex flex-col shadow-2xl transition-transform duration-300 ease-out ${isMenuOpen ? "translate-x-0" : "-translate-x-full"}`}>
                 <div className="p-5 flex items-center justify-between border-b border-white/5">
-                    {/* --- THAY ĐỔI Ở ĐÂY: Dùng Link cho Logo Mobile --- */}
+                    {/* --- CHANGE HERE: Use Link for Logo Mobile --- */}
                     <Link href="/main/home" onClick={() => setIsMenuOpen(false)} className="logo font-black text-xl text-violet-500">MEDIA HUB</Link>
                     <button onClick={() => setIsMenuOpen(false)} className="text-zinc-500"><X size={26} /></button>
                 </div>
@@ -220,17 +220,17 @@ function HeaderNav() {
                                 </div>
                             </div>
                             <div className="grid grid-cols-2 gap-2">
-                                <Link href="/main/dashboard/account" onClick={() => setIsMenuOpen(false)} className="flex items-center justify-center gap-2 bg-white/5 py-2 rounded-lg text-xs font-bold text-white"><User size={14} /> Hồ sơ</Link>
+                                <Link href="/main/dashboard/account" onClick={() => setIsMenuOpen(false)} className="flex items-center justify-center gap-2 bg-white/5 py-2 rounded-lg text-xs font-bold text-white"><User size={14} /> Profile</Link>
                                 <Link href="/main/dashboard" onClick={() => setIsMenuOpen(false)} className="flex items-center justify-center gap-2 bg-white/5 py-2 rounded-lg text-xs font-bold text-white"><LayoutDashboard size={14} /> Dashboard</Link>
                             </div>
-                            <button onClick={() => logout()} className="w-full mt-2 flex items-center justify-center gap-2 text-red-400 py-2 text-xs font-bold border border-red-400/10 rounded-lg"><LogOut size={14} /> Đăng xuất</button>
+                            <button onClick={() => logout()} className="w-full mt-2 flex items-center justify-center gap-2 text-red-400 py-2 text-xs font-bold border border-red-400/10 rounded-lg"><LogOut size={14} /> Log Out</button>
                         </div>
                     ) : (
-                        <Link href="/auth/login" className="flex items-center justify-center gap-2 w-full bg-violet-600 text-white py-3 rounded-xl font-bold mb-8 shadow-lg shadow-violet-500/20">Đăng nhập ngay</Link>
+                        <Link href="/auth/login" className="flex items-center justify-center gap-2 w-full bg-violet-600 text-white py-3 rounded-xl font-bold mb-8 shadow-lg shadow-violet-500/20">Log In Now</Link>
                     )}
 
                     <div className="space-y-1">
-                        <p className="text-zinc-600 text-[10px] font-black uppercase tracking-[0.2em] ml-2 mb-4">Khám phá</p>
+                        <p className="text-zinc-600 text-[10px] font-black uppercase tracking-[0.2em] ml-2 mb-4">Explore</p>
                         {navItems.map((item) => (
                             <Link 
                                 key={item.slug} 

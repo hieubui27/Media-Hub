@@ -3,7 +3,7 @@ import ChangePasswordModal from "../common/ChangePasswordModal";
 import { useUser } from "@/src/contexts/UserContext";
 import { changeUserInfo } from "@/src/services/authService";
 
-// ... (Giữ nguyên các interface và StatusAlert, RadioInput component)
+// ... (Keep interfaces and StatusAlert, RadioInput components)
 interface AccountFormProps {
   email: string;
   displayName: string;
@@ -43,7 +43,7 @@ const RadioInput = ({ value, label, currentGender, onChange }: { value: string; 
 );
 
 export default function AccountForm({ email, displayName, userGender, userDob, onSubmit }: AccountFormProps) {
-  // ... (Phần logic giữ nguyên không đổi)
+  // ... (Keep logic unchanged)
   const { user,login } = useUser();
   const [name, setName] = useState(displayName);
   const [gender, setGender] = useState(userGender || "other");
@@ -144,7 +144,7 @@ export default function AccountForm({ email, displayName, userGender, userDob, o
 
             <div className="col-span-1">
                  <label className="block text-zinc-400 mb-2 text-sm font-medium">Gender</label>
-                 {/* SỬA: Thêm flex-wrap để không bị vỡ layout trên mobile nhỏ */}
+                 {/* FIX: Add flex-wrap to prevent layout breaking on small mobile devices */}
                  <div className="flex flex-wrap items-center h-[50px]"> 
                     <RadioInput value="male" label="Male" currentGender={gender} onChange={setGender} />
                     <RadioInput value="female" label="Female" currentGender={gender} onChange={setGender} />

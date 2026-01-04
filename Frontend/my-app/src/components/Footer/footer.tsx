@@ -10,7 +10,7 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-8 md:px-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
           
-          {/* Cột 1: Thương hiệu */}
+          {/* Column 1: Brand */}
           <div className="space-y-6">
             <div className="text-2xl font-black tracking-tighter text-violet-500">
               MEDIA HUB
@@ -35,7 +35,7 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Cột 2: Danh mục */}
+          {/* Column 2: Categories */}
           <div>
             <h4 className="text-lg font-bold mb-6">Discover</h4>
             <ul className="space-y-4 text-gray-400 text-sm">
@@ -46,7 +46,7 @@ const Footer = () => {
               <li><Link href="/main/media/game" className="hover:text-violet-400 transition-colors">Games</Link></li>
             </ul>
           </div>
-          {/* Cột 4: Liên hệ */}
+          {/* Column 4: Contact */}
           <div>
             <h4 className="text-lg font-bold mb-6">Contact</h4>
             <ul className="space-y-4 text-gray-400 text-sm">
@@ -67,7 +67,7 @@ const Footer = () => {
 
         </div>
 
-        {/* Thanh bản quyền */}
+        {/* Copyright bar */}
         <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-gray-500 text-xs">
             © {currentYear} <span className="text-violet-500 font-bold">Media Hub</span>. All rights reserved.

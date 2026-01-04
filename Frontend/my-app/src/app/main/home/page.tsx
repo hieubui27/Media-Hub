@@ -5,11 +5,11 @@ import CarouselTop from "@/src/components/Carousel/carouselTop";
 import { APIMediaItem } from "@/src/interfaces/APIMediaItem";
 import { Spin } from 'antd';
 import { mediaService } from '@/src/services/getTopFilm';
-// Đảm bảo đường dẫn service chính xác theo cấu trúc dự án của bạn
+// Ensure the service path is correct according to your project structure
 
 
 function HomePage() {
-  // 1. State quản lý dữ liệu cho từng hàng TV Series và Books
+  // 1. State to manage data for each TV Series and Books row
   const [koreanSeries, setKoreanSeries] = useState<APIMediaItem[]>([]);
   const [usukSeries, setUsukSeries] = useState<APIMediaItem[]>([]);
   const [chineseSeries, setChineseSeries] = useState<APIMediaItem[]>([]);
@@ -20,8 +20,8 @@ function HomePage() {
     const fetchAllData = async () => {
       setLoading(true);
       try {
-        // 2. Sử dụng hàm getTVSeriesByCountryFE để lọc chính xác phim bộ theo nước
-        // Sử dụng Promise.all để gọi đồng thời giúp tối ưu hiệu năng
+        // 2. Use getTVSeriesByCountryFE function to filter TV series accurately by country
+        // Use Promise.all to call concurrently for performance optimization
         const [kr, usuk, cn, books] = await Promise.all([
           mediaService.getTVSeriesByCountryFE('Korea'),
           mediaService.getTVSeriesByCountryFE('USA'),
@@ -34,7 +34,7 @@ function HomePage() {
         setChineseSeries(cn);
         setTrendingBooks(books);
       } catch (error) {
-        console.error("Lỗi khi tải dữ liệu trang chủ:", error);
+        console.error("Error loading home page data:", error);
       } finally {
         setLoading(false);
       }
@@ -53,10 +53,10 @@ function HomePage() {
 
   return (
     <div className="bg-gray-800 min-h-screen pb-10">
-      {/* Hero Section: Carousel tự fetch 5 phim mới nhất */}
+      {/* Hero Section: Carousel automatically fetches 5 latest movies */}
       <CarouselTop />
 
-      {/* 3. Container cho các hàng Phim Bộ (TV Series) */}
+      {/* 3. Container for TV Series rows */}
       <div className="carousel bg-gray-900 w-full max-w-[1400px] mx-auto rounded-xl mt-8 py-6 shadow-2xl">
         <MovieRow 
           title="New Korean TV Series" 
@@ -77,7 +77,7 @@ function HomePage() {
         />
       </div>
 
-      {/* 4. Container cho hàng Sách (Books) */}
+      {/* 4. Container for Books row */}
       <div className="max-w-[1400px] mx-auto mt-10">
         <MovieRow 
           title="Trending books" 

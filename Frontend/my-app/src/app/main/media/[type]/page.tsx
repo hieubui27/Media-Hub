@@ -21,14 +21,14 @@ export default async function TypeMediaPage({ params, searchParams }: Props) {
 
   const type = resolvedParams.type;
   
-  // 1. Lấy page từ URL. Nếu không có hoặc <= 0 thì mặc định là 1.
+  // 1. Get page from URL. Default to 1 if not present or <= 0.
   const pageFromUrl = Number(resolvedSearchParams.page) || 1;
   const currentPage = pageFromUrl < 1 ? 1 : pageFromUrl;
 
   const currentGenre = resolvedSearchParams.genre;
   const currentCountry = resolvedSearchParams.country;
 
-  // 2. Gọi API: Truyền trực tiếp số trang (1, 2, 3...)
+  // 2. Call API: Pass page number directly (1, 2, 3...)
   const data = await fetchMediaItems(
     type, 
     currentPage, 
@@ -40,10 +40,10 @@ export default async function TypeMediaPage({ params, searchParams }: Props) {
     return <div className="p-20 text-center text-zinc-500">Loading or no data...</div>;
   }
 
-  // Lưu ý: Nếu API trả về data.number đúng là trang hiện tại (1-based) thì dùng luôn.
-  // Nếu API vẫn trả về 0-based trong response body (dù input là 1-based), 
-  // bạn có thể cần dùng `data.number + 1` ở prop currentPage dưới đây.
-  // Ở đây tôi giả định API trả về chuẩn 1-based như bạn yêu cầu.
+  // Note: If API returns data.number as current page (1-based), use it directly.
+  // If API still returns 0-based in response body (even if input is 1-based),
+  // you might need to use `data.number + 1` in the currentPage prop below.
+  // Here I assume API returns standard 1-based as you requested.
 
   return (
     <div className="p-4 md:p-10 bg-[#0a0a0a] min-h-screen pt-24 md:pt-28">
@@ -60,9 +60,9 @@ export default async function TypeMediaPage({ params, searchParams }: Props) {
       
       <MediaGrid items={data.content} />
 
-      {/* Phân trang */}
+      {/* Pagination */}
       <Pagination 
-        currentPage={data.number + 1}  // Giả định API trả về số trang hiện tại (1, 2...)
+        currentPage={data.number + 1}  // Assume API returns current page number (1, 2...)
         totalPages={data.totalPages} 
       />
     </div>

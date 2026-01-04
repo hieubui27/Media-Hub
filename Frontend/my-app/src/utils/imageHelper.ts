@@ -1,26 +1,26 @@
-// Hàm helper để xử lý URL ảnh (Avatar/Media)
+// Helper function to handle image URL (Avatar/Media)
 export const getImageUrl = (thumbnail: string | undefined | null): string => {
-    // 1. Nếu thumbnail trống, trả về /placeholder-poster.png
+    // 1. If thumbnail is empty, return /placeholder-poster.png
     if (!thumbnail || thumbnail.trim() === "") {
         return "/placeholder-poster.png";
     }
 
-    // 2. Nếu thumbnail bắt đầu bằng 'http', trả về chính nó
+    // 2. If thumbnail starts with 'http', return it as is
     if (thumbnail.startsWith("http")) {
         return thumbnail;
     }
 
-    // 3. Nếu thumbnail chứa 'uploads', thêm prefix là biến môi trường
+    // 3. If thumbnail contains 'uploads', add environment variable prefix
     if (thumbnail.includes("uploads")) {
         const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://8dcbf8a962a3.ngrok-free.app";
-        // Tối ưu xử lý dấu gạch chéo để tránh lỗi double slash
-        // Loại bỏ dấu / ở cuối baseUrl và dấu / ở đầu thumbnail (nếu có) trước khi nối
+        // Optimize slash handling to avoid double slash errors
+        // Remove trailing slash from baseUrl and leading slash from thumbnail (if any) before joining
         const cleanBaseUrl = baseUrl.replace(/\/+$/, "");
         const cleanPath = thumbnail.replace(/^\/+/, "");
         
         return `${cleanBaseUrl}${cleanPath}`;
     }
 
-    // Fallback mặc định
+    // Default fallback
     return thumbnail;
 };

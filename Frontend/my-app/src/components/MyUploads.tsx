@@ -8,7 +8,7 @@ import { UploadHistoryItem } from "@/src/interfaces/uploadHistory";
 import Link from "next/link";
 import dayjs from "dayjs";
 
-// Khai báo Base URL trực tiếp
+// Direct Base URL declaration
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://8dcbf8a962a3.ngrok-free.app";
 
 export default function MyUploads() {
@@ -23,7 +23,7 @@ export default function MyUploads() {
   const fetchData = async (page: number, pageSize: number) => {
     setLoading(true);
     try {
-      // SỬA: Không trừ 1 vì Backend dùng 1-based indexing như bạn đã nêu
+      // FIX: Do not subtract 1 because Backend uses 1-based indexing as you stated
       const res = await getMyUploads(page, pageSize);
       
       setData(res.content || []);
@@ -61,7 +61,7 @@ export default function MyUploads() {
   const columns = [
     {
       title: "Poster",
-      dataIndex: "imagePath", // SỬA: Theo ảnh API trả về 'imagePath'
+      dataIndex: "imagePath", // FIX: According to API returning 'imagePath'
       key: "imagePath",
       width: 100,
       render: (path: string) => {
@@ -84,7 +84,7 @@ export default function MyUploads() {
       key: "title",
       render: (text: string, record: any) => (
         <Link 
-          href={`/main/media/detail/${record.mediaItemId}`} // SỬA: mediaItemId (chữ m thường)
+          href={`/main/media/detail/${record.mediaItemId}`} // FIX: mediaItemId (lowercase m)
           className="text-white hover:text-violet-400 font-bold"
         >
           {text}
@@ -93,7 +93,7 @@ export default function MyUploads() {
     },
     {
       title: "Type",
-      dataIndex: "mediaType", // SỬA: API trả về 'mediaType', không phải 'typeName'
+      dataIndex: "mediaType", // FIX: API returns 'mediaType', not 'typeName'
       key: "mediaType",
       render: (type: string) => (
         <Tag color="violet" className="font-bold uppercase">{type}</Tag>
@@ -136,7 +136,7 @@ export default function MyUploads() {
         <Table
           columns={columns}
           dataSource={data}
-          rowKey="mediaItemId" // SỬA: mediaItemId (chữ m thường)
+          rowKey="mediaItemId" // FIX: mediaItemId (lowercase m)
           pagination={{
             ...pagination,
             position: ["bottomCenter"],

@@ -18,7 +18,7 @@ export default function Content({ data }: { data: MediaItemDetail }) {
           fill
           className="object-cover transition-transform duration-500 group-hover:scale-105"
           priority
-          unoptimized // Load ảnh này trước để tối ưu LCP
+          unoptimized // Load this image first to optimize LCP
         />
       </div>
 

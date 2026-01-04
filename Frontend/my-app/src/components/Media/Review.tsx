@@ -6,9 +6,9 @@ import {
   getMediaRating, 
   createReview, 
   updateReview, 
-  deleteReview as deleteUserReview // Alias cho service của User
+  deleteReview as deleteUserReview // Alias for User service
 } from "@/src/services/mediaService";
-import { deleteReview as deleteAdminReview } from "@/src/services/adminService"; // Service của Admin
+import { deleteReview as deleteAdminReview } from "@/src/services/adminService"; // Admin service
 import { ReviewData } from "@/src/interfaces/Review";
 import { Send, Edit2, Trash2, ShieldAlert } from "lucide-react";
 import Link from "next/link";
@@ -23,7 +23,7 @@ export default function Review({ mediaId }: { mediaId: string }) {
   const [content, setContent] = useState("");
   const [editingId, setEditingId] = useState<number | null>(null);
 
-  // Load dữ liệu
+  // Load data
   const loadData = async () => {
     try {
       const [revData, ratData] = await Promise.all([
@@ -41,7 +41,7 @@ export default function Review({ mediaId }: { mediaId: string }) {
 
   useEffect(() => { loadData(); }, [mediaId]);
 
-  // Xử lý Gửi/Sửa Review (Chỉ User mới làm được)
+  // Handle Post/Edit Review (Only for Users)
   const handleSubmit = async () => {
     if (!user?.accessToken || !content.trim()) return;
     
@@ -61,7 +61,7 @@ export default function Review({ mediaId }: { mediaId: string }) {
     }
   };
 
-  // Xử lý Xóa Review (Phân quyền Admin/User)
+  // Handle Delete Review (Admin/User permissions)
   const handleDelete = (reviewId: number, isOwn: boolean) => {
     if (!user?.accessToken) return;
 
@@ -74,11 +74,11 @@ export default function Review({ mediaId }: { mediaId: string }) {
       onOk: async () => {
         try {
           if (user.role === "ADMIN" && !isOwn) {
-            // Trường hợp Admin xóa bài người khác
+            // Case: Admin deletes someone else's post
             await deleteAdminReview(reviewId);
             message.success("Admin deleted violating comment");
           } else {
-            // Trường hợp User xóa bài mình (hoặc Admin xóa bài mình)
+            // Case: User deletes their own post (or Admin deletes their own post)
             await deleteUserReview(mediaId, reviewId, user.accessToken);
             message.success("Comment deleted");
           }
@@ -106,7 +106,7 @@ export default function Review({ mediaId }: { mediaId: string }) {
         </div>
       </div>
 
-      {/* Input Form - Chỉ hiện khi đăng nhập */}
+      {/* Input Form - Only show when logged in */}
       {user ? (
         <div className="mb-10 bg-white/5 p-6 rounded-3xl border border-white/10">
            <div className="flex items-center gap-4 mb-4">
@@ -162,7 +162,7 @@ export default function Review({ mediaId }: { mediaId: string }) {
                   
                   {/* Action Buttons */}
                   <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    {/* EDIT: Chỉ User chủ sở hữu */}
+                    {/* EDIT: Only for the owner */}
                     {isOwnReview && (
                       <button 
                         onClick={() => {setEditingId(rev.reviewId); setContent(rev.content); window.scrollTo({top: 0, behavior: 'smooth'});}} 
@@ -173,7 +173,7 @@ export default function Review({ mediaId }: { mediaId: string }) {
                       </button>
                     )}
                     
-                    {/* DELETE: User chủ sở hữu HOẶC Admin */}
+                    {/* DELETE: Owner OR Admin */}
                     {(isOwnReview || isAdmin) && (
                       <button 
                         onClick={() => handleDelete(rev.reviewId, isOwnReview)} 

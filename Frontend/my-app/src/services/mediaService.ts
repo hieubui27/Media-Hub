@@ -3,13 +3,13 @@ import { ReviewData } from "../interfaces/Review";
 interface ApiResponse {
     content: MediaItem[];
     totalElements: number;
-    // ... các trường khác từ API của bạn
+    // ... other fields from your API
 }
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api";
 
 /**
- * Fetch danh sách media dựa trên loại (movie, book, game...)
+ * Fetch media list based on type (movie, book, game...)
  */
 export const getMediaByType = async (type: string): Promise<MediaItem[]> => {
     try {
@@ -18,7 +18,7 @@ export const getMediaByType = async (type: string): Promise<MediaItem[]> => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            // Cache dữ liệu trong 60 giây (ISR)
+            // Cache data for 60 seconds (ISR)
             next: { revalidate: 60 } 
         });
 
@@ -39,18 +39,18 @@ export async function getReviewsByMediaId(id: string): Promise<ReviewData[]> {
   const res = await fetch(`/api/remote/medias/${id}/reviews`, { cache: 'no-store',
     headers: {
             "Content-Type": "application/json",
-            "ngrok-skip-browser-warning": "true", // Header quan trọng để bỏ qua trang div của ngrok
+            "ngrok-skip-browser-warning": "true", // Important header to skip ngrok's warning page
           },
    });
   return res.json();
 }
 
-// Hàm lấy rating (giả định endpoint của bạn)
+// Function to get rating (assuming your endpoint)
 interface RatingItem {
   ratingValue: number;
   userId: number;
   userName: string;
-  // các trường khác nếu cần
+  // other fields if needed
 }
 
 export async function getMediaRating(id: string): Promise<number> {
@@ -62,13 +62,13 @@ export async function getMediaRating(id: string): Promise<number> {
     },
   });
   
-  const data: RatingItem[] = await res.json(); // Ép kiểu mảng
+  const data: RatingItem[] = await res.json(); // Array casting
   
   if (Array.isArray(data) && data.length > 0) {
-    // Tính tổng giá trị rating
+    // Calculate total rating value
     const sum = data.reduce((acc: number, item: RatingItem) => acc + (item.ratingValue || 0), 0);
     
-    // Tính trung bình cộng: $\text{Average} = \frac{\sum \text{ratingValue}}{n}$
+    // Calculate average: Average = sum(ratingValue) / n
     const average = sum / data.length;
     return Number(average.toFixed(1)); 
   }
@@ -76,7 +76,7 @@ export async function getMediaRating(id: string): Promise<number> {
   return 0;
 }
 
-// Hàm tạo/cập nhật rating với bearer token
+// Function to create/update rating with bearer token
 export async function createRating(
   mediaId: string | number, 
   ratingValue: number, 
@@ -112,7 +112,6 @@ export async function createRating(
 }
 
 // src/services/mediaService.ts
-// src/services/mediaService.ts
 import { MediaItem, MediaResponse } from "../interfaces/APIResponse";
 
 const API_TYPE_MAP: Record<string, string> = {
@@ -135,25 +134,25 @@ export async function searchMediaItems(
   try {
     const params = new URLSearchParams();
 
-    // 1. Xử lý Pagination
+    // 1. Handle Pagination
     params.set("page", (page).toString());
 
-    // 2. Xử lý Từ khóa tìm kiếm
+    // 2. Handle Search Keyword
     if (keyword) {
         params.set("title", keyword);
     }
 
-    // 3. Xử lý Type (Loại)
+    // 3. Handle Type
     const apiType = API_TYPE_MAP[typeSlug.toLowerCase()] || typeSlug;
     if (apiType && apiType.toLowerCase() !== "all") {
         params.set("typeName", apiType);
     }
 
-    // 4. Xử lý Genre & Country
+    // 4. Handle Genre & Country
     if (genre && genre !== "All") params.set("genre", genre);
     if (country && country !== "All") params.set("country", country);
 
-    // Endpoint gọi API
+    // API endpoint
     const url = `${process.env.NEXT_PUBLIC_API_URL}/api/medias?${params.toString()}`;
     console.log("Fetching Search & Filter URL:", url);
 
@@ -206,5 +205,3 @@ export async function deleteReview(mediaId: string, reviewId: number, token: str
   });
   return res.ok;
 }
-
-

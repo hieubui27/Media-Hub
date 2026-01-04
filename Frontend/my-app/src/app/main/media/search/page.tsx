@@ -16,14 +16,14 @@ interface SearchProps {
 export default async function SearchPage({ searchParams }: SearchProps) {
   const { query, type, genre, country, page } = await searchParams;
 
-  // 1. Xử lý Page từ URL làm nguồn dữ liệu chính (Source of Truth)
+  // 1. Handle Page from URL as Source of Truth
   const pageFromUrl = Number(page) || 1;
   const currentPage = pageFromUrl < 1 ? 1 : pageFromUrl;
   
   const keyword = query || "";
 
-  // 2. Gọi API
-  // Lưu ý: Nếu API của bạn dùng 0-based index (trang đầu là 0), hãy truyền (currentPage - 1)
+  // 2. Call API
+  // Note: If your API uses 0-based index (first page is 0), pass (currentPage - 1)
   const data = await searchMediaItems(
     keyword,
     type || "all",
@@ -44,7 +44,7 @@ export default async function SearchPage({ searchParams }: SearchProps) {
             )}
           </h1>
           <p className="text-zinc-500 text-sm">
-            {/* SỬA: Dùng currentPage thay vì data.number */}
+            {/* FIX: Use currentPage instead of data.number */}
             {data ? `Page ${currentPage} / ${data.totalPages} • Found ${data.totalElements} results.` : "Loading..."}
           </p>
         </header>
@@ -59,7 +59,7 @@ export default async function SearchPage({ searchParams }: SearchProps) {
           <>
             <MediaGrid items={data.content} />
             
-            {/* SỬA: Truyền currentPage vào Pagination */}
+            {/* FIX: Pass currentPage into Pagination */}
             <Pagination 
               currentPage={currentPage} 
               totalPages={data.totalPages} 

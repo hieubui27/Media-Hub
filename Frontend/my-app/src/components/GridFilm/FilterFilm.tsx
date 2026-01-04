@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation"; // Thêm useSearchParams
+import { useRouter, useSearchParams } from "next/navigation"; // Add useSearchParams
 import { fetchFilterOptions } from "@/src/services/getGenres";
 
 const MEDIA_MAP: Record<string, { slug: string; label: string }> = {
@@ -29,7 +29,7 @@ export default function MediaFilter({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
-  const searchParams = useSearchParams(); // Hook để lấy params hiện tại
+  const searchParams = useSearchParams(); // Hook to get current params
 
   const [options, setOptions] = useState<FilterOptions>({
     genres: [],
@@ -63,13 +63,13 @@ export default function MediaFilter({
   const handleApplyFilter = () => {
     const params = new URLSearchParams();
 
-    // 1. GIỮ LẠI TỪ KHÓA TÌM KIẾM (QUAN TRỌNG)
+    // 1. KEEP SEARCH KEYWORD (IMPORTANT)
     const currentQuery = searchParams.get("query");
     if (currentQuery) {
       params.set("query", currentQuery);
     }
 
-    // 2. Thêm các filter mới
+    // 2. Add new filters
     const lowerType = filters.type.toLowerCase();
     const typeSlug = MEDIA_MAP[lowerType]?.slug || lowerType;
 
@@ -77,7 +77,7 @@ export default function MediaFilter({
     if (filters.genre !== "All") params.set("genre", filters.genre);
     if (filters.country !== "All") params.set("country", filters.country);
     
-    // Reset về trang 1 khi filter thay đổi
+    // Reset to page 1 when filter changes
     params.set("page", "1");
 
     setIsOpen(false);
@@ -131,7 +131,7 @@ export default function MediaFilter({
   );
 }
 
-// Sub-component giữ nguyên logic UI
+// Sub-component keeps UI logic
 interface FilterRowProps {
   label: string;
   options: string[];

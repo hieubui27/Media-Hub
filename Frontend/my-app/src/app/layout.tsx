@@ -6,8 +6,8 @@ import "./globals.css";
 
 
 const inter = Inter({
-  subsets: ["latin", "vietnamese"], // Hỗ trợ tiếng Việt
-  variable: "--font-inter",         // Biến CSS để sử dụng trong Tailwind
+  subsets: ["latin", "vietnamese"], // Support Vietnamese
+  variable: "--font-inter",         // CSS variable for Tailwind
   display: "swap",
 });
 
