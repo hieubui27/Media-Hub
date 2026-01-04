@@ -110,7 +110,7 @@ export default function Review({ mediaId }: { mediaId: string }) {
       {user ? (
         <div className="mb-10 bg-white/5 p-6 rounded-3xl border border-white/10">
            <div className="flex items-center gap-4 mb-4">
-             <img src={user.avatar || `https://ui-avatars.com/api/?name=${user.displayName}`} className="w-10 h-10 rounded-full"/>
+             <img src={user.avatar || `${process.env.NEXT_PUBLIC_API_URL}${user.avatar}`} className="w-10 h-10 rounded-full"/>
              <span className="font-bold">{user.displayName}</span>
              {editingId && <span className="text-yellow-500 text-sm ml-auto">(Đang chỉnh sửa)</span>}
            </div>
