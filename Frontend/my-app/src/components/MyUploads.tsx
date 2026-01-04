@@ -34,7 +34,7 @@ export default function MyUploads() {
       });
     } catch (error) {
       console.error(error);
-      message.error("Không thể tải danh sách bài đăng");
+      message.error("Cannot load upload list");
     } finally {
       setLoading(false);
     }
@@ -51,10 +51,10 @@ export default function MyUploads() {
   const handleDelete = async (id: number) => {
     try {
       await deleteMediaItem(id);
-      message.success("Xóa thành công");
+      message.success("Deleted successfully");
       fetchData(pagination.current, pagination.pageSize);
     } catch (error) {
-      message.error("Xóa thất bại");
+      message.error("Delete failed");
     }
   };
 
@@ -79,7 +79,7 @@ export default function MyUploads() {
       },
     },
     {
-      title: "Tiêu đề",
+      title: "Title",
       dataIndex: "title",
       key: "title",
       render: (text: string, record: any) => (
@@ -92,7 +92,7 @@ export default function MyUploads() {
       ),
     },
     {
-      title: "Loại",
+      title: "Type",
       dataIndex: "mediaType", // SỬA: API trả về 'mediaType', không phải 'typeName'
       key: "mediaType",
       render: (type: string) => (
@@ -100,7 +100,7 @@ export default function MyUploads() {
       ),
     },
     {
-      title: "Ngày đăng",
+      title: "Upload Date",
       dataIndex: "createdAt",
       key: "createdAt",
       render: (date: string) => (
@@ -110,7 +110,7 @@ export default function MyUploads() {
       ),
     },
     {
-      title: "Thao tác",
+      title: "Action",
       key: "action",
       render: (_: any, record: any) => (
         <Space size="middle">
@@ -118,7 +118,7 @@ export default function MyUploads() {
             <Button type="text" icon={<EyeOutlined />} className="text-gray-400" />
           </Link>
           <Popconfirm
-            title="Xóa bài đăng?"
+            title="Delete this upload?"
             onConfirm={() => handleDelete(record.mediaItemId)}
           >
             <Button type="text" danger icon={<DeleteOutlined />} />
@@ -132,7 +132,7 @@ export default function MyUploads() {
   return (
     <ConfigProvider theme={{ algorithm: theme.darkAlgorithm }}>
       <div className="mt-12 bg-[#1f1f1f] rounded-2xl p-6">
-        <h2 className="text-2xl font-bold text-white mb-6">Lịch sử đăng bài</h2>
+        <h2 className="text-2xl font-bold text-white mb-6">Upload History</h2>
         <Table
           columns={columns}
           dataSource={data}

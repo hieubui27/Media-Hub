@@ -29,7 +29,7 @@ function AdminDashboardPage() {
   const tabItems = [
     {
       key: 'users',
-      label: <span className="text-lg px-4">Quản lý User</span>,
+      label: <span className="text-lg px-4">User Management</span>,
       children: <UserManager />,
     },
   ];
@@ -37,8 +37,8 @@ function AdminDashboardPage() {
   return (
     <div className="space-y-4 md:space-y-8">
       <header className="px-1">
-        <h1 className="text-2xl md:text-3xl font-extrabold text-white">Hệ thống quản trị</h1>
-        <p className="text-sm md:text-base text-gray-400">Quản lý người dùng và nội dung.</p>
+        <h1 className="text-2xl md:text-3xl font-extrabold text-white">Admin System</h1>
+        <p className="text-sm md:text-base text-gray-400">Manage users and content.</p>
       </header>
 
       {/* Stats Cards: 1 cột trên Mobile, 3 cột trên Desktop */}

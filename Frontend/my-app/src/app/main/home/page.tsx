@@ -59,20 +59,20 @@ function HomePage() {
       {/* 3. Container cho các hàng Phim Bộ (TV Series) */}
       <div className="carousel bg-gray-900 w-full max-w-[1400px] mx-auto rounded-xl mt-8 py-6 shadow-2xl">
         <MovieRow 
-          title="Phim bộ Hàn Quốc mới" 
-          viewAllLink="/danh-muc/tv-series-korea" 
+          title="New Korean TV Series" 
+          viewAllLink="/main/media/search?type=series&country=Korea&page=1" 
           data={koreanSeries} 
         />
         
         <MovieRow 
-          title="Phim bộ US-UK đặc sắc" 
-          viewAllLink="/danh-muc/tv-series-us-uk" 
+          title="Featured US-UK TV Series" 
+          viewAllLink="/main/media/search?type=series&country=USA&page=1" 
           data={usukSeries} 
         />
 
         <MovieRow 
-          title="Phim bộ Trung Quốc mới" 
-          viewAllLink="/danh-muc/tv-series-china" 
+          title="New Chinese TV Series" 
+          viewAllLink="/main/media/search?type=series&country=China&page=1" 
           data={chineseSeries} 
         />
       </div>
@@ -81,7 +81,7 @@ function HomePage() {
       <div className="max-w-[1400px] mx-auto mt-10">
         <MovieRow 
           title="Trending books" 
-          viewAllLink="/danh-muc/book" 
+          viewAllLink="/main/media/search?type=book&page=1" 
           data={trendingBooks} 
         />
       </div>

@@ -55,8 +55,8 @@ export default function Home() {
             </h1>
             
             <p className="text-zinc-400 text-sm md:text-base font-medium max-w-md mb-8 leading-relaxed opacity-0 animate-[slideInRight_0.8s_ease-out_0.2s_forwards]">
-              Khám phá, theo dõi và quản lý thế giới giải trí của bạn. 
-              <br/>Phim ảnh • Sách • Game • Âm nhạc.
+              Discover, track and manage your entertainment world.
+              <br/>Movies • Books • Games • Music.
             </p>
 
             {/* C. Nút Tracking Now */}

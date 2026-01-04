@@ -48,16 +48,16 @@ export default function Review({ mediaId }: { mediaId: string }) {
     try {
       if (editingId) {
         await updateReview(mediaId, editingId, content, user.accessToken);
-        message.success("Đã cập nhật bình luận");
+        message.success("Comment updated");
       } else {
         await createReview(mediaId, content, user.accessToken);
-        message.success("Đã đăng bình luận");
+        message.success("Comment posted");
       }
       setContent("");
       setEditingId(null);
       loadData();
     } catch (error) {
-      message.error("Có lỗi xảy ra khi gửi bình luận");
+      message.error("Error posting comment");
     }
   };
 
@@ -66,25 +66,25 @@ export default function Review({ mediaId }: { mediaId: string }) {
     if (!user?.accessToken) return;
 
     Modal.confirm({
-      title: "Xác nhận xóa",
-      content: "Bạn có chắc chắn muốn xóa bình luận này không?",
-      okText: "Xóa",
+      title: "Confirm delete",
+      content: "Are you sure you want to delete this comment?",
+      okText: "Delete",
       okType: "danger",
-      cancelText: "Hủy",
+      cancelText: "Cancel",
       onOk: async () => {
         try {
           if (user.role === "ADMIN" && !isOwn) {
             // Trường hợp Admin xóa bài người khác
             await deleteAdminReview(reviewId);
-            message.success("Admin đã xóa bình luận vi phạm");
+            message.success("Admin deleted violating comment");
           } else {
             // Trường hợp User xóa bài mình (hoặc Admin xóa bài mình)
             await deleteUserReview(mediaId, reviewId, user.accessToken);
-            message.success("Đã xóa bình luận");
+            message.success("Comment deleted");
           }
           loadData();
         } catch (error) {
-          message.error("Xóa thất bại. Vui lòng thử lại.");
+          message.error("Delete failed. Please try again.");
         }
       }
     });
@@ -112,19 +112,19 @@ export default function Review({ mediaId }: { mediaId: string }) {
            <div className="flex items-center gap-4 mb-4">
              <img src={user.avatar || `${process.env.NEXT_PUBLIC_API_URL}${user.avatar}`} className="w-10 h-10 rounded-full"/>
              <span className="font-bold">{user.displayName}</span>
-             {editingId && <span className="text-yellow-500 text-sm ml-auto">(Đang chỉnh sửa)</span>}
+             {editingId && <span className="text-yellow-500 text-sm ml-auto">(Editing)</span>}
            </div>
            <div className="relative">
             <textarea 
               value={content}
               onChange={(e) => setContent(e.target.value)}
               className="w-full bg-black/20 border border-white/10 rounded-2xl p-4 pr-14 outline-none focus:border-violet-500 transition-all resize-none h-24 text-sm"
-              placeholder={editingId ? "Cập nhật nội dung..." : "Bạn nghĩ gì về phim này?..."}
+              placeholder={editingId ? "Update content..." : "What do you think about this?"}
             />
             <div className="absolute right-3 bottom-3 flex gap-2">
               {editingId && (
                 <button onClick={() => {setEditingId(null); setContent("");}} className="p-3 bg-zinc-700 hover:bg-zinc-600 rounded-xl text-white text-xs">
-                  Hủy
+                  Cancel
                 </button>
               )}
               <button onClick={handleSubmit} className="p-3 bg-violet-600 hover:bg-violet-500 rounded-xl transition-colors">
@@ -135,13 +135,13 @@ export default function Review({ mediaId }: { mediaId: string }) {
         </div>
       ) : (
         <div className="mb-10 text-center py-6 bg-white/5 rounded-3xl border border-dashed border-white/20">
-          Vui lòng <Link href="/auth/login" className="text-violet-400 font-bold underline">đăng nhập</Link> để viết đánh giá
+          Please <Link href="/auth/login" className="text-violet-400 font-bold underline">login</Link> to write a review
         </div>
       )}
 
       {/* Reviews List */}
       <div className="space-y-4">
-        {reviews.length === 0 && <p className="text-zinc-500 text-center">Chưa có đánh giá nào.</p>}
+        {reviews.length === 0 && <p className="text-zinc-500 text-center">No reviews yet.</p>}
         
         {reviews.map((rev) => {
           const isOwnReview = user?.id === rev.userId;
@@ -157,7 +157,7 @@ export default function Review({ mediaId }: { mediaId: string }) {
                 <div className="flex justify-between items-start mb-2">
                   <div>
                     <span className="font-bold text-violet-500 block">{rev.userName}</span>
-                    <span className="text-[10px] text-zinc-500">{new Date(rev.createdAt).toLocaleDateString("vi-VN")}</span>
+                    <span className="text-[10px] text-zinc-500">{new Date(rev.createdAt).toLocaleDateString("en-US")}</span>
                   </div>
                   
                   {/* Action Buttons */}
@@ -167,7 +167,7 @@ export default function Review({ mediaId }: { mediaId: string }) {
                       <button 
                         onClick={() => {setEditingId(rev.reviewId); setContent(rev.content); window.scrollTo({top: 0, behavior: 'smooth'});}} 
                         className="p-2 hover:bg-blue-500/20 rounded-full"
-                        title="Sửa"
+                        title="Edit"
                       >
                         <Edit2 size={16} className="text-blue-400" />
                       </button>
@@ -178,7 +178,7 @@ export default function Review({ mediaId }: { mediaId: string }) {
                       <button 
                         onClick={() => handleDelete(rev.reviewId, isOwnReview)} 
                         className="p-2 hover:bg-red-500/20 rounded-full"
-                        title={isAdmin && !isOwnReview ? "Admin xóa" : "Xóa"}
+                        title={isAdmin && !isOwnReview ? "Admin delete" : "Delete"}
                       >
                         {isAdmin && !isOwnReview ? (
                              <ShieldAlert size={16} className="text-red-500" /> 

@@ -30,7 +30,7 @@ export default function HistoryPage() {
       const res: HistoryResponse = await getHistory();
       setHistory(res.content || []);
     } catch (error) {
-      message.error("Không thể tải lịch sử xem");
+      message.error("Cannot load watch history");
     } finally {
       setLoading(false);
     }
@@ -40,9 +40,9 @@ export default function HistoryPage() {
     try {
       await removeFromHistory(mediaItemId);
       setHistory((prev) => prev.filter((item) => item.mediaItemId !== mediaItemId));
-      message.success("Đã xóa khỏi lịch sử");
+      message.success("Removed from history");
     } catch (error) {
-      message.error("Xóa thất bại");
+      message.error("Remove failed");
     }
   };
 
@@ -50,9 +50,9 @@ export default function HistoryPage() {
     try {
       await clearHistory();
       setHistory([]);
-      message.success("Đã dọn sạch lịch sử xem");
+      message.success("History cleared");
     } catch (error) {
-      message.error("Không thể xóa toàn bộ lịch sử");
+      message.error("Cannot clear history");
     }
   };
 
@@ -61,17 +61,17 @@ export default function HistoryPage() {
   return (
     <div className="p-6 min-h-screen bg-[#0a0a0a]">
       <div className="flex justify-between items-center mb-6 border-b border-gray-800 pb-4">
-        <h1 className="text-2xl font-bold text-white">Lịch sử xem</h1>
+        <h1 className="text-2xl font-bold text-white">Watch History</h1>
         {history.length > 0 && (
           <Popconfirm
-            title="Xóa toàn bộ lịch sử xem?"
+            title="Clear all history?"
             onConfirm={handleClearAll}
-            okText="Xóa hết"
-            cancelText="Hủy"
+            okText="Clear All"
+            cancelText="Cancel"
             okButtonProps={{ danger: true }}
           >
             <Button type="primary" danger icon={<ClearOutlined />}>
-              Xóa tất cả
+              Clear All
             </Button>
           </Popconfirm>
         )}
@@ -82,7 +82,7 @@ export default function HistoryPage() {
       ) : history.length === 0 ? (
         <div className="text-center text-gray-500 mt-20">
           <ClockCircleOutlined className="text-5xl mb-4 opacity-20" />
-          <p className="text-lg">Danh sách lịch sử trống.</p>
+          <p className="text-lg">History is empty.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
@@ -103,7 +103,7 @@ export default function HistoryPage() {
                     className="object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                   <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                    <Popconfirm title="Xóa mục này?" onConfirm={() => handleRemove(item.mediaItemId)}>
+                    <Popconfirm title="Remove this item?" onConfirm={() => handleRemove(item.mediaItemId)}>
                       <Button size="small" danger shape="circle" icon={<DeleteOutlined />} className="shadow-lg" />
                     </Popconfirm>
                   </div>
@@ -121,7 +121,7 @@ export default function HistoryPage() {
                     </Tag>
                     <Text className="!text-gray-500 text-[11px] flex items-center gap-1">
                       <ClockCircleOutlined />
-                      {item.createdAt ? new Date(item.createdAt).toLocaleDateString("vi-VN") : ""}
+                      {item.createdAt ? new Date(item.createdAt).toLocaleDateString("en-US") : ""}
                     </Text>
                   </div>
                 </div>

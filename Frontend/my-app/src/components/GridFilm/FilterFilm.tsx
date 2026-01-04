@@ -88,14 +88,14 @@ export default function MediaFilter({
     <div className="mb-8">
       <button onClick={() => setIsOpen(!isOpen)} className="flex items-center text-zinc-400 hover:text-white font-bold text-sm mb-4 transition-colors">
         <span className={`mr-2 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}>▼</span>
-        Bộ lọc nâng cao
+        Advanced Filters
       </button>
 
       {isOpen && (
         <div className="bg-[#1a1a1a] border border-white/10 rounded-xl p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
           <div className="space-y-6">
             <FilterRow 
-              label="Danh mục" 
+              label="Category" 
               options={["All", ...options.types]}
               currentValue={filters.type} 
               onChange={(val: string) => setFilters({...filters, type: val})}
@@ -103,14 +103,14 @@ export default function MediaFilter({
             />
             
             <FilterRow 
-              label="Quốc gia" 
+              label="Country" 
               options={["All", ...options.countries]}
               currentValue={filters.country}
               onChange={(val: string) => setFilters({...filters, country: val})}
             />
 
             <FilterRow 
-              label="Thể loại" 
+              label="Genre" 
               options={["All", ...options.genres]}
               currentValue={filters.genre}
               onChange={(val: string) => setFilters({...filters, genre: val})}
@@ -119,10 +119,10 @@ export default function MediaFilter({
 
           <div className="flex mt-8 pt-6 border-t border-white/5 space-x-4">
             <button onClick={handleApplyFilter} className="bg-violet-600 hover:bg-violet-500 text-white font-bold py-2 px-6 rounded-full text-sm transition-all shadow-lg hover:shadow-violet-900/20">
-              Áp dụng
+              Apply
             </button>
             <button onClick={() => setIsOpen(false)} className="bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-2 px-6 rounded-full text-sm transition-all">
-              Đóng
+              Close
             </button>
           </div>
         </div>

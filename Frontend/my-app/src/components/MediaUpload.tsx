@@ -51,11 +51,11 @@ export default function MediaUpload() {
       
       if (newId) {
         setMediaId(newId);
-        message.success("Đã tạo thông tin Media!");
+        message.success("Media information created!");
         setCurrentStep(1);
       }
     } catch (error) {
-      message.error("Lỗi khi tạo thông tin media");
+      message.error("Error creating media info");
     } finally {
       setLoading(false);
     }
@@ -67,11 +67,11 @@ export default function MediaUpload() {
     try {
       await uploadMediaImage(mediaId, file);
       onSuccess("Ok");
-      message.success("Tải ảnh lên thành công!");
+      message.success("Image uploaded successfully!");
       setCurrentStep(2);
     } catch (err) {
       onError({ err });
-      message.error("Tải ảnh thất bại.");
+      message.error("Image upload failed.");
     }
   };
 
@@ -92,9 +92,9 @@ export default function MediaUpload() {
             current={currentStep} 
             className="mb-10"
             items={[
-              { title: 'Thông tin', icon: <FileTextOutlined /> },
-              { title: 'Hình ảnh', icon: <FileImageOutlined /> },
-              { title: 'Hoàn tất', icon: <CheckCircleOutlined /> }
+              { title: 'Information', icon: <FileTextOutlined /> },
+              { title: 'Images', icon: <FileImageOutlined /> },
+              { title: 'Finish', icon: <CheckCircleOutlined /> }
             ]}
           />
 
@@ -107,47 +107,47 @@ export default function MediaUpload() {
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Form.Item
-                  label={<span className="text-gray-400">Tiêu đề</span>}
+                  label={<span className="text-gray-400">Title</span>}
                   name="title"
-                  rules={[{ required: true, message: "Vui lòng nhập tiêu đề!" }]}
+                  rules={[{ required: true, message: "Please enter title!" }]}
                 >
-                  <Input className="bg-[#0a0a0a] border-gray-700 text-white h-11 hover:border-violet-500 focus:border-violet-500" placeholder="Ví dụ: Avengers: Endgame" />
+                  <Input className="bg-[#0a0a0a] border-gray-700 text-white h-11 hover:border-violet-500 focus:border-violet-500" placeholder="e.g. Avengers: Endgame" />
                 </Form.Item>
 
                 <Form.Item
-                  label={<span className="text-gray-400">Tiêu đề phụ / Tên gốc</span>}
+                  label={<span className="text-gray-400">Subtitle / Original Name</span>}
                   name="aliasTitle"
                 >
-                  <Input className="bg-[#0a0a0a] border-gray-700 text-white h-11" placeholder="Tên gốc hoặc tên khác" />
+                  <Input className="bg-[#0a0a0a] border-gray-700 text-white h-11" placeholder="Original name or alias" />
                 </Form.Item>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Form.Item label={<span className="text-gray-400">Loại Media</span>} name="typeName" initialValue="Movie">
+                <Form.Item label={<span className="text-gray-400">Media Type</span>} name="typeName" initialValue="Movie">
                   <Select className="h-11" popupClassName="bg-[#141414]">
                     {options.types.map(t => <Option key={t} value={t}>{t}</Option>)}
                   </Select>
                 </Form.Item>
 
-                <Form.Item label={<span className="text-gray-400">Quốc gia</span>} name="country">
-                  <Select className="h-11" placeholder="Chọn quốc gia" popupClassName="bg-[#141414]">
+                <Form.Item label={<span className="text-gray-400">Country</span>} name="country">
+                  <Select className="h-11" placeholder="Select Country" popupClassName="bg-[#141414]">
                     {options.countries.map(c => <Option key={c} value={c}>{c}</Option>)}
                   </Select>
                 </Form.Item>
 
-                <Form.Item label={<span className="text-gray-400">Ngày phát hành</span>} name="releaseDate">
-                  <DatePicker className="w-full bg-[#0a0a0a] border-gray-700 text-white h-11" placeholder="Chọn ngày" />
+                <Form.Item label={<span className="text-gray-400">Release Date</span>} name="releaseDate">
+                  <DatePicker className="w-full bg-[#0a0a0a] border-gray-700 text-white h-11" placeholder="Select date" />
                 </Form.Item>
               </div>
 
-              <Form.Item label={<span className="text-gray-400">Thể loại</span>} name="genres" rules={[{ required: true }]}>
-                <Select mode="multiple" className="min-h-[44px]" placeholder="Chọn thể loại" popupClassName="bg-[#141414]">
+              <Form.Item label={<span className="text-gray-400">Genres</span>} name="genres" rules={[{ required: true }]}>
+                <Select mode="multiple" className="min-h-[44px]" placeholder="Select genres" popupClassName="bg-[#141414]">
                   {options.genres.map(g => <Option key={g} value={g}>{g}</Option>)}
                 </Select>
               </Form.Item>
 
-              <Form.Item label={<span className="text-gray-400">Mô tả</span>} name="description">
-                <Input.TextArea className="bg-[#0a0a0a] border-gray-700 text-white" rows={4} placeholder="Nhập mô tả chi tiết..." />
+              <Form.Item label={<span className="text-gray-400">Description</span>} name="description">
+                <Input.TextArea className="bg-[#0a0a0a] border-gray-700 text-white" rows={4} placeholder="Enter detailed description..." />
               </Form.Item>
 
               <div className="flex justify-end pt-4">
@@ -157,7 +157,7 @@ export default function MediaUpload() {
                   loading={loading}
                   className="bg-violet-600 hover:!bg-violet-500 border-none h-12 px-10 font-bold rounded-lg"
                 >
-                  Tiếp tục: Tải ảnh lên
+                  Continue: Upload Image
                 </Button>
               </div>
             </Form>
@@ -172,20 +172,20 @@ export default function MediaUpload() {
                 className="bg-[#0a0a0a] border-gray-700 hover:border-violet-500 rounded-xl p-10"
               >
                 <p className="text-violet-500 text-4xl mb-4"><CloudUploadOutlined /></p>
-                <p className="text-lg text-white font-bold">Kéo thả hoặc nhấp để chọn ảnh</p>
-                <p className="text-gray-500">Hỗ trợ JPG, PNG, WEBP</p>
+                <p className="text-lg text-white font-bold">Drag or click to select image</p>
+                <p className="text-gray-500">Supports JPG, PNG, WEBP</p>
               </Upload.Dragger>
-              <Button type="link" className="mt-4 text-gray-500" onClick={() => setCurrentStep(2)}>Bỏ qua bước này</Button>
+              <Button type="link" className="mt-4 text-gray-500" onClick={() => setCurrentStep(2)}>Skip this step</Button>
             </div>
           )}
 
           {currentStep === 2 && (
             <div className="text-center py-16">
               <CheckCircleOutlined className="text-6xl text-emerald-500 mb-4" />
-              <h2 className="text-2xl font-bold text-white mb-6">Tạo Media Thành Công!</h2>
+              <h2 className="text-2xl font-bold text-white mb-6">Media Created Successfully!</h2>
               <div className="flex justify-center gap-4">
-                <Button type="primary" onClick={() => router.push(`/main/media/detail/${mediaId}`)} className="bg-violet-600 h-11 px-8">Xem chi tiết</Button>
-                <Button onClick={() => window.location.reload()} className="h-11 px-8 border-gray-700 text-white hover:bg-white/5">Tạo thêm mới</Button>
+                <Button type="primary" onClick={() => router.push(`/main/media/detail/${mediaId}`)} className="bg-violet-600 h-11 px-8">View Details</Button>
+                <Button onClick={() => window.location.reload()} className="h-11 px-8 border-gray-700 text-white hover:bg-white/5">Create Another</Button>
               </div>
             </div>
           )}

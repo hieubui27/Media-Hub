@@ -68,7 +68,7 @@ export default function AccountForm({ email, displayName, userGender, userDob, o
     setLoading(true);
 
     if (!user || !user.accessToken) {
-        setStatus({ type: 'error', message: "Phiên đăng nhập hết hạn." });
+        setStatus({ type: 'error', message: "Session expired." });
         setLoading(false);
         return;
     }
@@ -78,10 +78,10 @@ export default function AccountForm({ email, displayName, userGender, userDob, o
         const response = await changeUserInfo(name, gender, user.accessToken, dobDate);
 
         if (!response.success) {
-        throw new Error(response.message || "Cập nhật thất bại");
+        throw new Error(response.message || "Update failed");
         }
 
-        setStatus({ type: 'success', message: "Cập nhật thông tin thành công!" });
+        setStatus({ type: 'success', message: "Information updated successfully!" });
 
         const updatedUser = {
         ...user,
@@ -94,7 +94,7 @@ export default function AccountForm({ email, displayName, userGender, userDob, o
         if (onSubmit) onSubmit();
 
     } catch (err) {
-        const msg = err instanceof Error ? err.message : "Có lỗi xảy ra.";
+        const msg = err instanceof Error ? err.message : "An error occurred.";
         setStatus({ type: 'error', message: msg });
     } finally {
         setLoading(false);
@@ -120,19 +120,19 @@ export default function AccountForm({ email, displayName, userGender, userDob, o
             </div>
 
             <div className="col-span-1 md:col-span-2">
-                <label htmlFor="displayName" className="block text-zinc-400 mb-2 text-sm font-medium">Tên hiển thị</label>
+                <label htmlFor="displayName" className="block text-zinc-400 mb-2 text-sm font-medium">Display Name</label>
                 <input 
                     type="text" 
                     id="displayName" 
                     value={name} 
                     onChange={e => setName(e.target.value)} 
-                    placeholder="Nhập tên hiển thị của bạn"
+                    placeholder="Enter your display name"
                     className="w-full bg-zinc-900 border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-violet-600 text-white transition-all placeholder:text-zinc-600" 
                 />
             </div>
 
             <div className="col-span-1">
-                 <label htmlFor="dob" className="block text-zinc-400 mb-2 text-sm font-medium">Ngày sinh</label>
+                 <label htmlFor="dob" className="block text-zinc-400 mb-2 text-sm font-medium">Date of Birth</label>
                  <input 
                     type="date" 
                     id="dob" 
@@ -143,19 +143,19 @@ export default function AccountForm({ email, displayName, userGender, userDob, o
             </div>
 
             <div className="col-span-1">
-                 <label className="block text-zinc-400 mb-2 text-sm font-medium">Giới tính</label>
+                 <label className="block text-zinc-400 mb-2 text-sm font-medium">Gender</label>
                  {/* SỬA: Thêm flex-wrap để không bị vỡ layout trên mobile nhỏ */}
                  <div className="flex flex-wrap items-center h-[50px]"> 
-                    <RadioInput value="male" label="Nam" currentGender={gender} onChange={setGender} />
-                    <RadioInput value="female" label="Nữ" currentGender={gender} onChange={setGender} />
-                    <RadioInput value="other" label="Khác" currentGender={gender} onChange={setGender} />
+                    <RadioInput value="male" label="Male" currentGender={gender} onChange={setGender} />
+                    <RadioInput value="female" label="Female" currentGender={gender} onChange={setGender} />
+                    <RadioInput value="other" label="Other" currentGender={gender} onChange={setGender} />
                  </div>
             </div>
         </div>
 
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-white/5 mt-6">
              <button type="button" className="text-zinc-500 hover:text-violet-500 text-sm transition-colors" onClick={() => setShowModal(true)}>
-                Đổi mật khẩu?
+                Change Password?
              </button>
 
             <button 
@@ -166,7 +166,7 @@ export default function AccountForm({ email, displayName, userGender, userDob, o
                     ${loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-violet-700 hover:scale-[1.02] active:scale-95'}
                 `}
             >
-                {loading ? 'Đang cập nhật...' : 'Lưu thay đổi'}
+                {loading ? 'Updating...' : 'Save Changes'}
             </button>
         </div>
 

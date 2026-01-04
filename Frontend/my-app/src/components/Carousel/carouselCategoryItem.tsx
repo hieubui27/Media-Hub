@@ -34,11 +34,11 @@ const MediaCard: React.FC<MediaCardProps> = ({ media }) => {
         return (
           <div className="flex flex-col gap-1">
             <div className="bg-violet-600/90 backdrop-blur-sm px-2 py-0.5 rounded-md text-[10px] font-bold text-white shadow-lg">
-              {media.totalEpisodes || 0} TẬP
+              {media.totalEpisodes || 0} EPISODES
             </div>
             {media.totalSeasons && media.totalSeasons > 1 && (
               <div className="bg-black/40 backdrop-blur-sm px-2 py-0.5 rounded-md text-[9px] font-medium text-gray-200">
-                {media.totalSeasons} MÙA
+                {media.totalSeasons} SEASONS
               </div>
             )}
           </div>

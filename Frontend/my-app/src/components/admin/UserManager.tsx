@@ -37,7 +37,7 @@ export default function UserManager() {
         }));
       }
     } catch {
-      message.error("Lỗi khi tải danh sách người dùng");
+      message.error("Error loading user list");
     } finally {
       setLoading(false);
     }
@@ -54,10 +54,10 @@ export default function UserManager() {
         ? await demoteUser(record.id)
         : await promoteUser(record.id);
 
-      message.success("Cập nhật quyền thành công");
+      message.success("Role updated successfully");
       fetchData(pagination.current);
     } catch {
-      message.error("Thao tác thất bại");
+      message.error("Operation failed");
     }
   };
 
@@ -65,10 +65,10 @@ export default function UserManager() {
   const handleToggleStatus = async (id: number) => {
     try {
       await toggleUserStatus(id);
-      message.success("Cập nhật trạng thái thành công");
+      message.success("Status updated successfully");
       fetchData(pagination.current);
     } catch {
-      message.error("Lỗi cập nhật");
+      message.error("Update error");
     }
   };
 
@@ -102,7 +102,7 @@ export default function UserManager() {
 
     /* ===== USER INFO (MOBILE) ===== */
     {
-      title: "Thông tin",
+      title: "Information",
       key: "mobileInfo",
       responsive: ["xs"],
       render: (record: UserItem) => (
@@ -131,7 +131,7 @@ export default function UserManager() {
 
     /* ===== ROLE ===== */
     {
-      title: "Quyền",
+      title: "Role",
       dataIndex: "role",
       width: 120,
       align: "center",
@@ -143,7 +143,7 @@ export default function UserManager() {
 
     /* ===== STATUS ===== */
     {
-      title: "Trạng thái",
+      title: "Status",
       dataIndex: "status",
       width: 120,
       align: "center",
@@ -155,7 +155,7 @@ export default function UserManager() {
 
     /* ===== ACTION ===== */
     {
-      title: "Thao tác",
+      title: "Action",
       key: "action",
       width: 240,
       fixed: "right",
@@ -164,12 +164,12 @@ export default function UserManager() {
           <Tooltip
             title={
               record.role === "ADMIN"
-                ? "Hạ quyền xuống USER"
-                : "Nâng lên ADMIN"
+                ? "Demote to USER"
+                : "Promote to ADMIN"
             }
           >
             <Popconfirm
-              title={`Xác nhận đổi quyền ${record.username}?`}
+              title={`Confirm change role for ${record.username}?`}
               onConfirm={() => handleRoleChange(record)}
             >
               <Button
@@ -188,7 +188,7 @@ export default function UserManager() {
           </Tooltip>
 
           <Popconfirm
-            title="Đổi trạng thái tài khoản?"
+            title="Change account status?"
             onConfirm={() => handleToggleStatus(record.id)}
           >
             <Button
@@ -196,7 +196,7 @@ export default function UserManager() {
               danger={record.status === "ACTIVE"}
               icon={<SwapOutlined />}
             >
-              {record.status === "ACTIVE" ? "Khóa" : "Mở"}
+              {record.status === "ACTIVE" ? "Lock" : "Unlock"}
             </Button>
           </Popconfirm>
         </Space>

@@ -16,8 +16,8 @@ const Footer = () => {
               MEDIA HUB
             </div>
             <p className="text-gray-400 text-sm leading-relaxed">
-              Nền tảng chia sẻ và theo dõi thông tin giải trí hàng đầu. 
-              Nơi cập nhật những bộ phim, cuốn sách và trò chơi mới nhất dành cho bạn.
+              Leading entertainment information sharing and tracking platform.
+              Update the latest movies, books and games for you.
             </p>
             <div className="flex space-x-4">
               <Link href="#" className="p-2 bg-white/5 rounded-full hover:bg-violet-600 transition-colors">
@@ -37,22 +37,22 @@ const Footer = () => {
 
           {/* Cột 2: Danh mục */}
           <div>
-            <h4 className="text-lg font-bold mb-6">Khám phá</h4>
+            <h4 className="text-lg font-bold mb-6">Discover</h4>
             <ul className="space-y-4 text-gray-400 text-sm">
-              <li><Link href="/main/home" className="hover:text-violet-400 transition-colors">Trang chủ</Link></li>
-              <li><Link href="/main/media/movie" className="hover:text-violet-400 transition-colors">Phim điện ảnh</Link></li>
-              <li><Link href="/main/media/series" className="hover:text-violet-400 transition-colors">Phim bộ</Link></li>
-              <li><Link href="/main/media/book" className="hover:text-violet-400 transition-colors">Sách & Truyện</Link></li>
-              <li><Link href="/main/media/game" className="hover:text-violet-400 transition-colors">Trò chơi</Link></li>
+              <li><Link href="/main/home" className="hover:text-violet-400 transition-colors">Home</Link></li>
+              <li><Link href="/main/media/movie" className="hover:text-violet-400 transition-colors">Movies</Link></li>
+              <li><Link href="/main/media/series" className="hover:text-violet-400 transition-colors">TV Series</Link></li>
+              <li><Link href="/main/media/book" className="hover:text-violet-400 transition-colors">Books</Link></li>
+              <li><Link href="/main/media/game" className="hover:text-violet-400 transition-colors">Games</Link></li>
             </ul>
           </div>
           {/* Cột 4: Liên hệ */}
           <div>
-            <h4 className="text-lg font-bold mb-6">Liên hệ</h4>
+            <h4 className="text-lg font-bold mb-6">Contact</h4>
             <ul className="space-y-4 text-gray-400 text-sm">
               <li className="flex items-start gap-3">
                 <MapPin size={18} className="text-violet-500 shrink-0" />
-                <span>Hà Nội, Việt Nam</span>
+                <span>Hanoi, Vietnam</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone size={18} className="text-violet-500 shrink-0" />
@@ -70,7 +70,7 @@ const Footer = () => {
         {/* Thanh bản quyền */}
         <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-gray-500 text-xs">
-            © {currentYear} <span className="text-violet-500 font-bold">Media Hub</span>. Toàn bộ quyền được bảo lưu.
+            © {currentYear} <span className="text-violet-500 font-bold">Media Hub</span>. All rights reserved.
           </p>
           <div className="flex gap-6 text-xs text-gray-500">
             <span className="hover:text-white cursor-pointer transition-colors">Vietnam</span>

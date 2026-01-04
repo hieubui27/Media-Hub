@@ -38,14 +38,14 @@ export default async function SearchPage({ searchParams }: SearchProps) {
         <header className="mb-8">
           <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">
             {keyword ? (
-              <>Kết quả tìm kiếm: <span className="text-violet-500">"{keyword}"</span></>
+              <>Search results: <span className="text-violet-500">"{keyword}"</span></>
             ) : (
-               <>Khám phá <span className="text-violet-500">Nội dung</span></>
+               <>Discover <span className="text-violet-500">Content</span></>
             )}
           </h1>
           <p className="text-zinc-500 text-sm">
             {/* SỬA: Dùng currentPage thay vì data.number */}
-            {data ? `Trang ${currentPage} / ${data.totalPages} • Tìm thấy ${data.totalElements} kết quả.` : "Đang tải..."}
+            {data ? `Page ${currentPage} / ${data.totalPages} • Found ${data.totalElements} results.` : "Loading..."}
           </p>
         </header>
 
@@ -67,8 +67,8 @@ export default async function SearchPage({ searchParams }: SearchProps) {
           </>
         ) : (
           <div className="flex flex-col items-center justify-center py-20 bg-zinc-900/30 rounded-3xl border border-white/5 border-dashed mt-8">
-            <p className="text-xl text-white font-medium mb-2">Không tìm thấy kết quả nào</p>
-            <p className="text-zinc-500 text-sm">Hãy thử thay đổi bộ lọc hoặc từ khóa tìm kiếm.</p>
+            <p className="text-xl text-white font-medium mb-2">No results found</p>
+            <p className="text-zinc-500 text-sm">Try changing filters or search keywords.</p>
           </div>
         )}
       </div>

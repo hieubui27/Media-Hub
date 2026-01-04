@@ -42,7 +42,7 @@ function CarouselTop() {
 
   if (loading) return (
     <div className="h-[400px] md:h-[650px] flex items-center justify-center bg-black">
-      <Spin size="large" tip="Đang cập nhật phim mới nhất..." />
+      <Spin size="large" tip="Updating latest movies..." />
     </div>
   );
 

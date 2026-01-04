@@ -25,11 +25,11 @@ const BookCard: React.FC<BookCardProps> = ({ media }) => {
     }
     return `${BASE_URL}${url}`;
   };
-  const authorName = media.author || "Khuyết danh";
+  const authorName = media.author || "Unknown Author";
   
   // Hiển thị số trang nếu có
   const quantityLabel = isBook && media.pageCount && media.pageCount > 0 
-    ? `${media.pageCount} Trang` 
+    ? `${media.pageCount} Pages` 
     : "";
 
   // 4. Đường dẫn chi tiết sử dụng MediaItemId theo cấu trúc thư mục của bạn

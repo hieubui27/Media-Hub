@@ -36,7 +36,7 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, viewAllLink, data }) => {
           href={viewAllLink}
           className="text-xs md:text-sm font-bold text-neutral-400 hover:text-violet-400 transition-all flex items-center gap-1 uppercase tracking-widest whitespace-nowrap"
         >
-          Xem toàn bộ <ChevronRight size={14} className="md:w-4 md:h-4" />
+          View All <ChevronRight size={14} className="md:w-4 md:h-4" />
         </Link>
       </div>
 
