@@ -113,13 +113,6 @@ export default function MediaUpload() {
                 >
                   <Input className="bg-[#0a0a0a] border-gray-700 text-white h-11 hover:border-violet-500 focus:border-violet-500" placeholder="e.g. Avengers: Endgame" />
                 </Form.Item>
-
-                <Form.Item
-                  label={<span className="text-gray-400">Subtitle / Original Name</span>}
-                  name="aliasTitle"
-                >
-                  <Input className="bg-[#0a0a0a] border-gray-700 text-white h-11" placeholder="Original name or alias" />
-                </Form.Item>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
