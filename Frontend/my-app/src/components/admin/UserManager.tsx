@@ -14,7 +14,7 @@ export default function UserManager() {
   const fetchData = async (page = 1) => {
     setLoading(true);
     try {
-      const res = await getAdminUsers({ page, limit: pagination.pageSize });
+      const res = await getAdminUsers();
       if (res && res.content) {
         setData(res.content);
         setPagination({ ...pagination, current: page, total: res.totalElements });
