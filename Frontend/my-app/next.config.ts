@@ -8,26 +8,26 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
-        source: '/api/remote/:path*', // Đường dẫn ảo trên localhost
-        destination: `${MEDIA_API_BASE}/:path*`, // Đường dẫn thật ngrok
-      },
-      {
-        source: '/api-proxy/:path*', // Unified proxy path
+        source: '/api/remote/:path*',
         destination: `${MEDIA_API_BASE}/:path*`,
       },
-      // 1. Media Proxy (Handles query params automatically)
+      {
+        source: '/api-proxy/:path*',
+        destination: `${MEDIA_API_BASE}/:path*`,
+      },
+      // 1. Media Proxy
       {
         source: '/api/proxy/medias',
         destination: `${MEDIA_API_BASE}/medias`,
       },
 
-      // 2. Auth Proxy (Wildcard catch-all for /api/proxy/auth/...)
+      // 2. Auth Proxy
       {
         source: '/api/proxy/auth/:path*',
         destination: `${AUTH_API_BASE}/:path*`,
       },
 
-      // 3. Register Proxy (Specific mapping for your nested register paths)
+      // 3. Register Proxy
       {
         source: '/api/proxy/register/:path*',
         destination: `${AUTH_API_BASE}/register/:path*`,
@@ -54,24 +54,29 @@ const nextConfig: NextConfig = {
         source: '/api/medias/upload',
         destination: `${MEDIA_API_BASE}/medias`,
       },
-
       {
         source: '/api/medias/history',
         destination: `${MEDIA_API_BASE}/history`,
       },
+
+      // --- PHẦN ADMIN: GIỮ NGUYÊN CÁC QUY TẮC KHÁC, CHỈ CHỈNH ADMIN ---
+      {
+        // Khớp với cuộc gọi `${API_BASE_URL}/admin/:path*`
+        source: '/api/proxy/admin/:path*',
+        destination: `${MEDIA_API_BASE}/admin/:path*`,
+      },
+      // -------------------------------------------------------------
+
       {
         source: '/api/:path*',
-        destination: `${MEDIA_API_BASE}/:path*`, // URL backend ngrok của bạn
+        destination: `${MEDIA_API_BASE}/:path*`, 
       },
       {
-        source:'/admins/users/:path*',
-        destination:`${MEDIA_API_BASE}/admin/users/:path*`
+        source: '/admin/users/:path*',
+        destination: `${MEDIA_API_BASE}/admin/users/:path*`
       },
       {
-        // Khi gọi /api/proxy/... từ frontend
         source: "/api/proxy/:path*",
-        // Sẽ được Next.js chuyển tiếp ngầm đến Backend
-        // Đảm bảo bạn đã khai báo NEXT_PUBLIC_API_URL trong file .env
         destination: `${process.env.NEXT_PUBLIC_API_URL}/api/:path*`,
       },
     ];
@@ -90,7 +95,6 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: '**.ngrok-free.app',
       },
-      // Thêm dòng này nếu bạn chạy ở localhost
       {
         protocol: 'http',
         hostname: 'localhost',
