@@ -65,7 +65,7 @@ const nextConfig: NextConfig = {
       },
       {
         source:'/admin/users/:path*',
-        destination:'https://b9056ef93662.ngrok-free.app/api/admin/users/:path*'
+        destination:`${MEDIA_API_BASE}/admin/users/:path*`
       },
       {
         // Khi gọi /api/proxy/... từ frontend
