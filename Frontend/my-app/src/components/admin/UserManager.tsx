@@ -84,7 +84,7 @@ export default function UserManager() {
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full overflow-hidden border border-gray-600">
             <img
-              src={`${process.env.NEXT_PUBLIC_API_URL}${record.avatar}`}
+              src={record.avatar}
               alt="avatar"
               className="w-full h-full object-cover"
             />
@@ -109,7 +109,7 @@ export default function UserManager() {
       render: (record: UserItem) => (
         <div className="flex gap-3">
           <img
-            src={`${process.env.NEXT_PUBLIC_API_URL}${record.avatar}`}
+            src={record.avatar}
             className="w-10 h-10 rounded-full object-cover"
           />
           <div className="space-y-1">

@@ -12,6 +12,7 @@ interface User {
   role: "ADMIN" | "USER";
   accessToken: string;
   refreshToken: string;   
+  userDob: string;
 }
 
 interface UserContextType {

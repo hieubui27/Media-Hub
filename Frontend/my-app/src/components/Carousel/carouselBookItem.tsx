@@ -23,7 +23,7 @@ const BookCard: React.FC<BookCardProps> = ({ media }) => {
     if (url.startsWith('http') || url.startsWith('https')) {
       return url;
     }
-    return `${BASE_URL}${url}`;
+    return url;
   };
   const authorName = media.author || "Unknown Author";
   

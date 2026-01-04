@@ -66,7 +66,7 @@ export default function AvatarManager({ onAvatarChange }: { onAvatarChange?: () 
   // Helper to display image URL avoiding cache (still keeps timestamp logic)
   const getAvatarUrl = (path: string) => {
     const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://8dcbf8a962a3.ngrok-free.app";
-    return `${baseUrl}${path}?t=${new Date().getTime()}`;
+    return `${baseUrl}${path}`;
   };
 
   return (
@@ -87,7 +87,7 @@ export default function AvatarManager({ onAvatarChange }: { onAvatarChange?: () 
       <div className="relative group mb-4">
         <Avatar 
           size={120} 
-          src={user?.avatar ? getAvatarUrl(user.avatar) : undefined} 
+          src={user?.avatar} 
           icon={<UserOutlined />} 
           className="bg-violet-600 border-4 border-zinc-800 shadow-2xl"
         />

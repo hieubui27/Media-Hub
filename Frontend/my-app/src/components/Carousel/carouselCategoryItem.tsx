@@ -18,7 +18,7 @@ const MediaCard: React.FC<MediaCardProps> = ({ media }) => {
     if (url.startsWith('http') || url.startsWith('https')) {
       return url;
     }
-    return `${BASE_URL}${url}`;
+    return url;
   };
 
   // 2. Kiểm tra an toàn dữ liệu

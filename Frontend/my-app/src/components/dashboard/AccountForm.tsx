@@ -43,23 +43,32 @@ const RadioInput = ({ value, label, currentGender, onChange }: { value: string; 
 );
 
 export default function AccountForm({ email, displayName, userGender, userDob, onSubmit }: AccountFormProps) {
-  // ... (Keep logic unchanged)
-  const { user,login } = useUser();
+  const { user, login } = useUser();
   const [name, setName] = useState(displayName);
   const [gender, setGender] = useState(userGender || "other");
-  const [dob, setDob] = useState<string>(
-    userDob ? new Date(userDob).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]
-  );
+  
+  // Helper function to format date to YYYY-MM-DD for date input
+  const formatDateForInput = (dateInput?: string | Date) => {
+    if (!dateInput) return "";
+    try {
+      const d = new Date(dateInput);
+      if (isNaN(d.getTime())) return "";
+      return d.toISOString().split('T')[0];
+    } catch {
+      return "";
+    }
+  };
+
+  const [dob, setDob] = useState<string>(formatDateForInput(userDob));
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<{ type: 'success' | 'error', message: string } | null>(null);
 
+  // Synchronize local state when props from parent (AccountPage) change
   useEffect(() => {
     setName(displayName);
     setGender(userGender || "other");
-    if (userDob) {
-      setDob(new Date(userDob).toISOString().split('T')[0]);
-    }
+    setDob(formatDateForInput(userDob));
   }, [displayName, userGender, userDob]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -74,77 +83,58 @@ export default function AccountForm({ email, displayName, userGender, userDob, o
     }
 
     try {
-        const dobDate = new Date(dob);
-        const response = await changeUserInfo(name, gender, user.accessToken, dobDate);
+        const dobDate = dob ? new Date(dob) : null;
+        const response = await changeUserInfo(name, gender, user.accessToken, dobDate as any);
 
         if (!response.success) {
-        throw new Error(response.message || "Update failed");
+            throw new Error(response.message || "Update failed");
         }
 
         setStatus({ type: 'success', message: "Information updated successfully!" });
 
-        const updatedUser = {
-        ...user,
-        displayName: name,
-        gender: gender,
-        };
-        login(updatedUser); 
+        // IMPORTANT UPDATE: Push full new information into Global Context
+        if (user) {
+            const updatedUser = {
+                ...user,
+                displayName: name,
+                gender: gender,
+                userDob: dob, // Ensure new dob value is saved
+            };
+            login(updatedUser); 
+        }
 
+        if (onSubmit) onSubmit(); // Call callback so parent (AccountPage) can refresh if needed
         setTimeout(() => setStatus(null), 3000);
-        if (onSubmit) onSubmit();
 
     } catch (err) {
-        const msg = err instanceof Error ? err.message : "An error occurred.";
-        setStatus({ type: 'error', message: msg });
+        setStatus({ type: 'error', message: err instanceof Error ? err.message : "An error occurred." });
     } finally {
         setLoading(false);
     }
   };
 
   return (
-    <>
-      <form onSubmit={handleSubmit} className="space-y-6">
-        
+    <form onSubmit={handleSubmit} className="space-y-6">
         {status && <StatusAlert type={status.type} message={status.message} />}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="col-span-1 md:col-span-2">
-                <label htmlFor="email" className="block text-zinc-400 mb-2 text-sm font-medium">Email</label>
-                <input 
-                    type="email" 
-                    id="email" 
-                    value={email} 
-                    disabled 
-                    className="w-full bg-[#1f232b] border border-white/5 rounded-lg px-4 py-3 focus:outline-none text-zinc-500 cursor-not-allowed select-none" 
-                />
+                <label className="block text-zinc-400 mb-2 text-sm font-medium">Email</label>
+                <input type="email" value={email} disabled className="w-full bg-[#1f232b] border border-white/5 rounded-lg px-4 py-3 text-zinc-500 cursor-not-allowed" />
             </div>
 
             <div className="col-span-1 md:col-span-2">
-                <label htmlFor="displayName" className="block text-zinc-400 mb-2 text-sm font-medium">Display Name</label>
-                <input 
-                    type="text" 
-                    id="displayName" 
-                    value={name} 
-                    onChange={e => setName(e.target.value)} 
-                    placeholder="Enter your display name"
-                    className="w-full bg-zinc-900 border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-violet-600 text-white transition-all placeholder:text-zinc-600" 
-                />
+                <label className="block text-zinc-400 mb-2 text-sm font-medium">Display Name</label>
+                <input type="text" value={name} onChange={e => setName(e.target.value)} className="w-full bg-zinc-900 border border-white/10 rounded-lg px-4 py-3 text-white focus:border-violet-600" />
             </div>
 
             <div className="col-span-1">
-                 <label htmlFor="dob" className="block text-zinc-400 mb-2 text-sm font-medium">Date of Birth</label>
-                 <input 
-                    type="date" 
-                    id="dob" 
-                    value={dob} 
-                    onChange={e => setDob(e.target.value)} 
-                    className="w-full bg-zinc-900 border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-violet-600 text-white scheme-dark transition-all" 
-                 />
+                 <label className="block text-zinc-400 mb-2 text-sm font-medium">Date of Birth</label>
+                 <input type="date" value={dob} onChange={e => setDob(e.target.value)} className="w-full bg-zinc-900 border border-white/10 rounded-lg px-4 py-3 text-white [color-scheme:dark]" />
             </div>
 
             <div className="col-span-1">
                  <label className="block text-zinc-400 mb-2 text-sm font-medium">Gender</label>
-                 {/* FIX: Add flex-wrap to prevent layout breaking on small mobile devices */}
                  <div className="flex flex-wrap items-center h-[50px]"> 
                     <RadioInput value="male" label="Male" currentGender={gender} onChange={setGender} />
                     <RadioInput value="female" label="Female" currentGender={gender} onChange={setGender} />
@@ -153,29 +143,13 @@ export default function AccountForm({ email, displayName, userGender, userDob, o
             </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-white/5 mt-6">
-             <button type="button" className="text-zinc-500 hover:text-violet-500 text-sm transition-colors" onClick={() => setShowModal(true)}>
-                Change Password?
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-white/5">
+             <button type="button" className="text-zinc-500 hover:text-violet-500 text-sm" onClick={() => setShowModal(true)}>Change Password?</button>
+             <button type="submit" disabled={loading} className="w-full sm:w-auto bg-violet-600 text-white font-bold px-8 py-3 rounded-lg hover:bg-violet-700 disabled:opacity-50">
+                {loading ? 'Saving...' : 'Save Changes'}
              </button>
-
-            <button 
-                type="submit" 
-                disabled={loading}
-                className={`
-                    w-full sm:w-auto bg-violet-600 text-white font-bold px-8 py-3 rounded-lg transition-all shadow-lg shadow-violet-600/20
-                    ${loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-violet-700 hover:scale-[1.02] active:scale-95'}
-                `}
-            >
-                {loading ? 'Updating...' : 'Save Changes'}
-            </button>
         </div>
-
-      </form>
-      
-      <ChangePasswordModal 
-        open={showModal} 
-        onClose={() => setShowModal(false)}
-      />
-    </>
+        <ChangePasswordModal open={showModal} onClose={() => setShowModal(false)} />
+    </form>
   );
 }

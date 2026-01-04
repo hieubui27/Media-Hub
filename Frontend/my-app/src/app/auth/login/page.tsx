@@ -40,6 +40,7 @@ export default function LoginPage() {
         role: data.data.user.role ,
         accessToken: accessToken,
         refreshToken: data.data.refreshToken || "",
+        userDob: data.data.user.userDob || "",
       });
 
       console.log("User ID:", data.data.user.id);

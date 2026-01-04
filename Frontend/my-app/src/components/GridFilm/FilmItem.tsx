@@ -15,7 +15,7 @@ export default function MediaCard({ item }: { item: MediaItemDetail }) {
       return url;
     }
     // Nếu là đường dẫn tương đối thì nối thêm BASE_URL
-    return `${BASE_URL}${url}`;
+    return url;
   };
 
   // 3. Lấy link ảnh cuối cùng
