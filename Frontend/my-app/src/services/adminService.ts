@@ -154,7 +154,7 @@ export const deleteTracking = async (id: number) => {
 
 // 5. QUẢN LÝ USER (TRẠNG THÁI & QUYỀN HẠN)
 export const getAdminUsers = async (params: PaginationParams) => {
-  const res = await fetch(`/admin/users`, {
+  const res = await fetch(`/admins/users`, {
     method: "GET",
     headers: getAuthHeaders(),
   });
