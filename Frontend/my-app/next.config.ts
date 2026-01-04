@@ -64,7 +64,7 @@ const nextConfig: NextConfig = {
         destination: `${MEDIA_API_BASE}/:path*`, // URL backend ngrok của bạn
       },
       {
-        source:'/admins/users/:path*',
+        source:'/api/admins/users/:path*',
         destination:`${MEDIA_API_BASE}/admin/users/:path*`
       },
       {

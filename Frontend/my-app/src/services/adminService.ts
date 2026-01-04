@@ -154,7 +154,7 @@ export const deleteTracking = async (id: number) => {
 
 // 5. QUẢN LÝ USER (TRẠNG THÁI & QUYỀN HẠN)
 export const getAdminUsers = async (params: PaginationParams) => {
-  const res = await fetch(`/admins/users`, {
+  const res = await fetch(`/api/admins/users`, {
     method: "GET",
     headers: getAuthHeaders(),
   });
@@ -163,7 +163,7 @@ export const getAdminUsers = async (params: PaginationParams) => {
 
 // Khóa hoặc mở khóa tài khoản
 export const toggleUserStatus = async (id: number) => {
-  return fetch(`${API_BASE_URL}/admins/users/${id}/status`, {
+  return fetch(`${API_BASE_URL}/api/admins/users/${id}/status`, {
     method: "PUT",
     headers: getAuthHeaders(),
   });
@@ -171,7 +171,7 @@ export const toggleUserStatus = async (id: number) => {
 
 // Nâng quyền hoặc hạ quyền (Promote/Demote)
 export const promoteUser = async (id: number) => {
-  return fetch(`/admins/users/${id}/promote`, {
+  return fetch(`/api/admins/users/${id}/promote`, {
     method: "PUT", // Hoặc "PUT" tùy theo Backend của bạn
     headers: getAuthHeaders(),
   });
@@ -179,7 +179,7 @@ export const promoteUser = async (id: number) => {
 
 // Hạ quyền xuống USER
 export const demoteUser = async (id: number) => {
-  return fetch(`/admins/users/${id}/demote`, {
+  return fetch(`/api/admins/users/${id}/demote`, {
     method: "PUT", // Hoặc "PUT" tùy theo Backend của bạn
     headers: getAuthHeaders(),
   });
