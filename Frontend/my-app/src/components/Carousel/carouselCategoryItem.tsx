@@ -13,19 +13,12 @@ const MediaCard: React.FC<MediaCardProps> = ({ media }) => {
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "YOUR_NGROK_URL_HERE";
   const PLACEHOLDER_IMAGE = "https://placehold.co/400x600/0a0a0a/ffffff?text=No+Image";
 
-  const getImageUrl = (url: string | undefined | null) => {
-    if (!url) return PLACEHOLDER_IMAGE;
-    if (url.startsWith('http') || url.startsWith('https')) {
-      return url;
-    }
-    return url;
-  };
 
   // 2. Kiểm tra an toàn dữ liệu
   if (!media) return <div className="aspect-[3/4] md:aspect-video bg-neutral-900 animate-pulse rounded-xl" />;
 
   // 3. Sử dụng hàm để lấy link ảnh cuối cùng
-  const imageSource = getImageUrl(media.urlItem);
+
 
   // 4. Logic hiển thị Badge
   const renderBadge = () => {
@@ -73,7 +66,7 @@ const MediaCard: React.FC<MediaCardProps> = ({ media }) => {
         </div>
 
         <Image
-          src={imageSource}
+          src={media.urlItem ? media.urlItem : PLACEHOLDER_IMAGE}
           alt={media.title}
           fill
           sizes="(max-width: 768px) 50vw, 33vw"

@@ -48,7 +48,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: '/api/medias/latest',
-        destination: `${MEDIA_API_BASE}/medias?page=1&limit=50`,
+        destination: `${MEDIA_API_BASE}/medias?page=1`,
       },
       {
         source: '/api/medias/upload',
@@ -93,6 +93,10 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'encrypted-tbn0.gstatic.com' },
       {protocol: 'https', hostname: 'res.cloudinary.com' },
       {protocol: 'https', hostname: 'commons.wikimedia.org' },
+      {
+        protocol: 'https',
+        hostname: '**', // Cho phép tất cả các hostname qua giao thức https
+      },
       {
         protocol: 'https',
         hostname: '**.ngrok-free.app',
