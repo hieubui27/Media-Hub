@@ -1,5 +1,5 @@
 "use client";
-
+export const dynamic = "force-dynamic";
 import { useState, useEffect } from "react";
 import { useUser } from "@/src/contexts/UserContext";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -119,7 +119,7 @@ export default function TrackingPage() {
             </h1>
 
             {/* TABS */}
-            <div className="flex p-1 bg-zinc-900/50 backdrop-blur-xl rounded-2xl border border-white/5 w-full lg:w-fit overflow-x-auto">
+            <div className="flex p-1 bg-zinc-900/50 backdrop-blur-xl rounded-2xl border border-white/5 w-full lg:w-fit overflow-x-auto scrollbar-hide">
               {MEDIA_TYPES.map((type) => (
                 <button
                   key={type.id}
