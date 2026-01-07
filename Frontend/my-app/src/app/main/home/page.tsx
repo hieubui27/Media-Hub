@@ -1,7 +1,16 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import MovieRow from "@/src/components/Carousel/carouselCategory";
-import CarouselTop from "@/src/components/Carousel/carouselTop";
+import dynamic from "next/dynamic";
+
+const CarouselTop = dynamic(
+  () => import("@/src/components/Carousel/carouselTop"),
+  { ssr: false }
+);
+
+const MovieRow = dynamic(
+  () => import("@/src/components/Carousel/carouselCategory"),
+  { ssr: false }
+);
 import { APIMediaItem } from "@/src/interfaces/APIMediaItem";
 import { Spin } from 'antd';
 import { mediaService } from '@/src/services/getTopFilm';
