@@ -80,7 +80,7 @@ function ResetPasswordPage() {
 
             // Success -> Alert and redirect
             alert("Password reset successful! Please log in again.");
-            router.push('/login');
+            router.push('/auth/login');
 
         } catch (err) {
             // Using type assertion for Error
