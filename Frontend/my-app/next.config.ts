@@ -92,6 +92,7 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'placehold.co' },
       { protocol: 'https', hostname: 'encrypted-tbn0.gstatic.com' },
       {protocol: 'https', hostname: 'res.cloudinary.com' },
+      {protocol: 'https', hostname: 'commons.wikimedia.org' },
       {
         protocol: 'https',
         hostname: '**.ngrok-free.app',
