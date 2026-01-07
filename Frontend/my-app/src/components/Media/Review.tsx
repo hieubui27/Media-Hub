@@ -75,7 +75,7 @@ export default function Review({ mediaId }: { mediaId: string }) {
         try {
           if (user.role === "ADMIN" && !isOwn) {
             // Case: Admin deletes someone else's post
-            await deleteAdminReview(reviewId);
+            await deleteUserReview(mediaId, reviewId, user.accessToken);
             message.success("Admin deleted violating comment");
           } else {
             // Case: User deletes their own post (or Admin deletes their own post)
