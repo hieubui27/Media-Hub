@@ -2,14 +2,14 @@
 import AccountForm from "@/src/components/dashboard/AccountForm";
 import AvatarManager from "@/src/components/AvatarManager";
 import { useUser } from "@/src/contexts/UserContext";
-import { getUserData, deleteAccount } from "@/src/services/authService"; // Thêm deleteAccount
+import { getUserData, deleteAccount } from "@/src/services/authService"; 
 import { useEffect, useState, useCallback } from "react";
-import { Spin, Modal, message } from "antd"; // Thêm Modal, message
+import { Spin, Modal, message } from "antd"; 
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 
 const AccountPage = () => {
-  const { user, login, logout } = useUser(); // Lấy thêm hàm logout từ context
+  const { user, login, logout } = useUser(); // Get logout function from context
   const [loading, setLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
@@ -38,33 +38,33 @@ const AccountPage = () => {
     fetchData();
   }, [fetchData]);
 
-  // Hàm xử lý xóa tài khoản với xác nhận
+  // Handle account deletion with confirmation modal
   const handleDeleteAccount = () => {
     Modal.confirm({
-      title: 'Xác nhận xóa tài khoản?',
+      title: 'Confirm Account Deletion?',
       icon: <ExclamationCircleOutlined className="text-red-500" />,
       content: (
         <div className="text-zinc-400">
-          <p>Hành động này <b>không thể hoàn tác</b>.</p>
-          <p>Toàn bộ thông tin cá nhân, lịch sử và dữ liệu của bạn sẽ bị xóa vĩnh viễn khỏi hệ thống.</p>
+          <p>This action <b>cannot be undone</b>.</p>
+          <p>All personal information, history, and data will be permanently removed from the system.</p>
         </div>
       ),
-      okText: 'Xóa vĩnh viễn',
+      okText: 'Delete Permanently',
       okType: 'danger',
-      cancelText: 'Hủy bỏ',
+      cancelText: 'Cancel',
       centered: true,
       onOk: async () => {
         if (!user?.accessToken) return;
         setIsDeleting(true);
         try {
           await deleteAccount(user.accessToken);
-          message.success("Tài khoản của bạn đã được xóa.");
+          message.success("Your account has been deleted.");
           
-          // Xóa session và đẩy về trang chủ
+          // Clear session and redirect to home
           logout(); 
           router.push("/");
         } catch (error: any) {
-          message.error(error.message || "Xóa tài khoản thất bại.");
+          message.error(error.message || "Failed to delete account.");
         } finally {
           setIsDeleting(false);
         }
@@ -79,16 +79,16 @@ const AccountPage = () => {
   return (
     <div className="max-w-5xl mx-auto pb-20 px-4">
       <div className="mb-8 border-b border-white/10 pb-4">
-        <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">Cài đặt tài khoản</h2>
-        <p className="text-zinc-400 text-sm">Quản lý thông tin cá nhân và bảo mật tài khoản của bạn</p>
+        <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">Account Settings</h2>
+        <p className="text-zinc-400 text-sm">Manage your personal information and account security</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8 order-2 lg:order-1">
-          {/* Form Thông tin chi tiết */}
+          {/* Detailed Information Form */}
           <div className="bg-[#141414] rounded-2xl border border-white/5 p-6 shadow-xl">
              <h3 className="text-lg font-semibold text-white mb-6 border-l-4 border-violet-500 pl-3">
-               Thông tin cá nhân
+               Personal Information
              </h3>
              <AccountForm 
                 key={user?.email} 
@@ -100,30 +100,30 @@ const AccountPage = () => {
               />
           </div>
 
-          {/* Danger Zone - Khu vực nguy hiểm */}
+          {/* Danger Zone */}
           <div className="bg-red-500/5 rounded-2xl border border-red-500/20 p-6 shadow-xl">
              <div className="flex items-start gap-4">
                <div className="p-3 bg-red-500/10 rounded-lg">
                   <ExclamationCircleOutlined className="text-red-500 text-xl" />
                </div>
                <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-red-500 mb-1">Xóa tài khoản</h3>
+                  <h3 className="text-lg font-semibold text-red-500 mb-1">Delete Account</h3>
                   <p className="text-zinc-400 text-sm mb-6">
-                    Một khi bạn xác nhận xóa, không có cách nào để khôi phục lại dữ liệu. Vui lòng cân nhắc kỹ.
+                    Once you confirm deletion, there is no way to recover your data. Please consider this carefully.
                   </p>
                   <button 
                     onClick={handleDeleteAccount}
                     disabled={isDeleting}
                     className="bg-transparent border border-red-500/50 text-red-500 hover:bg-red-500 hover:text-white px-6 py-2.5 rounded-lg text-sm font-bold transition-all disabled:opacity-50"
                   >
-                    {isDeleting ? "Đang xử lý..." : "Xóa tài khoản ngay lập tức"}
+                    {isDeleting ? "Processing..." : "Delete My Account Immediately"}
                   </button>
                </div>
              </div>
           </div>
         </div>
 
-        {/* Quản lý Ảnh đại diện */}
+        {/* Avatar Manager */}
         <div className="lg:col-span-1 order-1 lg:order-2">
            <div className="sticky top-24">
               <AvatarManager onAvatarChange={fetchData} />
