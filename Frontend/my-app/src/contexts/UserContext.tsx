@@ -2,6 +2,7 @@
 
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 import { useRouter } from "next/navigation";
+import { refreshAccessToken } from '../services/authService'; // Đảm bảo import service này
 
 interface User {
   id: number;
@@ -19,6 +20,7 @@ interface UserContextType {
   user: User | null;
   login: (userData: User) => void;
   logout: () => void;
+  handleRefreshToken: () => Promise<string | null>; // Thêm hàm này vào interface
   isLoading: boolean;
 }
 
@@ -62,6 +64,40 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(false);
   }, []);
 
+  /**
+   * MỚI: Hàm xử lý làm mới Access Token khi hết hạn
+   */
+  const handleRefreshToken = async (): Promise<string | null> => {
+    const refreshToken = getCookie("refreshToken");
+    if (!refreshToken) {
+      console.warn("No refresh token found in cookies");
+      logout();
+      return null;
+    }
+
+    try {
+      const data = await refreshAccessToken(refreshToken); // Gọi API refresh
+      
+      if (data && data.accessToken) {
+        // Cập nhật state user với access token mới
+        const updatedUser = { ...user, accessToken: data.accessToken } as User;
+        setUser(updatedUser);
+
+        // Cập nhật lại Session Storage (không lưu refresh token vào đây)
+        const userToStore = { ...updatedUser };
+        delete (userToStore as any).refreshToken; 
+        sessionStorage.setItem("user", JSON.stringify(userToStore));
+
+        return data.accessToken;
+      }
+      return null;
+    } catch (error) {
+      console.error("Refresh token failed or expired:", error);
+      logout();
+      return null;
+    }
+  };
+
   const login = (userData: User) => {
     setUser(userData);
 
@@ -70,7 +106,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     document.cookie = `refreshToken=${userData.refreshToken}; path=/; max-age=604800; SameSite=Strict`;
 
     // 2. Lưu User Info + Access Token vào Session Storage
-    // Tạo bản sao và xóa refreshToken khỏi object lưu trong session (theo yêu cầu "riêng refresh lưu cookie")
     const userToStore = { ...userData };
     delete (userToStore as any).refreshToken; 
     
@@ -92,7 +127,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <UserContext.Provider value={{ user, login, logout, isLoading }}>
+    <UserContext.Provider value={{ user, login, logout, handleRefreshToken, isLoading }}>
       {children}
     </UserContext.Provider>
   );

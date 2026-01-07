@@ -1,13 +1,15 @@
 // src/components/Media/Content.tsx
 "use client";
 
+import { useState, useEffect } from "react";
 import { MediaItemDetail } from "@/src/interfaces/mediaItemDetail";
 import Image from "next/image";
 import TrackingButton from "./TrackingButton";
 import StarRating from "./StarRating";
 
 /**
- * 1. ĐỊNH NGHĨA NGOÀI RENDER (SỬA LỖI TRONG ẢNH)
+ * Component hiển thị từng dòng thông tin chi tiết.
+ * Được định nghĩa bên ngoài để tránh lỗi "Cannot create components during render".
  */
 const DetailRow = ({ label, value }: { label: string; value: any }) => {
   if (value === null || value === undefined || value === "") return null;
@@ -20,60 +22,74 @@ const DetailRow = ({ label, value }: { label: string; value: any }) => {
 };
 
 export default function Content({ data }: { data: any }) {
-  // Lấy loại media để hiển thị các trường đặc thù
+  // Trạng thái để kiểm tra component đã mount trên client chưa (tránh lỗi Hydration #418)
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const mediaType = data.typeName || data.type;
 
-  // Hàm helper để render dữ liệu theo từng loại nội dung
+  /**
+   * Render các trường thông tin đặc thù dựa trên loại Media.
+   */
   const renderFullDetails = () => {
-    switch (mediaType) {
-      case "Movie":
+    switch (mediaType?.toLowerCase()) {
       case "movie":
         return (
           <>
-            <DetailRow label="Đạo diễn" value={data.director} />
-            <DetailRow label="Thời lượng" value={data.runTimeMinutes ? `${data.runTimeMinutes} phút` : data.duration} />
-            <DetailRow label="Diễn viên" value={data.cast} />
-            <DetailRow label="Nhà sản xuất" value={data.producers} />
+            <DetailRow label="Director" value={data.director} />
+            <DetailRow label="Runtime" value={data.runTimeMinutes ? `${data.runTimeMinutes} mins` : data.duration} />
+            <DetailRow label="Cast" value={data.cast} />
+            <DetailRow label="Producers" value={data.producers} />
           </>
         );
-      case "TV Series":
+      case "tv series":
       case "series":
         return (
           <>
-            <DetailRow label="Người sáng tạo" value={data.creator} />
-            <DetailRow label="Số mùa" value={data.totalSeasons || data.seasonCount} />
-            <DetailRow label="Số tập" value={data.totalEpisodes || data.episodeCount} />
-            <DetailRow label="Hãng sản xuất" value={data.productionCompany} />
-            <DetailRow label="Trạng thái" value={data.status} />
+            <DetailRow label="Creator" value={data.creator} />
+            <DetailRow label="Seasons" value={data.totalSeasons || data.seasonCount} />
+            <DetailRow label="Episodes" value={data.totalEpisodes || data.episodeCount} />
+            <DetailRow label="Production" value={data.productionCompany} />
+            <DetailRow label="Status" value={data.status} />
           </>
         );
-      case "Book":
       case "book":
         return (
           <>
-            <DetailRow label="Tác giả" value={data.author} />
-            <DetailRow label="Phiên bản" value={data.edition} />
-            <DetailRow label="Số trang" value={data.pageCount} />
-            <DetailRow label="Nhà xuất bản" value={data.publisher} />
+            <DetailRow label="Author" value={data.author} />
+            <DetailRow label="Edition" value={data.edition} />
+            <DetailRow label="Pages" value={data.pageCount} />
+            <DetailRow label="Publisher" value={data.publisher} />
           </>
         );
-      case "Video Game":
+      case "manga":
+        return (
+          <>
+            <DetailRow label="Author" value={data.author} />
+            <DetailRow label="Chapters" value={data.chapterCount} />
+            <DetailRow label="Color" value={data.isColor ? "Yes" : "No"} />
+          </>
+        );
+      case "video game":
       case "game":
         return (
           <>
-            <DetailRow label="Nhà phát triển" value={data.developer} />
-            <DetailRow label="Nhà phát hành" value={data.publisher} />
-            <DetailRow label="Nền tảng" value={data.platform || (data.platforms && data.platforms.join(", "))} />
-            <DetailRow label="Cấu hình tối thiểu" value={data.minRequirement} />
+            <DetailRow label="Developer" value={data.developer} />
+            <DetailRow label="Publisher" value={data.publisher} />
+            <DetailRow label="Platforms" value={data.platform || (data.platforms && data.platforms.join(", "))} />
+            <DetailRow label="Min Requirements" value={data.minRequirement} />
           </>
         );
-      case "Music":
+      case "music":
         return (
           <>
-            <DetailRow label="Nghệ sĩ" value={data.artist} />
+            <DetailRow label="Artist" value={data.artist} />
             <DetailRow label="Album" value={data.album} />
-            <DetailRow label="Nhạc sĩ" value={data.composer} />
-            <DetailRow label="Thứ tự bài hát" value={data.trackNumber} />
+            <DetailRow label="Composer" value={data.composer} />
+            <DetailRow label="Track Number" value={data.trackNumber} />
           </>
         );
       default:
@@ -83,7 +99,7 @@ export default function Content({ data }: { data: any }) {
 
   return (
     <div className="w-full lg:w-[30%] bg-zinc-900/50 backdrop-blur-xl text-white p-6 rounded-[30px] lg:rounded-[40px] shadow-2xl border border-white/5 h-fit sticky top-24">
-      {/* Poster */}
+      {/* Poster Image */}
       <div className="relative w-full aspect-[2/3] mb-6 overflow-hidden rounded-2xl lg:rounded-3xl shadow-lg group">
         <Image
           src={data.urlItem || data.thumbnail || "/images.png"}
@@ -99,11 +115,14 @@ export default function Content({ data }: { data: any }) {
       </div>
 
       <div className="space-y-6">
-        {/* Title & Genres */}
+        {/* Title & Tags */}
         <div className="space-y-3">
           <h1 className="text-xl lg:text-2xl font-black uppercase tracking-tight leading-tight">
             {data.title}
           </h1>
+          {data.aliasTitle && (
+            <p className="text-zinc-400 text-sm italic">{data.aliasTitle}</p>
+          )}
           <div className="flex flex-wrap gap-2">
             {data.genres?.map((tag: string) => (
               <span key={tag} className="px-2 py-1 bg-white/5 text-[9px] font-bold rounded border border-white/10 uppercase text-zinc-400">
@@ -119,25 +138,32 @@ export default function Content({ data }: { data: any }) {
           <StarRating mediaId={data.MediaItemId} />
         </div>
 
-        {/* Detailed Info */}
+        {/* Detailed Information Section */}
         <div className="space-y-1">
-          <h3 className="text-[11px] font-black text-violet-500 uppercase tracking-[0.2em] mb-3">Thông tin chi tiết</h3>
+          <h3 className="text-[11px] font-black text-violet-500 uppercase tracking-[0.2em] mb-3">Detailed Information</h3>
           <div className="bg-black/20 rounded-2xl p-4 border border-white/5 space-y-1">
-            <DetailRow label="Quốc gia" value={data.country} />
-            <DetailRow label="Ngôn ngữ" value={data.language} />
-            <DetailRow label="Phân loại" value={data.contentRating} />
-            <DetailRow label="Ngày phát hành" value={data.releaseDate && new Date(data.releaseDate).toLocaleDateString('vi-VN')} />
+            <DetailRow label="Country" value={data.country} />
+            <DetailRow label="Language" value={data.language} />
+            <DetailRow label="Content Rating" value={data.contentRating} />
             
-            {/* Render các trường riêng biệt theo type */}
+            {/* Chỉ render ngày tháng sau khi mount để tránh lỗi 418 */}
+            {mounted && data.releaseDate && (
+              <DetailRow 
+                label="Release Date" 
+                value={new Date(data.releaseDate).toLocaleDateString('en-US')} 
+              />
+            )}
+            
+            {/* Render các trường riêng biệt dựa trên loại Media */}
             {renderFullDetails()}
           </div>
         </div>
 
-        {/* Description Section */}
+        {/* Description */}
         <div className="pt-4 border-t border-white/10">
-          <h3 className="text-[11px] font-black text-violet-500 uppercase tracking-[0.2em] mb-2">Mô tả</h3>
+          <h3 className="text-[11px] font-black text-violet-500 uppercase tracking-[0.2em] mb-2">Description</h3>
           <p className="text-zinc-400 text-[13px] leading-relaxed line-clamp-6 italic">
-            {data.description || "Nội dung đang được cập nhật..."}
+            {data.description || "No description available..."}
           </p>
         </div>
       </div>

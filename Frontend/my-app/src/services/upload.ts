@@ -80,3 +80,17 @@ export const deleteUserAvatar = async () => {
   if (!response.ok) throw new Error("Failed to delete avatar");
   return response.ok;
 };
+
+export const updateMediaItem = async (mediaId: number | string, data: any) => {
+  const response = await fetch(`${API_BASE_URL}/medias/${mediaId}`, {
+    method: "PUT", // Hoặc PATCH tùy backend
+    headers: getAuthHeaders(),
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || "Failed to update media item");
+  }
+  return response.json();
+};
