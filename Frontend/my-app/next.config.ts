@@ -47,6 +47,10 @@ const nextConfig: NextConfig = {
         destination: `${AUTH_API_BASE}/profile`,
       },
       {
+        source: '/api/auth/delete-account',
+        destination: `${AUTH_API_BASE}/delete-account`,
+      },
+      {
         source: '/api/medias/latest',
         destination: `${MEDIA_API_BASE}/medias?page=1`,
       },

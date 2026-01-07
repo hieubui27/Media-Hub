@@ -80,3 +80,21 @@ export async function refreshAccessToken(refreshToken: string) {
   const data = await res.json();
   return data; // Mong đợi trả về { accessToken: "...", refreshToken: "..." }
 }
+
+export async function deleteAccount(token: string) {
+  const res = await fetch('/api/auth/delete-account', { 
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'ngrok-skip-browser-warning': 'true',
+      'Content-Type': 'application/json'
+    },
+  });
+  
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.message || "Không thể xóa tài khoản lúc này.");
+  }
+  
+  return true;
+}
