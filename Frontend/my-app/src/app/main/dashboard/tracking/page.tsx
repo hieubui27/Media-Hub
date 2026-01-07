@@ -1,6 +1,6 @@
 "use client";
-export const dynamic = "force-dynamic";
-import { useState, useEffect } from "react";
+
+import { useState, useEffect, Suspense } from "react";
 import { useUser } from "@/src/contexts/UserContext";
 import { useSearchParams, useRouter } from "next/navigation";
 import {
@@ -33,7 +33,8 @@ const MEDIA_TYPES = [
   { id: "TV Series", label: "TV Series" },
 ];
 
-export default function TrackingPage() {
+// Tách nội dung sử dụng useSearchParams vào một component riêng
+function TrackingListContent() {
   const { user } = useUser();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -109,177 +110,149 @@ export default function TrackingPage() {
   };
 
   return (
+    <>
+      {/* HEADER & TABS */}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-12 gap-6">
+        <h1 className="text-4xl lg:text-5xl font-black text-white uppercase tracking-tight">
+          Tracking Space
+        </h1>
+
+        <div className="flex p-1 bg-zinc-900/50 backdrop-blur-xl rounded-2xl border border-white/5 w-full lg:w-fit overflow-x-auto scrollbar-hide">
+          {MEDIA_TYPES.map((type) => (
+            <button
+              key={type.id}
+              onClick={() => handleTabChange(type.id)}
+              className={`px-6 lg:px-8 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 whitespace-nowrap ${
+                activeType === type.id
+                  ? "bg-violet-600 text-white shadow-lg shadow-violet-600/20"
+                  : "text-zinc-500 hover:text-white"
+              }`}
+            >
+              {type.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* LIST CONTENT */}
+      {loading ? (
+        <div className="text-center py-20 animate-pulse text-zinc-500">
+          Loading list...
+        </div>
+      ) : trackingList.length === 0 ? (
+        <div className="text-center py-20 bg-zinc-900/20 rounded-[40px] border border-white/5 text-zinc-500">
+          No items found in {activeType}
+        </div>
+      ) : (
+        <>
+          <div className="grid gap-8">
+            {trackingList.map((item) => {
+              const statusConfig = STATUS_OPTIONS.find(
+                (s) => s.value === item.status
+              );
+              const isEditing = editingId === item.logId;
+              const poster =
+                item.media?.urlItem ||
+                item.media?.thumbnail ||
+                "/images.png";
+
+              return (
+                <div
+                  key={item.logId}
+                  className="relative overflow-hidden rounded-[40px] border border-white/5 shadow-2xl"
+                >
+                  <div
+                    className="absolute inset-0 bg-cover bg-center opacity-30"
+                    style={{ backgroundImage: `url(${poster})` }}
+                  />
+                  <div className="relative z-10 p-8 grid grid-cols-1 lg:grid-cols-[160px_1fr_auto] gap-8 items-center">
+                    <div className="hidden lg:block">
+                      <img
+                        src={poster}
+                        alt={item.media.title}
+                        className="w-[140px] h-[210px] object-cover rounded-2xl shadow-xl"
+                      />
+                    </div>
+
+                    <div className="flex-1">
+                      <Link href={`/main/media/detail/${item.media.MediaItemId}`}>
+                        <h2 className="text-2xl lg:text-3xl font-black text-white hover:text-violet-500 leading-tight mb-2">
+                          {item.media.title}
+                        </h2>
+                      </Link>
+                      <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold text-white ${statusConfig?.color}`}>
+                        {statusConfig?.label}
+                      </span>
+
+                      {isEditing ? (
+                        <div className="mt-4 space-y-3">
+                          <select
+                            value={formData.status}
+                            onChange={(e) => setFormData({ ...formData, status: e.target.value as TrackingStatus })}
+                            className="w-full bg-zinc-900 border border-white/10 rounded-lg p-2 text-white"
+                          >
+                            {STATUS_OPTIONS.map((opt) => (
+                              <option key={opt.value} value={opt.value}>{opt.label}</option>
+                            ))}
+                          </select>
+                          <textarea
+                            value={formData.comment}
+                            onChange={(e) => setFormData({ ...formData, comment: e.target.value })}
+                            className="w-full bg-zinc-900 border border-white/10 rounded-lg p-2 text-white"
+                            rows={3}
+                          />
+                        </div>
+                      ) : (
+                        <div className="mt-4 space-y-1 text-zinc-400 italic">
+                          {item.comment ? `"${item.comment}"` : "No comments"}
+                          <p className="text-violet-400 font-bold not-italic">
+                            ★ {item.rating || 0}/5
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex lg:flex-col items-center gap-3">
+                      {isEditing ? (
+                        <button onClick={() => handleSave(item.logId)} className="px-6 py-2 lg:px-8 lg:py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-full transition">
+                          Save
+                        </button>
+                      ) : (
+                        <>
+                          <button onClick={() => handleEdit(item)} className="px-6 py-2 lg:px-8 lg:py-3 bg-violet-600 hover:bg-violet-700 text-white font-bold rounded-full transition">
+                            Edit
+                          </button>
+                          <button onClick={() => handleDelete(item.logId)} className="px-6 py-2 lg:px-8 lg:py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-full transition">
+                            Delete
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="mt-12 flex justify-center">
+            <Pagination currentPage={currentPage} totalPages={totalPages} />
+          </div>
+        </>
+      )}
+    </>
+  );
+}
+
+// Default export bao bọc nội dung trong Suspense
+export default function TrackingPage() {
+  return (
     <ProtectedRoute>
       <div className="min-h-screen bg-[#0a0a0a] pt-32 pb-20 px-4 lg:px-10">
         <div className="max-w-[1400px] mx-auto">
-          {/* HEADER */}
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-12 gap-6">
-            <h1 className="text-4xl lg:text-5xl font-black text-white uppercase tracking-tight">
-              Tracking Space
-            </h1>
-
-            {/* TABS */}
-            <div className="flex p-1 bg-zinc-900/50 backdrop-blur-xl rounded-2xl border border-white/5 w-full lg:w-fit overflow-x-auto scrollbar-hide">
-              {MEDIA_TYPES.map((type) => (
-                <button
-                  key={type.id}
-                  onClick={() => handleTabChange(type.id)}
-                  className={`px-6 lg:px-8 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 whitespace-nowrap ${
-                    activeType === type.id
-                      ? "bg-violet-600 text-white shadow-lg shadow-violet-600/20"
-                      : "text-zinc-500 hover:text-white"
-                  }`}
-                >
-                  {type.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* CONTENT */}
-          {loading ? (
-            <div className="text-center py-20 animate-pulse text-zinc-500">
-              Loading list...
-            </div>
-          ) : trackingList.length === 0 ? (
-            <div className="text-center py-20 bg-zinc-900/20 rounded-[40px] border border-white/5 text-zinc-500">
-              No items found in {activeType}
-            </div>
-          ) : (
-            <>
-              <div className="grid gap-8">
-                {trackingList.map((item) => {
-                  const statusConfig = STATUS_OPTIONS.find(
-                    (s) => s.value === item.status
-                  );
-                  const isEditing = editingId === item.logId;
-                  const poster =
-                    item.media?.urlItem ||
-                    item.media?.thumbnail ||
-                    "/images.png";
-
-                  return (
-                    <div
-                      key={item.logId}
-                      className="relative overflow-hidden rounded-[40px] border border-white/5 shadow-2xl"
-                    >
-                      {/* BACKGROUND BLUR */}
-                      <div
-                        className="absolute inset-0 bg-cover bg-center opacity-30"
-                        style={{ backgroundImage: `url(${poster})` }}
-                      />
-
-                      {/* CONTENT */}
-                      <div className="relative z-10 p-8 grid grid-cols-1 lg:grid-cols-[160px_1fr_auto] gap-8 items-center">
-                        {/* POSTER (DESKTOP ONLY) */}
-                        <div className="hidden lg:block">
-                          <img
-                            src={poster}
-                            alt={item.media.title}
-                            className="w-[140px] h-[210px] object-cover rounded-2xl shadow-xl"
-                          />
-                        </div>
-
-                        {/* INFO */}
-                        <div className="flex-1">
-                          <Link
-                            href={`/main/media/detail/${item.media.MediaItemId}`}
-                          >
-                            <h2 className="text-2xl lg:text-3xl font-black text-white hover:text-violet-500 leading-tight mb-2">
-                              {item.media.title}
-                            </h2>
-                          </Link>
-
-                          <span
-                            className={`inline-block px-3 py-1 rounded-full text-xs font-bold text-white ${statusConfig?.color}`}
-                          >
-                            {statusConfig?.label}
-                          </span>
-
-                          {isEditing ? (
-                            <div className="mt-4 space-y-3">
-                              <select
-                                value={formData.status}
-                                onChange={(e) =>
-                                  setFormData({
-                                    ...formData,
-                                    status: e.target.value as TrackingStatus,
-                                  })
-                                }
-                                className="w-full bg-zinc-900 border border-white/10 rounded-lg p-2 text-white"
-                              >
-                                {STATUS_OPTIONS.map((opt) => (
-                                  <option key={opt.value} value={opt.value}>
-                                    {opt.label}
-                                  </option>
-                                ))}
-                              </select>
-
-                              <textarea
-                                value={formData.comment}
-                                onChange={(e) =>
-                                  setFormData({
-                                    ...formData,
-                                    comment: e.target.value,
-                                  })
-                                }
-                                className="w-full bg-zinc-900 border border-white/10 rounded-lg p-2 text-white"
-                                rows={3}
-                              />
-                            </div>
-                          ) : (
-                            <div className="mt-4 space-y-1 text-zinc-400 italic">
-                              {item.comment
-                                ? `"${item.comment}"`
-                                : "No comments"}
-                              <p className="text-violet-400 font-bold not-italic">
-                                ★ {item.rating || 0}/5
-                              </p>
-                            </div>
-                          )}
-                        </div>
-
-                        {/* ACTIONS */}
-                        <div className="flex lg:flex-col items-center gap-3">
-                          {isEditing ? (
-                            <button
-                              onClick={() => handleSave(item.logId)}
-                              className="px-6 py-2 lg:px-8 lg:py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-full transition"
-                            >
-                              Save
-                            </button>
-                          ) : (
-                            <>
-                              <button
-                                onClick={() => handleEdit(item)}
-                                className="px-6 py-2 lg:px-8 lg:py-3 bg-violet-600 hover:bg-violet-700 text-white font-bold rounded-full transition"
-                              >
-                                Edit
-                              </button>
-                              <button
-                                onClick={() => handleDelete(item.logId)}
-                                className="px-6 py-2 lg:px-8 lg:py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-full transition"
-                              >
-                                Delete
-                              </button>
-                            </>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* PAGINATION */}
-              <div className="mt-12 flex justify-center">
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                />
-              </div>
-            </>
-          )}
+          {/* Suspense là bắt buộc khi dùng useSearchParams để tránh lỗi prerendering lúc build */}
+          <Suspense fallback={<div className="text-center text-zinc-500 py-20">Initializing Space...</div>}>
+            <TrackingListContent />
+          </Suspense>
         </div>
       </div>
     </ProtectedRoute>
