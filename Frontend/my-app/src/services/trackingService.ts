@@ -34,11 +34,39 @@ export interface UpdateTrackingRequest {
 }
 
 // Lấy danh sách tracking của user
-export async function getUserTracking(accessToken: string): Promise<TrackingItem[]> {
+export interface TrackingResponse {
+  content: TrackingItem[];
+  totalPages: number;
+  totalElements: number;
+  size: number;
+  number: number;
+}
+
+export interface UpdateTrackingRequest {
+  status: TrackingStatus;
+  comment?: string;
+  rating?: number;
+}
+
+// Cập nhật hàm getUserTracking để nhận tham số phân trang
+export async function getUserTracking(
+  accessToken: string, 
+  type?: string,
+  page: number = 0
+): Promise<TrackingResponse | null> {
   try {
-    console.log("Fetching tracking with accessToken:", accessToken ? "Token present" : "No token");
+    // Xây dựng URL với các tham số query
+    const params = new URLSearchParams();
+    if (type && type !== "all") {
+      params.append("type", type);
+    }
+    params.append("page", page.toString());
     
-    const res = await fetch(`/api/remote/users/me/tracking`, {
+
+    const url = `/api/remote/users/me/tracking?${params.toString()}`;
+    
+
+    const res = await fetch(url, {
       method: 'GET',
       headers: {
         "Content-Type": "application/json",
@@ -48,30 +76,13 @@ export async function getUserTracking(accessToken: string): Promise<TrackingItem
       cache: 'no-store'
     });
 
-    console.log("Tracking API response status:", res.status, res.statusText);
-
-    if (!res.ok) {
-      const errorText = await res.text();
-      console.error("Tracking API error response:", errorText);
-      throw new Error(`Failed to fetch tracking: ${res.statusText}`);
-    }
-
+    if (!res.ok) throw new Error(`Failed to fetch tracking: ${res.statusText}`);
+    console.log("Fetching Tracking URL:", url);
     const data = await res.json();
-    console.log("Tracking API response data:", data);
-    
-    // Xử lý response - API trả về object có property content
-    if (data.content && Array.isArray(data.content)) {
-      return data.content as TrackingItem[];
-    } else if (Array.isArray(data)) {
-      return data as TrackingItem[];
-    } else if (data.data && Array.isArray(data.data)) {
-      return data.data as TrackingItem[];
-    }
-    
-    return [];
+    return data as TrackingResponse;
   } catch (error) {
     console.error("Error fetching tracking:", error);
-    return [];
+    return null;
   }
 }
 

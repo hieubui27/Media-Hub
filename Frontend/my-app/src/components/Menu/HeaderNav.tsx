@@ -32,10 +32,6 @@ function HeaderNav() {
     const userMenuRef = useRef<HTMLDivElement>(null);
 
     // Handle safe images (Avatar & Thumbnail)
-    const getSafeUrl = (path?: string) => {
-        if (!path) return "/images/default-thumbnail.jpg";
-        return path.startsWith("http") ? path : `${BASE_URL}${path}`;
-    };
 
     useEffect(() => {
         const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -96,7 +92,7 @@ function HeaderNav() {
                             >
                                 <div className="w-10 h-14 bg-zinc-800 rounded overflow-hidden flex-shrink-0">
                                     <img 
-                                        src={getSafeUrl(item.urlItem)} 
+                                        src={item.urlItem} 
                                         className="w-full h-full object-cover group-hover:scale-110 transition-transform" 
                                         alt="" 
                                     />
@@ -179,7 +175,7 @@ function HeaderNav() {
                                 {user ? (
                                     <div className="relative">
                                         <button onClick={() => setShowUserMenu(!showUserMenu)} className="flex items-center gap-2 bg-zinc-900 hover:bg-zinc-800 border border-white/5 p-1 pr-3 rounded-full transition-all">
-                                            <img src={getSafeUrl(user.avatar)} className="w-7 h-7 rounded-full object-cover border border-white/10" alt="" />
+                                            <img src={user.avatar} className="w-7 h-7 rounded-full object-cover border border-white/10" alt="" />
                                             <span className="text-sm font-bold text-gray-200">{user.displayName}</span>
                                             <ChevronDown size={14} className={`text-zinc-500 transition-transform ${showUserMenu ? 'rotate-180' : ''}`} />
                                         </button>
@@ -213,7 +209,7 @@ function HeaderNav() {
                     {user ? (
                         <div className="bg-zinc-900/50 border border-white/5 rounded-2xl p-4 mb-8">
                             <div className="flex items-center gap-3 mb-4">
-                                <img src={getSafeUrl(user.avatar)} className="w-12 h-12 rounded-full border-2 border-violet-500/30" alt="" />
+                                <img src={user.avatar} className="w-12 h-12 rounded-full border-2 border-violet-500/30" alt="" />
                                 <div className="min-w-0">
                                     <p className="text-white font-bold truncate">{user.displayName}</p>
                                     <p className="text-zinc-500 text-xs truncate">@{user.displayName}</p>

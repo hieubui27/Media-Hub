@@ -38,7 +38,7 @@ export default function Review({ mediaId }: { mediaId: string }) {
       setLoading(false);
     }
   };
-
+    console.log("Loading reviews for mediaId:", mediaId);
   useEffect(() => { loadData(); }, [mediaId]);
 
   // Handle Post/Edit Review (Only for Users)
@@ -150,7 +150,7 @@ export default function Review({ mediaId }: { mediaId: string }) {
           return (
             <div key={rev.reviewId} className="bg-white/5 p-5 rounded-[30px] flex gap-4 border border-white/5 group transition-all hover:bg-white/10">
               <img 
-                src={`${process.env.NEXT_PUBLIC_API_URL || "https://8dcbf8a962a3.ngrok-free.app"}${rev.userAvatar}` || `https://ui-avatars.com/api/?name=${rev.userName}`} 
+                src={rev.userAvatar || `https://ui-avatars.com/api/?name=${rev.userName}`} 
                 className="w-12 h-12 rounded-full object-cover border-2 border-transparent group-hover:border-violet-500/50 transition-all" 
               />
               <div className="flex-1">

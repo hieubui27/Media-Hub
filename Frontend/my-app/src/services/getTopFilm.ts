@@ -18,7 +18,6 @@ export const mediaService = {
       const response = await fetch(
         `/api/medias/latest`,
         { 
-          // THÊM HEADERS Ở ĐÂY
           headers: {
             "Content-Type": "application/json",
             "ngrok-skip-browser-warning": "true", // Header quan trọng để bỏ qua trang div của ngrok
@@ -32,7 +31,7 @@ export const mediaService = {
       // Lúc này dữ liệu trả về sẽ là JSON chuẩn, không còn là thẻ div nữa
       const data: MediaResponse = await response.json();
       const allItems = data.content;
-
+      console.log("Fetched latest media items:", allItems);
       const res = allItems
         .filter(item => item.releaseDate)
         .sort((a, b) => {
